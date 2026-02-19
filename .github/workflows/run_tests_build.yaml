@@ -2,7 +2,7 @@ name: Run Tests & Build
 
 on:
     pull_request:
-        branch:
+        branches:
             - develop
 
 jobs:
