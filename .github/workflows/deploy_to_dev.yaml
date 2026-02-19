@@ -5,14 +5,14 @@ on:
         workflows:
             - "Run Tests & Build"
         branches:
-            - development
+            - develop
         types:
             - completed
     workflow_dispatch:
 
 jobs:
-     deploy:
-          runs-on: ubuntu-latest
-          if: ${{ github.event.workflow_run.conclusion == 'success' }}
-          steps:
-               - run: echo 'Run tests and build workflow passed'
+    deploy:
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        steps:
+            - run: echo 'Run tests and build workflow passed'
