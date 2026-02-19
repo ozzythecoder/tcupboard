@@ -74,7 +74,7 @@ The app is in a **hybrid state** — `npm start` still uses `react-scripts` desp
 ## Recommended Priorities
 
 1. ✅ Remove accidental packages (`-`, `save`)
-2. Remove completely unused packages (10 packages with 0 imports)
+2. ✅ Remove completely unused packages (10 packages with 0 imports)
 3. Finish CRA-to-Vite migration (remove `react-scripts` + CRA artifacts)
 4. ✅ Remove server-side packages (`express`, `pg`, `cloudinary`, `auth0`, etc.)
 5. Migrate draft-js to TipTap (12 files to update)
