@@ -1,0 +1,17 @@
+name: Deploy to Dev Environment
+
+on:
+    workflow_run:
+        workflows:
+            - "Run Tests & Build"
+        branches:
+            - development
+        types:
+            - completed
+
+jobs:
+     deploy:
+          runs-on: ubuntu-latest
+          if: ${{ github.event.workflow_run.conclusion == 'success' }}
+          steps:
+               - run: echo 'Run tests and build workflow passed'
