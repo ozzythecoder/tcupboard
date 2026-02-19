@@ -1,8 +1,9 @@
 {
-  "name": "tcupapp",
-  "version": "2.0.0-alpha.1",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "packageManager": "pnpm@10.25.0"
+    "name": "tcupapp",
+    "version": "2.0.0-alpha.1",
+    "scripts": {
+        "test": "pnpm -r test",
+        "build": ""
+    },
+    "packageManager": "pnpm@10.25.0"
 }
