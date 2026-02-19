@@ -1,4 +1,4 @@
-name: Test on PR
+name: Run Tests & Build
 
 on:
     pull_request:
