@@ -10,4 +10,25 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - run: echo 'Deploy to dev environment triggered by push to develop'
+            - uses: "actions/checkout@v4"
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: "10.25.0"
+            - name: Install dependencies
+              run: pnpm install
+            - name: Build
+              run: pnpm run build
+            - name: Deploy to DigitalOcean
+              uses: burnett01/rsync-deployment@6.0.0
+              with:
+                  switches: -azvr --delete
+                  path: apps/frontend/build/
+                  remote_path: /var/www/tcup-development/frontend/build/
+                  remote_host: ${{ secrets.DROPLET_HOST }}
+                  remote_user: ${{ secrets.DROPLET_USER }}
+                  remote_key: ${{ secrets.DROPLET_SSH_KEY }}
