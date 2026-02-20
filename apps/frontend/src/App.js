@@ -71,6 +71,9 @@ import VenuesTableEmbed from "./pages/Venues/VenuesTableEmbed.js";
 import DigitalZine3 from "./pages/DigitalZine3.js";
 import usePlausiblePageViews from "./hooks/usePlausiblePageViews.js";
 
+if (process.env.NODE_ENV === "production") {
+    console.log = function() {};
+}
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
