@@ -24,7 +24,7 @@ jobs:
             - name: Build
               run: pnpm run build
             - name: Deploy to DigitalOcean
-              uses: burnett01/rsync-deployment@6.0.0
+              uses: burnett01/rsync-deployments@6.0.0
               with:
                   switches: -azvr --delete
                   path: apps/frontend/build/
