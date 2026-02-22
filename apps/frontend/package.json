@@ -62,13 +62,12 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "PORT=3003 react-scripts start",
+        "start": "vite",
         "test": "react-scripts test --watchAll=false --passWithNoTests",
         "eject": "react-scripts eject",
         "lint": "biome lint",
-        "build": "cross-env NODE_ENV=production DISABLE_ESLINT_PLUGIN=true react-scripts build",
-        "build:staging": "cross-env NODE_ENV=production react-scripts build",
-        "build:production": "cross-env NODE_ENV=production react-scripts build"
+        "build": "tsc && vite build",
+        "serve": "vite preview"
     },
     "eslintConfig": {
         "extends": [
@@ -91,8 +90,10 @@
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@biomejs/biome": "^2.3.14",
+        "@vitejs/plugin-react": "^5.1.4",
         "cross-env": "^7.0.3",
         "gh-pages": "^6.2.0",
+        "vite": "^7.3.1",
         "workbox-webpack-plugin": "^7.3.0"
     }
 }
