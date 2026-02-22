@@ -5,7 +5,6 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import pg from 'pg';
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
@@ -33,20 +32,6 @@ import sseRouter from './routes/sseRoutes.js';
 import adminShowsRouter from './routes/admin/shows-admin.js'
 
 import compression from 'compression';
-
-// 3) Set up the database
-const { Pool } = pg;
-const pool = new Pool({
-  connectionString: process.env.DB_URL
-});
-
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring client', err.stack);
-  }
-  console.log('Successfully connected to database');
-  release();
-});
 
 // 4) Create the Express app
 const app = express();
@@ -128,24 +113,8 @@ app.use('/api/scrapers', scrapersRouter)
 app.use('/api/sseroutes', sseRouter)
 app.use('/api/adminshows', adminShowsRouter)
 
-
-
 app.get('/api/bands/simple-test', (req, res) => {
   res.json({ message: 'Simple test route works' });
-});
-
-
-
-
-// Example test route
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ success: true, timestamp: result.rows[0].now });
-  } catch (error) {
-    console.error('Database query error:', error);
-    res.status(500).json({ error: 'Database query failed' });
-  }
 });
 
 // Required backend endpoint (Express)
@@ -186,9 +155,6 @@ app._router.stack.forEach((r) => {
   if (r.route && r.route.path) {
     console.log(`Route: ${r.route.path}`);
   } });
-
-// Export pool for reuse in other modules (if needed)
-export const db = pool;
 
 // 11) Start the server
 app.listen(PORT, () => {
