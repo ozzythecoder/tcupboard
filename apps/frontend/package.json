@@ -55,7 +55,6 @@
         "react-icons": "^5.4.0",
         "react-intersection-observer": "^9.14.1",
         "react-router-dom": "^6.28.0",
-        "react-scripts": "^5.0.1",
         "react-signature-canvas": "^1.0.6",
         "stream-browserify": "^3.0.0",
         "stream-http": "^3.2.0",
