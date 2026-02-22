@@ -2,6 +2,13 @@
     "name": "@repo/web",
     "private": true,
     "homepage": "https://tcupboard.org",
+    "scripts": {
+        "dev": "vite",
+        "test": "vitest",
+        "lint": "biome lint",
+        "build": "tsc && vite build",
+        "serve": "vite preview"
+    },
     "dependencies": {
         "@auth0/auth0-react": "^2.3.0",
         "@cloudinary/url-gen": "^1.21.0",
@@ -60,13 +67,6 @@
         "stream-http": "^3.2.0",
         "url": "^0.11.4",
         "web-vitals": "^2.1.4"
-    },
-    "scripts": {
-        "start": "vite",
-        "test": "vitest",
-        "lint": "biome lint",
-        "build": "tsc && vite build",
-        "serve": "vite preview"
     },
     "eslintConfig": {
         "extends": [

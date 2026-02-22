@@ -2,6 +2,7 @@
     "name": "tcupapp",
     "version": "2.0.0-alpha.1",
     "scripts": {
+        "dev": "pnpm -r dev",
         "test": "pnpm -r test",
         "build": "pnpm -r build"
     },
