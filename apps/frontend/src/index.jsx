@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Initialize Sentry
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),
@@ -29,7 +29,7 @@ Sentry.init({
 });
 
 // Determine environment
-let currentEnv = process.env.REACT_APP_APP_ENV || process.env.NODE_ENV;
+let currentEnv = import.meta.env.DEV
 console.log('Current environment:', currentEnv);
 
 // Get the current origin
@@ -50,8 +50,8 @@ if (currentEnv === 'staging') {
 
 console.log('Redirect URI:', redirectUri);
 console.log('Logout Return To:', logoutReturnTo);
-console.log('Auth0 Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
-console.log('Auth0 Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
+console.log('Auth0 Domain:', import.meta.env.VITE_AUTH0_DOMAIN);
+console.log('Auth0 Client ID:', import.meta.env.VITE_AUTH0_CLIENT_ID);
 
 // --- 🔹 Load Plausible only in production ---
 function loadPlausible() {
@@ -72,11 +72,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Auth0Provider
-    domain={process.env.REACT_APP_AUTH0_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+    domain={import.meta.env.VITE_AUTH0_DOMAIN}
+    clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
     authorizationParams={{
       redirect_uri: redirectUri,
-      audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+      audience: import.meta.env.VITE_AUTH0_API_IDENTIFIER,
       scope: 'openid profile email offline_access'
     }}
     logoutParams={{
