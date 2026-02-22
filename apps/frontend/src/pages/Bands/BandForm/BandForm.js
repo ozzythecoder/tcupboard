@@ -199,7 +199,7 @@ const BandForm = ({ isEdit = false }) => {
   const [saveAttempted, setSaveAttempted] = useState(false); // Track if save was attempted
 
   
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const bandDataFromState = location.state?.band;
 
   useEffect(() => {

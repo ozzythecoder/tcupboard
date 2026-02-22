@@ -18,7 +18,7 @@ const TopBar = ({ isPublic = false }) => {
   const { avatarUrl, setAvatarUrl } = useUserProfile();
   const { callApi } = useApi();
   const { isAdmin } = useAuth(); // Add this to check admin role
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [username, setUsername] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
@@ -93,7 +93,7 @@ const TopBar = ({ isPublic = false }) => {
   const handleLogout = () => {
     logout({ 
       logoutParams: {
-        returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+        returnTo: import.meta.env.VITE_AUTH0_REDIRECT_URI || window.location.origin
       }
     });
   };

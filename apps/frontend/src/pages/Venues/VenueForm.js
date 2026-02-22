@@ -33,7 +33,7 @@ const VenueForm = () => {
       if (!isEditMode) return;
 
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/venues/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch venue data');
         }
@@ -86,8 +86,8 @@ const VenueForm = () => {
       }
 
       const url = isEditMode 
-        ? `${process.env.REACT_APP_API_URL}/venues/${id}`
-        : `${process.env.REACT_APP_API_URL}/venues`;
+        ? `${import.meta.env.VITE_API_URL}/venues/${id}`
+        : `${import.meta.env.VITE_API_URL}/venues`;
 
       const response = await fetch(url, {
         method: isEditMode ? 'PUT' : 'POST',

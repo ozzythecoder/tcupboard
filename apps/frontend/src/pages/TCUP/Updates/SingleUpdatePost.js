@@ -46,7 +46,7 @@ const UpdateDetail = () => {
     const fetchUpdate = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/updates/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/updates/${id}`);
         
         if (!response.ok) {
           if (response.status === 404) {

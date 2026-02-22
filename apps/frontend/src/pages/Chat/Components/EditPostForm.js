@@ -13,7 +13,7 @@ const EditPostForm = ({ post, onClose, onSave }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     // Initialize the editor with the post content

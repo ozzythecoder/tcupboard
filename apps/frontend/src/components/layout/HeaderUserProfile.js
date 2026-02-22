@@ -12,7 +12,7 @@ function HeaderUserProfile({ closeDrawer }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [username, setUsername] = useState('');
   
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const { callApi } = useApi();
   
   // Add console logs

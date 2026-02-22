@@ -23,7 +23,7 @@ const SimplePledgePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [totalImages, setTotalImages] = useState(0);
   const [copied, setCopied] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const { ref, inView } = useInView({
     threshold: 0,

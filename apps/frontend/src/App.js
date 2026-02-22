@@ -98,7 +98,7 @@ function App() {
         try {
           console.log('Attempting registration with user:', user);
           hasAttemptedRegistration.current = true;
-          const response = await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
+          const response = await callApi(`${import.meta.env.VITE_API_URL}/auth/register`, {
             method: 'POST'
           });
           console.log('Registration response:', response);

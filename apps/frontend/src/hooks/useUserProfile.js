@@ -7,7 +7,7 @@ export function useUserProfile() {
   const { user, isAuthenticated } = useAuth0();
   const { callApi } = useApi();
   const [avatarUrl, setAvatarUrl] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchUserProfile = async () => {
     if (isAuthenticated) {

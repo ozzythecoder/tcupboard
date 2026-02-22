@@ -33,7 +33,7 @@ const UpdateEditForm = () => {
     const fetchUpdate = async () => {
       try {
         const token = await getAccessTokenSilently();
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/updates/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/updates/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -149,7 +149,7 @@ const UpdateEditForm = () => {
       }
       
       // Update the post
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/updates/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/updates/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

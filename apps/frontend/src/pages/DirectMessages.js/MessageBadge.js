@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 // Create Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Create a context to share the unread count and refresh function
@@ -25,7 +25,7 @@ export const MessageProvider = ({ children }) => {
     if (isAuthenticated && user?.sub) {
       try {
         const token = await getAccessTokenSilently();
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/direct-messages/conversations`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/direct-messages/conversations`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

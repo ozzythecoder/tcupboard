@@ -64,7 +64,7 @@ const PledgeTracker = () => {
       useEffect(() => {
         const fetchPledgeCount = async () => {
           try {
-            const apiUrl = process.env.REACT_APP_API_URL;
+            const apiUrl = import.meta.env.VITE_API_URL;
             const response = await fetch(`${apiUrl}/pledges/count`);
             const data = await response.json();
             setPledgeCount(data.count);

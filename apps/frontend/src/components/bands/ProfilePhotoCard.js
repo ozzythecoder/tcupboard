@@ -21,7 +21,7 @@ const ProfilePhotoCard = ({ name, imageUrl, location, genre, play_shows, bandId,
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
+  const apiUrl = import.meta.env.VITE_API_URL;  // The backend API URL from the .env file
 
   // Add useEffect to check if band is already favorited on component mount
   useEffect(() => {

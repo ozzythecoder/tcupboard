@@ -23,7 +23,7 @@ const ReactionBar = ({ postId, postAuthor, onReplyClick }) => {
  const fetchReactions = async () => {
    try {
      const token = await getAccessTokenSilently();
-     const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/${postId}/reactions`, {
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/reactions`, {
        headers: { Authorization: `Bearer ${token}` }
      });
      const data = await response.json();
@@ -36,7 +36,7 @@ const ReactionBar = ({ postId, postAuthor, onReplyClick }) => {
  const handleReaction = async (type) => {
    try {
      const token = await getAccessTokenSilently();
-     await fetch(`${process.env.REACT_APP_API_URL}/posts/${postId}/reactions`, {
+     await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/reactions`, {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',

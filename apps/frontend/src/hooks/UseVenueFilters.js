@@ -8,8 +8,8 @@ export const useVenueFilters = () => {
         try {
           // Fetch both venue data and ratings in parallel
           const [venuesResponse, ratingsResponse] = await Promise.all([
-            fetch(`${process.env.REACT_APP_API_URL}/venues`),
-            fetch(`${process.env.REACT_APP_API_URL}/venue-ratings`)
+            fetch(`${import.meta.env.VITE_API_URL}/venues`),
+            fetch(`${import.meta.env.VITE_API_URL}/venue-ratings`)
           ]);
   
           const venuesData = await venuesResponse.json();

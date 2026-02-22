@@ -18,10 +18,10 @@ const DraftsTab = () => {
   const navigate = useNavigate();
   const { getAccessTokenSilently } = useAuth0();
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    console.log("API URL being used:", process.env.REACT_APP_API_URL);
+    console.log("API URL being used:", import.meta.env.VITE_API_URL);
     const fetchDrafts = async () => {
       try {
         setLoading(true);

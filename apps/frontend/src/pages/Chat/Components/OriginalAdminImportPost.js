@@ -38,8 +38,8 @@ const OriginalAdminImportPost = () => {
 
       // Determine which endpoint to call based on whether it's a new thread or a reply
       const endpoint = formData.parentThreadId 
-        ? `${process.env.REACT_APP_API_URL}/posts/${formData.parentThreadId}/reply`
-        : `${process.env.REACT_APP_API_URL}/posts`;
+        ? `${import.meta.env.VITE_API_URL}/posts/${formData.parentThreadId}/reply`
+        : `${import.meta.env.VITE_API_URL}/posts`;
 
       const response = await fetch(endpoint, {
         method: 'POST',

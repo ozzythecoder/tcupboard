@@ -24,7 +24,7 @@ const NewConversationModal = ({ initialUser, onConversationCreated, onClose }) =
   const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty(LinkDecorator));
   const [messageImages, setMessageImages] = useState([]);
   const { getAccessTokenSilently } = useAuth0();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   
   useEffect(() => {
     if (initialUser) {

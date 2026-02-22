@@ -56,7 +56,7 @@ const ViewSingleThread = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const replyBoxRef = useRef(null);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const canEditPost = (post) => {
     if (!user) return false;
@@ -119,7 +119,7 @@ const handleConversationCreated = (conversationInfo) => {
     }
   };
 
-  const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY);
+  const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
   const fetchUserRoles = async () => {
     if (!user) return;

@@ -77,7 +77,7 @@ const NewUpdate = () => {
       }
       
       // Create the update
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/updates`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/updates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

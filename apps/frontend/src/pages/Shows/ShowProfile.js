@@ -34,7 +34,7 @@ const ShowProfile = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authAction, setAuthAction] = useState(''); // 'edit' or 'delete'
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const { isAdmin, isModerator, isAuthenticated, getAccessTokenSilently } = useAuth();
   const canEdit = isAdmin || isModerator;
 

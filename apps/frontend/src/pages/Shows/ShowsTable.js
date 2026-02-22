@@ -35,9 +35,9 @@ function ShowsTable() {
     ]);
     const [timeFilter, setTimeFilter] = useState(searchParams.get('timeFilter') || 'upcoming');
 
-    const apiUrl = process.env.REACT_APP_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL;
     // Determine if the message should show based on the environment variable
-    const isShowsListEnabled = process.env.REACT_APP_ENABLE_SHOWS_LIST === 'true';
+    const isShowsListEnabled = import.meta.env.VITE_ENABLE_SHOWS_LIST === 'true';
 
 
     // --- useEffect Hooks (remain the same) ---

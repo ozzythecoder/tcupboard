@@ -17,7 +17,7 @@ const UpdatesSection = () => {
   useEffect(() => {
     const fetchUpdates = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/updates?limit=3`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/updates?limit=3`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch updates');

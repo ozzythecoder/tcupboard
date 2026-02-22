@@ -24,7 +24,7 @@ const HistoricalReplyForm = ({ threadId, onReplyCreated, onClose }) => {
     try {
       const token = await getAccessTokenSilently();
       const resp = await fetch(
-        `${process.env.REACT_APP_API_URL}/posts/${threadId}/historical-reply`,
+        `${import.meta.env.VITE_API_URL}/posts/${threadId}/historical-reply`,
         {
           method: 'POST',
           headers: {

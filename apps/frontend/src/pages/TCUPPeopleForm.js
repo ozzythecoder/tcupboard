@@ -18,7 +18,7 @@ const TCUPPeopleForm = ({ isEdit = false }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
+  const apiUrl = import.meta.env.VITE_API_URL;  // The backend API URL from the .env file
 
 
   useEffect(() => {

@@ -61,7 +61,7 @@ const ConversationDetail = () => {
   const replyFormRef = useRef(null);
   const MESSAGES_PER_PAGE = 10;
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { refreshUnreadCount } = useMessages();
@@ -73,7 +73,7 @@ useEffect(() => {
     if (conversationId) {
       try {
         // Call your existing endpoint with the correct path
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/direct-messages/${conversationId}/read`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/direct-messages/${conversationId}/read`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${await getAccessTokenSilently()}`,

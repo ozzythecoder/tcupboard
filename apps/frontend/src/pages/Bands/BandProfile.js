@@ -30,7 +30,7 @@ const TCUPBandProfile = ({ allShows = [] }) => {
   // Add time filter state
   const [timeFilter, setTimeFilter] = useState('upcoming');
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Fetch band data and check ownership on mount
   useEffect(() => {

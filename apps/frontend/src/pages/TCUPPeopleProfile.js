@@ -4,7 +4,7 @@ const TCUPPeopleProfile = ({ personId }) => {
     const [person, setPerson] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
+    const apiUrl = import.meta.env.VITE_API_URL;  // The backend API URL from the .env file
 
     useEffect(() => {
         const fetchPerson = async () => {

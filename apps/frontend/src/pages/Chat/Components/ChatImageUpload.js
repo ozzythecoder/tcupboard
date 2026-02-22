@@ -49,7 +49,7 @@ const ChatImageUpload = ({ images, setImages }) => {
         formData.append('file', file);
         
         const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/upload/single`, 
+          `${import.meta.env.VITE_API_URL}/upload/single`, 
           formData, 
           {
             headers: {

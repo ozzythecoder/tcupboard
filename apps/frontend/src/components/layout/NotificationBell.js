@@ -36,7 +36,7 @@ const NotificationBell = () => {
    if (!isAuthenticated) return;
    try {
      const token = await getAccessTokenSilently();
-     const response = await fetch(`${process.env.REACT_APP_API_URL}/notifications`, {
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/notifications`, {
        headers: { Authorization: `Bearer ${token}` }
      });
      if (response.ok) {
@@ -52,7 +52,7 @@ const NotificationBell = () => {
    if (!isAuthenticated) return;
    try {
      const token = await getAccessTokenSilently();
-     const response = await fetch(`${process.env.REACT_APP_API_URL}/notifications/unread/count`, {
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/notifications/unread/count`, {
        headers: { Authorization: `Bearer ${token}` }
      });
      if (response.ok) {
@@ -67,7 +67,7 @@ const NotificationBell = () => {
  const markAsRead = async (notification) => {
     try {
       const token = await getAccessTokenSilently();
-      await fetch(`${process.env.REACT_APP_API_URL}/notifications/${notification.id}/read`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/notifications/${notification.id}/read`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` }
       });

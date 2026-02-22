@@ -4,11 +4,10 @@ import { Box, Container, Typography, Grid } from '@mui/material';
 
 const InstagramFeed = () => {
  const [posts, setPosts] = useState([]);
- const ACCESS_TOKEN = process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN;
 
  useEffect(() => {
     const fetchPosts = async () => {
-        const url = `https://graph.instagram.com/${process.env.REACT_APP_INSTAGRAM_USER_ID}/media?fields=id,caption,media_url,permalink&access_token=${process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN}`;
+        const url = `https://graph.instagram.com/${import.meta.env.VITE_INSTAGRAM_USER_ID}/media?fields=id,caption,media_url,permalink&access_token=${process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN}`;
         console.log('Request URL:', url);
       try {
         const response = await fetch(url);

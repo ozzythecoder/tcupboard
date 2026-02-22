@@ -38,7 +38,7 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // When initialData arrives, explicitly convert manual_override to a Boolean
   useEffect(() => {

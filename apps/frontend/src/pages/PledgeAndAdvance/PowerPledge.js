@@ -69,7 +69,7 @@ const PowerPledgeForm = () => {
   const [nextCursor, setNextCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [totalImages, setTotalImages] = useState(0);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Form state
   const navigate = useNavigate();
@@ -553,7 +553,7 @@ const PowerPledgeForm = () => {
       console.log('Image uploads complete');
 
   
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/pledges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

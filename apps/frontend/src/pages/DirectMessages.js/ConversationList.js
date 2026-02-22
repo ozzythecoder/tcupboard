@@ -36,7 +36,7 @@ const ConversationList = () => {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 

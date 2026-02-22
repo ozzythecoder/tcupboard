@@ -5,7 +5,7 @@ import axios from 'axios';
 
 function ProfileSync() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     console.log('ProfileSync mounted');

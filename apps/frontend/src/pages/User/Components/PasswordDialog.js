@@ -11,7 +11,7 @@ import PasswordRequirements from './PasswordRequirements';
 
 const PasswordDialog = ({ open, onClose, showFeedback }) => {
   const { callApi } = useApi();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   
   // Password change states
   const [currentPassword, setCurrentPassword] = useState('');

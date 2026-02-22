@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Box, Container, Typography, Paper, Button, CircularProgress } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import FormStepper from './Components/FormStepper';
-import steps from './Components/Steps';
+// import steps from './Components/Steps';
+
+const steps = []
 
 const VRCForm = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -41,7 +43,7 @@ const VRCForm = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/airtable/submit`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/airtable/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fields: formData })

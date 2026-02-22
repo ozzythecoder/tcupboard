@@ -13,7 +13,7 @@ const BandClaim = ({ bandSlug, onClaimStatusChange }) => {
         const checkOwnership = async () => {
             try {
                 const token = await getAccessTokenSilently();
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/bands/${bandSlug}/check-ownership`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/bands/${bandSlug}/check-ownership`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -43,7 +43,7 @@ const BandClaim = ({ bandSlug, onClaimStatusChange }) => {
         try {
             setLoading(true);
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/bands/${bandSlug}/claim`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/bands/${bandSlug}/claim`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -71,7 +71,7 @@ const BandClaim = ({ bandSlug, onClaimStatusChange }) => {
         try {
             setLoading(true);
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/bands/${bandSlug}/release`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/bands/${bandSlug}/release`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`

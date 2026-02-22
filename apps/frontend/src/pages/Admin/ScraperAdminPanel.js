@@ -89,7 +89,7 @@ const ScraperAdminPanel = () => {
 
   const { isAdmin } = useAuth();
   const { getAccessTokenSilently } = useAuth0();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
 // 3. Add these functions to your component
 // Function to fetch show counts

@@ -19,7 +19,7 @@ export const useApi = () => {
       try {
         token = await getAccessTokenSilently({
           authorizationParams: {
-            audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+            audience: import.meta.env.VITE_AUTH0_API_IDENTIFIER,
             scope: 'openid profile email'
           },
           detailedResponse: false,
@@ -54,7 +54,7 @@ export const useApi = () => {
       };
       
       // Determine the full URL
-      const apiBaseUrl = process.env.REACT_APP_API_URL || '/api';
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
       const fullUrl = url.startsWith('http') ? url : `${apiBaseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
       
       const response = await fetch(fullUrl, {

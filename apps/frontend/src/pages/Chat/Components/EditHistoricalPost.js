@@ -38,13 +38,13 @@ const EditHistoricalPost = ({ postId, onClose }) => {
         
         // Fetch initial data
         const [usersResponse, tagsResponse, postResponse] = await Promise.all([
-          fetch(`${process.env.REACT_APP_API_URL}/users`, {
+          fetch(`${import.meta.env.VITE_API_URL}/users`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`${process.env.REACT_APP_API_URL}/tags`, {
+          fetch(`${import.meta.env.VITE_API_URL}/tags`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`${process.env.REACT_APP_API_URL}/posts/${postId}`, {
+          fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -102,7 +102,7 @@ const EditHistoricalPost = ({ postId, onClose }) => {
       const contentState = editorState.getCurrentContent();
       const rawContent = JSON.stringify(convertToRaw(contentState));
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/edit/${postId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/edit/${postId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

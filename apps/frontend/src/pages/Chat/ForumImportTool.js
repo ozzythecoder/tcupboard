@@ -150,7 +150,7 @@ const ForumImportTool = () => {
       const token = await getAccessTokenSilently();
       
       // Create thread first
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ const ForumImportTool = () => {
       // Add all replies
       for (let i = 1; i < parsedPosts.length; i++) {
         const reply = parsedPosts[i];
-        const replyResponse = await fetch(`${process.env.REACT_APP_API_URL}/posts/${threadId}/reply`, {
+        const replyResponse = await fetch(`${import.meta.env.VITE_API_URL}/posts/${threadId}/reply`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

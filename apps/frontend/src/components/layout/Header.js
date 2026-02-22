@@ -214,7 +214,7 @@ const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }
     if (isAuthenticated) {
       logout({ 
         logoutParams: {
-          returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+          returnTo: import.meta.env.VITE_AUTH0_REDIRECT_URI || window.location.origin
         }
       });
     } else {
@@ -370,7 +370,7 @@ const Header = ({ isPublic = false }) => {
     const fetchUnreadMessages = async () => {
       if (isAuthenticated) {
         try {
-          const conversations = await fetch(`${process.env.REACT_APP_API_URL}/direct-messages/conversations`, {
+          const conversations = await fetch(`${import.meta.env.VITE_API_URL}/direct-messages/conversations`, {
             headers: {
               Authorization: `Bearer ${await getAccessTokenSilently()}`
             }

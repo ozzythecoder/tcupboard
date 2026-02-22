@@ -16,7 +16,7 @@ export const ProfileProvider = ({ children }) => {
   const { user, isAuthenticated } = useAuth0();
   const { callApi } = useApi();
   const { setAvatarUrl } = useUserProfile();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   
   // Profile data state
   const [isLoaded, setIsLoaded] = useState(false);

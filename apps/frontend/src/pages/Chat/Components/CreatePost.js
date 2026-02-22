@@ -68,7 +68,7 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/tags`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/tags`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
       }
 
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

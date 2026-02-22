@@ -23,7 +23,7 @@ function AuthTest() {
         try {
           console.log('Getting access token...');
           const accessToken = await getAccessTokenSilently({
-            audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+            audience: import.meta.env.VITE_AUTH0_API_IDENTIFIER,
             scope: 'openid profile email'
           });
           console.log('Token obtained:', accessToken);
@@ -44,7 +44,7 @@ function AuthTest() {
       // Get a fresh token
       console.log('Getting fresh token for request...');
       const accessToken = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+        audience: import.meta.env.VITE_AUTH0_API_IDENTIFIER,
         scope: 'openid profile email'
       });
       
@@ -132,10 +132,10 @@ function AuthTest() {
       <Box sx={{ mt: 2, p: 2, bgcolor: '#e3f2fd', borderRadius: 1 }}>
         <Typography variant="subtitle2" gutterBottom>Debug Information:</Typography>
         <Typography variant="body2">
-          API URL: {process.env.REACT_APP_AUTH0_API_IDENTIFIER}
+          API URL: {import.meta.env.VITE_AUTH0_API_IDENTIFIER}
         </Typography>
         <Typography variant="body2">
-          Auth0 Domain: {process.env.REACT_APP_AUTH0_DOMAIN}
+          Auth0 Domain: {process.env.VITE_AUTH0_DOMAIN}
         </Typography>
       </Box>
     </Paper>
