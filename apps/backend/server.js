@@ -1,7 +1,3 @@
-// server.js
-
-process.env.NODE_OPTIONS = '--openssl-legacy-provider';
-
 // 1) Load environment variables before anything else
 import './loadEnv.js'; // This presumably calls dotenv.config() internally
 
@@ -38,22 +34,10 @@ import adminShowsRouter from './routes/admin/shows-admin.js'
 
 import compression from 'compression';
 
-
-// 2) Optional debugging/logging to confirm environment vars are loaded
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('APP_ENV (or ENV):', process.env.APP_ENV || process.env.ENV);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('SENDGRID_API_KEY:', !!process.env.SENDGRID_API_KEY);
-
 // 3) Set up the database
 const { Pool } = pg;
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT, 10),
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+  connectionString: process.env.DB_URL
 });
 
 pool.connect((err, client, release) => {
@@ -74,7 +58,8 @@ app.use(compression());
 // 5) Define allowed origins per environment
 const allowedOriginsMap = {
   development: [
-    'http://localhost:3003'
+    'http://localhost:3003',
+    'http://localhost:5173'
   ],
   staging: [
     'https://staging.tcupboard.org'
@@ -89,8 +74,7 @@ const allowedOriginsMap = {
 //    (pick one: APP_ENV, ENV, or NODE_ENV)
 const currentEnv = process.env.APP_ENV || process.env.NODE_ENV || 'development';
 
-const allowedOrigins = allowedOriginsMap[currentEnv] 
-  || allowedOriginsMap.development;
+const allowedOrigins = allowedOriginsMap[currentEnv]
 
 // 7) Configure CORS
 //    If you need credentials (cookies, etc.), you must set credentials: true
@@ -130,7 +114,7 @@ app.use('/api/sessionmusicians', sessionMusiciansRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRouter);
 app.use('/api/tags', tagsRouter);
-app.use('/api/tcupgcal', tcupgcalRouter);
+// app.use('/api/tcupgcal', tcupgcalRouter);
 app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
@@ -163,17 +147,16 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
- 
+
 // Required backend endpoint (Express)
 app.post('/index.php?api/oauth2/token', async (req, res) => {
   console.log('Token request received:', req.body);
   const { code } = req.body;
   const XENFORO_URL = 'https://tcupboard.org';
-  const CLIENT_ID = process.env.REACT_APP_XENFORO_CLIENT_ID;
+  const CLIENT_ID = process.env.XENFORO_CLIENT_ID;
   const REDIRECT_URI = process.env.NODE_ENV === 'production'
     ? 'https://tcupboard.org/callback'
     : 'http://localhost:3002/callback';
-
   try {
     console.log('Attempting token exchange with code:', code);
     const response = await fetch(`${XENFORO_URL}/index.php?api/oauth2/token`, {
@@ -189,7 +172,6 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
         code
       })
     });
-    
     const data = await response.json();
     console.log('Token response:', data);
     res.json(data);
@@ -203,15 +185,7 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
 app._router.stack.forEach((r) => {
   if (r.route && r.route.path) {
     console.log(`Route: ${r.route.path}`);
-  } else if (r.name === 'router') {
-    console.log('Router middleware:');
-    r.handle.stack.forEach((rr) => {
-      if (rr.route) {
-        console.log(`  ${rr.route.path}`);
-      }
-    });
-  }
-});
+  } });
 
 // Export pool for reuse in other modules (if needed)
 export const db = pool;
