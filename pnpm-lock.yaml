@@ -252,6 +252,9 @@ importers:
       gh-pages:
         specifier: ^6.2.0
         version: 6.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.2.1)(terser@5.46.0)
