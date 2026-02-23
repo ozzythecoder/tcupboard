@@ -1,7 +1,6 @@
 import express from "express";
 import pool from "../config/db.js";
 import sendSuccessResponse from "../utils/sendSuccessResponse.js";
-import fetch from "node-fetch";
 import authMiddleware from "../middleware/auth.js";
 import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
