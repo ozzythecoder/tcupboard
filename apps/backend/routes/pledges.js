@@ -12,11 +12,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const router = express.Router();
 
-// Determine the correct .env file
-const envFile = `.env.${process.env.NODE_ENV || "development"}`;
-dotenv.config({ path: envFile });
-console.log(`Loaded environment file: ${envFile}`);
-
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.post('/', async (req, res) => {

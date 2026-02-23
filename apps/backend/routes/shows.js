@@ -5,10 +5,6 @@ import authMiddleware, { checkRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
-console.log('Loaded environment variables:');
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USER:', process.env.DB_USER);
-
 function parseBandList(bandList) {
   if (!bandList) return [];
   // Split by commas, extract order and name, then trim whitespace

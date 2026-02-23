@@ -8,31 +8,6 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Simplify environment file logic
-const envFile = process.env.NODE_ENV === 'production' 
-  ? '.env.production'
-  : process.env.NODE_ENV === 'staging'
-    ? '.env.staging'
-    : '.env.development';
-  
-const envPath = path.resolve(__dirname, `../${envFile}`);
-console.log('Current directory:', __dirname);
-console.log('Looking for env file at:', envPath);
-console.log('NODE_ENV:', process.env.NODE_ENV);
-
-// Load the env file
-dotenv.config({ path: envPath });
-
-console.log('AUTH0_DOMAIN:', process.env.AUTH0_DOMAIN);
-console.log('AUTH0_API_IDENTIFIER:', process.env.AUTH0_API_IDENTIFIER);
-
-console.log('Full env variables:', {
-  NODE_ENV: process.env.NODE_ENV,
-  AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
-  AUTH0_API_IDENTIFIER: process.env.AUTH0_API_IDENTIFIER,
-  envFile
-});
-
 // Create the JWT validator
 const checkJwt = auth({
   audience: process.env.AUTH0_API_IDENTIFIER,
