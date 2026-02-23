@@ -9,6 +9,16 @@ on:
 jobs:
     deploy:
         runs-on: ubuntu-latest
+        env:
+            DB_URL: ${{ secrets.DB_URL }}
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_API_IDENTIFIER: ${{ secrets.AUTH0_API_IDENTIFIER }}
+            CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+            CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+            CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+            SENDGRID_API_SECRET: ${{ secrets.SENDGRID_API_SECRET }}
         steps:
             - uses: "actions/checkout@v4"
             - name: Setup Node.js
