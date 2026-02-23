@@ -40,11 +40,20 @@ jobs:
               run: pnpm install
             - name: Build
               run: pnpm run build
-            - name: Deploy to DigitalOcean
+            - name: Deploy frontend
               uses: burnett01/rsync-deployments@6.0.0
               with:
                   switches: -azvr --delete
                   path: apps/frontend/build/
+                  remote_path: /var/www/tcup-development/frontend/build/
+                  remote_host: ${{ secrets.DROPLET_HOST }}
+                  remote_user: ${{ secrets.DROPLET_USER }}
+                  remote_key: ${{ secrets.DROPLET_SSH_KEY }}
+            - name: Deploy backend
+              uses: burnett01/rsync-deployments@6.0.0
+              with:
+                  switches: -azvr --delete
+                  path: apps/backend/build/
                   remote_path: /var/www/tcup-development/frontend/build/
                   remote_host: ${{ secrets.DROPLET_HOST }}
                   remote_user: ${{ secrets.DROPLET_USER }}
