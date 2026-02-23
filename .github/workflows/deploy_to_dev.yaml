@@ -43,7 +43,7 @@ jobs:
             - name: Deploy frontend
               uses: burnett01/rsync-deployments@6.0.0
               with:
-                  switches: -azvr --delete
+                  switches: -azvr -O --delete
                   path: apps/frontend/build/
                   remote_path: /var/www/tcup-development/frontend/build/
                   remote_host: ${{ secrets.DROPLET_HOST }}
@@ -52,7 +52,7 @@ jobs:
             - name: Deploy backend
               uses: burnett01/rsync-deployments@6.0.0
               with:
-                  switches: -azvr --delete
+                  switches: -azvr -O --delete
                   path: apps/backend/
                   remote_path: /var/www/tcup-development/backend/build/
                   remote_host: ${{ secrets.DROPLET_HOST }}
