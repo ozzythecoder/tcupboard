@@ -10,3 +10,5 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - supabase
+
+injectWorkspacePackages: true
