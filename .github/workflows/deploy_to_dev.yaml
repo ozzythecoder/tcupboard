@@ -82,4 +82,4 @@ jobs:
             - name: Start backend server
               run: |
                   ssh -i ~/.ssh/deploy_key ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} -o StrictHostKeyChecking=no \
-                    "pm2 restart dev-backend || pm2 start /var/www/tcup-development/backend/build/server.js --name dev-backend"
+                    "pm2 restart dev-backend || cd /var/www/tcup-development/backend/build && pm2 start \"pnpm start\" --name dev-backend"
