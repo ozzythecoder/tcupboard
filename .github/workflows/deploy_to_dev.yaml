@@ -21,7 +21,7 @@ jobs:
             AUTH0_API_IDENTIFIER: ${{ secrets.AUTH0_API_IDENTIFIER }}
             VITE_AUTH0_API_IDENTIFIER: ${{ secrets.AUTH0_API_IDENTIFIER }}
             VITE_AUTH0_CLIENT_ID: ${{ secrets.DEV_AUTH0_CLIENT_ID }}
-            VITE_AUTH0_REDIRECT_URI: 'https://dev.tcupboard.org'
+            VITE_AUTH0_REDIRECT_URI: "https://dev.tcupboard.org"
             CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
             CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
             CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
@@ -38,28 +38,48 @@ jobs:
                   version: "10.25.0"
             - name: Install dependencies
               run: pnpm install
-              
+
             - name: Build frontend
               run: pnpm --filter web build
-              
+
             - name: Prepare backend for deployment
-              run: pnpm --filter backend deploy --prod deploy-backend
-              
-            - name: Deploy frontend
-              uses: burnett01/rsync-deployments@6.0.0
-              with:
-                  switches: -azvrO --delete
-                  path: apps/frontend/build/
-                  remote_path: /var/www/tcup-development/frontend/build/
-                  remote_host: ${{ secrets.DROPLET_HOST }}
-                  remote_user: ${{ secrets.DROPLET_USER }}
-                  remote_key: ${{ secrets.DROPLET_SSH_KEY }}
-            - name: Deploy backend
-              uses: burnett01/rsync-deployments@6.0.0
-              with:
-                  switches: -azvrO --delete
-                  path: deploy-backend/
-                  remote_path: /var/www/tcup-development/backend/build/
-                  remote_host: ${{ secrets.DROPLET_HOST }}
-                  remote_user: ${{ secrets.DROPLET_USER }}
-                  remote_key: ${{ secrets.DROPLET_SSH_KEY }}
+              run: |
+                  pnpm --filter backend deploy --prod deploy-backend
+
+                  # .env file with runtime secrets
+                  cat > deploy-backend/.env << EOF
+                  AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }}
+                  AUTH0_API_IDENTIFIER=${{ secrets.AUTH0_API_IDENTIFIER }}
+                  CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+                  CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+                  CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+                  DB_URL=${{ secrets.DB_URL }}
+                  SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+                  SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+                  SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
+                  NODE_ENV=production
+                  PORT=4002
+                  EOF
+
+            - name: Setup SSH
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/deploy_key
+                  chmod 600 ~/.ssh/deploy_key
+
+            - name: Deploy to DigitalOcean
+              run: |
+                  rsync -azvrO --delete \
+                      -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+                      apps/frontend/build \
+                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/frontend/
+
+                  rsync -azvrO --delete \
+                      -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+                      deploy-backend/ \
+                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/backend/
+
+            - name: Start backend server
+              run: |
+                  ssh -i ~/.ssh/deploy_key ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} -o StrictHostKeyChecking=no \
+                    "pm2 restart dev-backend || pm2 start /var/www/tcup-development/backend/build/server.js --name dev-backend"
