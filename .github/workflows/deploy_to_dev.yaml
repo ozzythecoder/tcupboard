@@ -82,6 +82,5 @@ jobs:
             - name: Start backend server
               run: |
                   ssh -i ~/.ssh/deploy_key ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} -o StrictHostKeyChecking=no \
-                    "pm2 restart dev-backend || \
-                    ( cd /var/www/tcup-development/backend/build && \
-                    pm2 start ecosystem.config.cjs --only tcup-backend-dev )"
+                    "cd /var/www/tcup-development/backend/build && \
+                    pm2 restart ecosystem.config.cjs --only tcup-backend-dev )"
