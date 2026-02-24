@@ -36,6 +36,7 @@ module.exports = {
             name: "tcup-backend-dev",
             script: "./server.js",
             cwd: "/var/www/tcup-development/backend",
+            node_args: '--env-file=.env',
             env: {
                 NODE_ENV: "production",
                 PORT: 4002,
