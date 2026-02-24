@@ -77,7 +77,7 @@ jobs:
                   rsync -azvrO --delete \
                       -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
                       deploy-backend/ \
-                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/backend/
+                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/backend/build
 
             - name: Start backend server
               run: |
