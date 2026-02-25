@@ -5,7 +5,9 @@ const { Pool } = pkg;
 
 const pool = new Pool({
     connectionString: process.env.DB_URL,
-    ssl: process.env.DB_SSL_CERT ?? false,
+    ssl: process.env.DB_SSL_CERT
+        ? Buffer.from(process.env.DB_SSL_CERT, "base64").toString("ascii") // base64-encoded ssl cert
+        : false,
 });
 
 // Whenever a brand-new connection is created, set the search_path
