@@ -67,6 +67,10 @@ jobs:
                   echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/deploy_key
                   chmod 600 ~/.ssh/deploy_key
 
+            - name: Add SSL cert
+              run: |
+                  echo "${{ secrets.DB_SSL_CERT }}" > ~/certs/tcup-db-cert.crt
+
             - name: Deploy to DigitalOcean
               run: |
                   rsync -azvrO --delete \
@@ -78,6 +82,12 @@ jobs:
                       -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
                       deploy-backend/ \
                       ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/backend/build
+
+                  # send ssl cert
+                  rsync -azvrO --delete \
+                      -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+                      certs/ \
+                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development
 
             - name: Start backend server
               run: |
