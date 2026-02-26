@@ -6,7 +6,12 @@ const { Pool } = pkg;
 const pool = new Pool({
     connectionString: process.env.DB_URL,
     ssl: process.env.DB_SSL_CERT
-        ? Buffer.from(process.env.DB_SSL_CERT, "base64").toString("ascii") // base64-encoded ssl cert
+        ? {
+              ca: Buffer.from(process.env.DB_SSL_CERT, "base64") // decode from base64
+                  .toString("ascii") // preserve newlines
+                  .trim(), // remove potential trailing newline
+              rejectUnauthorized: false, // allows self-signed certificate
+          }
         : false,
 });
 
