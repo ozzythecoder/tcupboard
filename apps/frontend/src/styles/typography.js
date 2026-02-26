@@ -1,24 +1,24 @@
 export const typography = {
-    fontFamily: "'Geist', 'SF Mono', Menlo, monospace",
+    fontFamily: "'Geist Variable', 'SF Mono', Menlo, monospace",
 
     h1: {
       fontSize: '2.5rem',
       fontWeight: 500,
-      fontFamily: "'Geist Mono', monospace",
+      fontFamily: "'Geist Mono Variable', monospace",
     },
     h2: {
       fontSize: '2rem',
     },
     h3: {
       fontSize: '1.5rem',
-      fontFamily: "'Geist Mono', monospace",
+      fontFamily: "'Geist Mono Variable', monospace",
     },
     h4: {
       fontSize: '1.25rem',
     },
     h5: {
       fontSize: '1rem',
-      fontFamily: "'Geist Mono', monospace",
+      fontFamily: "'Geist Mono Variable', monospace",
 
     },
     h6: {

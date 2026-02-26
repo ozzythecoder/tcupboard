@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
+
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+
 import 'draft-js/dist/Draft.css';
 import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";

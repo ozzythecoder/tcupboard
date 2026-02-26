@@ -32,7 +32,7 @@ export const AppBarStyles = {
   MuiListItem: {
     styleOverrides: {
       root: {
-        fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
+        fontFamily: "'Geist Mono Variable', 'SF Mono', Menlo, monospace",
         color: '#000000',
         textTransform: 'lowercase',
         padding: '12px 16px',
@@ -46,7 +46,7 @@ export const AppBarStyles = {
     styleOverrides: {
       primary: {
         fontSize: '16px',
-        fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
+        fontFamily: "'Geist Mono Variable', 'SF Mono', Menlo, monospace",
         textTransform: 'lowercase',
         letterSpacing: "0.2em" 
       }
