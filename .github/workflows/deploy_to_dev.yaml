@@ -55,6 +55,7 @@ jobs:
                   CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
                   DB_URL=${{ secrets.DB_URL }}
                   DB_SSL_CERT=${{ secrets.DB_SSL_CERT }}
+                  DB_SCHEMA=production
                   SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
                   SUPABASE_URL=${{ secrets.SUPABASE_URL }}
                   SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
