@@ -19,9 +19,9 @@ const pool = new Pool({
 pool.on("connect", (client) => {
     const schema = process.env.DB_SCHEMA || "public";
     client
-        .query(`SET search_path TO ${schema}, public`)
+        .query(`SET search_path TO ${schema}`)
         .then(() => {
-            console.log(`search_path set to ${schema}, public`);
+            console.log(`search_path set to ${schema}`);
         })
         .catch((err) => {
             console.error("Error setting search_path:", err);
