@@ -20,43 +20,9 @@ router.post('/profile', async (req, res) => {
     
     const { sub: auth0Id, email } = req.body; // Auth0 user info
     
-    // Extract username with clear priority order
+    // Auth0 namespace / custom claim - see ProfileSync.js in frontend for implementation
     const namespace = 'https://tcupboard.org/';
-    let username;
-    let source = "unknown";
-    
-    // 1. First priority: Custom namespace claim
-    if (req.body[`${namespace}username`]) {
-      username = req.body[`${namespace}username`];
-      source = "custom claim";
-    } 
-    // 2. Second priority: nickname
-    else if (req.body.nickname) {
-      username = req.body.nickname;
-      source = "nickname";
-    }
-    // 3. Third priority: name
-    else if (req.body.name) {
-      username = req.body.name;
-      source = "name";
-    }
-    // 4. More fallbacks
-    else if (req.body.preferred_username) {
-      username = req.body.preferred_username;
-      source = "preferred_username";
-    }
-    else if (email) {
-      username = email.split('@')[0];
-      source = "email username";
-    }
-    else {
-      // Last resort fallback with random string
-      const randomId = Math.random().toString(36).substring(2, 10);
-      username = `user_${randomId}`;
-      source = "random fallback";
-    }
-    
-    console.log(`Selected username "${username}" from source: ${source}`);
+    const username = req.body[`${namespace}username`] ?? email.split('@')[0];
     
     // Check if user exists
     let user = await pool.query(
