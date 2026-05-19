@@ -1,10 +1,5 @@
-// 1) Load environment variables before anything else
-import './loadEnv.js'; // This presumably calls dotenv.config() internally
-
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
@@ -17,11 +12,10 @@ import authRoutes from './routes/auth.js';
 import sessionMusiciansRouter from './routes/sessionmusicians.js';
 import postsRouter from './routes/chat/posts.js';
 import tagsRouter from './routes/tags.js';
-import tcupgcalRouter from './routes/tcupgcal.js';
 import pledgesRouter from './routes/pledges.js';
 import flyeringRouter from './routes/flyering.js';
 import imagesRouter from './routes/images.js';
-import notificationsRouter, { createReplyNotification } from './routes/notifications.js';
+import notificationsRouter from './routes/notifications.js';
 import updatesRouter from './routes/updates.js';
 import contactRouter from './routes/contact.js';
 import uploadRouter from './routes/upload.js';
@@ -56,8 +50,7 @@ const allowedOriginsMap = {
 };
 
 // 6) Figure out which environment we’re in
-//    (pick one: APP_ENV, ENV, or NODE_ENV)
-const currentEnv = process.env.APP_ENV || process.env.NODE_ENV || 'development';
+const currentEnv = process.env.NODE_ENV || 'development';
 
 const allowedOrigins = allowedOriginsMap[currentEnv]
 
@@ -99,7 +92,6 @@ app.use('/api/sessionmusicians', sessionMusiciansRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRouter);
 app.use('/api/tags', tagsRouter);
-// app.use('/api/tcupgcal', tcupgcalRouter);
 app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
@@ -115,39 +107,6 @@ app.use('/api/adminshows', adminShowsRouter)
 
 app.get('/api/bands/simple-test', (req, res) => {
   res.json({ message: 'Simple test route works' });
-});
-
-// Required backend endpoint (Express)
-app.post('/index.php?api/oauth2/token', async (req, res) => {
-  console.log('Token request received:', req.body);
-  const { code } = req.body;
-  const XENFORO_URL = 'https://tcupboard.org';
-  const CLIENT_ID = process.env.XENFORO_CLIENT_ID;
-  const REDIRECT_URI = process.env.NODE_ENV === 'production'
-    ? 'https://tcupboard.org/callback'
-    : 'http://localhost:3002/callback';
-  try {
-    console.log('Attempting token exchange with code:', code);
-    const response = await fetch(`${XENFORO_URL}/index.php?api/oauth2/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        client_id: CLIENT_ID,
-        client_secret: process.env.XENFORO_CLIENT_SECRET,
-        redirect_uri: REDIRECT_URI,
-        code
-      })
-    });
-    const data = await response.json();
-    console.log('Token response:', data);
-    res.json(data);
-  } catch (error) {
-    console.error('Token exchange error:', error);
-    res.status(500).json({ error: 'Token exchange failed', details: error.message });
-  }
 });
 
 // Print out routes (for debugging)

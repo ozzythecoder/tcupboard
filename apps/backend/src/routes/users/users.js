@@ -5,7 +5,7 @@ import authMiddleware from '../../middleware/auth.js';
 import cloudinary from '../../config/cloudinary.js';
 import axios from 'axios';
 import sgMail from '@sendgrid/mail';
-
+import { userService } from '../../services/user-service.ts';
 
 const router = express.Router();
 
@@ -25,30 +25,22 @@ router.post('/profile', async (req, res) => {
     const username = req.body[`${namespace}username`] ?? email.split('@')[0];
     
     // Check if user exists
-    let user = await pool.query(
-      'SELECT * FROM users WHERE auth0_id = $1',
-      [auth0Id]
-    );
-
+    let user = await userService.getByAuthId(auth0Id);
+      
     if (user.rows.length === 0) {
-      console.log('Creating new user with username:', username);
+      // console.log('Creating new user with username:', username);
+      
       // Create new user with extracted username
-      user = await pool.query(
-        'INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *',
-        [auth0Id, email, username]
-      );
+      user = await userService.create({ auth0Id, email, username })
     } else {
-      console.log('User already exists:', user.rows[0]);
+      // console.log('User already exists:', user.rows[0]);
       
       // ONLY update email if needed - leave username alone
       if (user.rows[0].email !== email) {
-        console.log('Updating user email from', user.rows[0].email, 'to', email);
-        user = await pool.query(
-          'UPDATE users SET email = $1 WHERE auth0_id = $2 RETURNING *',
-          [email, auth0Id]
-        );
+        // console.log('Updating user email from', user.rows[0].email, 'to', email);
+        user = await userService.updateEmail(email, auth0Id)
       }
-      // Do NOT update username for existing users
+        // Do NOT update username for existing users
     }
 
     res.json(user.rows[0]);

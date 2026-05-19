@@ -10,9 +10,6 @@ console.log(`Using database schema: ${schema}`);
 
 console.log(`Updates route loaded. NODE_ENV: ${process.env.NODE_ENV}, schema: ${schema}`);
 
-
-
-
 // GET all published updates (public) with optional limit
 router.get('/', async (req, res) => {
   console.error(`Attempting to fetch updates with schema: ${schema}`);

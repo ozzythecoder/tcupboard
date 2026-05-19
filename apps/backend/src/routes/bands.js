@@ -301,8 +301,6 @@ router.get('/user', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch bands' });
   }
 });
-console.log('Bands routes set up');
-
 
 // Create/update band draft
 router.post('/draft', authMiddleware, async (req, res) => {

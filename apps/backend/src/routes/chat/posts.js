@@ -6,8 +6,6 @@ import supabase from '../../lib/supabase.js';
 const router = express.Router();
 import { createReplyNotification } from '../notifications.js';
 
-
-
 router.get('/', async (req, res) => {
   try {
       const { tags } = req.query;

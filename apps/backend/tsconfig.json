@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": true,
+
+    "module": "NodeNext",
+    "target": "ESNext",
+
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "noImplicitAny": false,
+  },
+  "include": ["src"]
+}

@@ -2,8 +2,8 @@
   "name": "@repo/backend",
   "type": "module",
   "scripts": {
-    "start": "NODE_ENV=production node --env-file=.env server.js",
-    "dev": "NODE_ENV=development node --env-file=.env.development --watch server.js",
+    "dev": "NODE_ENV=development node --env-file=.env.development --watch src/server.js",
+    "build": "tsc",
     "test": "echo \"No tests yet. Skipping.\"; exit 0",
     "migrate:dev": "knex migrate:latest --env development --knexfile ./migrate-config.cjs",
     "migrate:production": "knex migrate:latest --env production --knexfile ./migrate-config.cjs",
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.14",
+    "@types/pg": "^8.20.0",
     "supabase": "^2.76.12",
     "typescript": "^5.9.3"
   }
