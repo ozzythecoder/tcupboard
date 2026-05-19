@@ -1,9 +1,7 @@
 import express from "express";
 import pool from "../config/db.js";
 
-
 const router = express.Router();
-
 
 // Fetch all people
 router.get("/", async (req, res) => {
@@ -22,7 +20,7 @@ router.post("/add", async (req, res) => {
     try {
         const result = await pool.query(
             "INSERT INTO people (name, email, bio, profile_photo) VALUES ($1, $2, $3, $4) RETURNING *",
-            [name, email, bio, profile_photo]
+            [name, email, bio, profile_photo],
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -35,16 +33,13 @@ router.post("/add", async (req, res) => {
 router.get("/:id", async (req, res) => {
     const personId = req.params.id;
     try {
-        const person = await pool.query(
-            "SELECT * FROM people WHERE id = $1",
-            [personId]
-        );
+        const person = await pool.query("SELECT * FROM people WHERE id = $1", [personId]);
 
         const bands = await pool.query(
             `SELECT bands.* FROM bands
              JOIN peoplebands ON bands.id = peoplebands.band_id
              WHERE peoplebands.person_id = $1`,
-            [personId]
+            [personId],
         );
 
         const shows = await pool.query(
@@ -52,7 +47,7 @@ router.get("/:id", async (req, res) => {
              JOIN bands ON shows.bands ILIKE '%' || bands.band || '%'
              JOIN peoplebands ON bands.id = peoplebands.band_id
              WHERE peoplebands.person_id = $1`,
-            [personId]
+            [personId],
         );
 
         res.json({
@@ -71,10 +66,10 @@ router.post("/:id/bands", async (req, res) => {
     const { id: personId } = req.params;
     const { band_id } = req.body;
     try {
-        await pool.query(
-            "INSERT INTO peoplebands (person_id, band_id) VALUES ($1, $2)",
-            [personId, band_id]
-        );
+        await pool.query("INSERT INTO peoplebands (person_id, band_id) VALUES ($1, $2)", [
+            personId,
+            band_id,
+        ]);
         res.status(201).json({ success: true });
     } catch (error) {
         console.error("Error associating band:", error);

@@ -6,8 +6,8 @@
  * @returns {Array} - The cleaned array.
  */
 const cleanArray = (arr) => {
-  if (!Array.isArray(arr)) return [];
-  return arr.filter(item => item && typeof item === 'string' && item.trim() !== '');
+    if (!Array.isArray(arr)) return [];
+    return arr.filter((item) => item && typeof item === "string" && item.trim() !== "");
 };
 
 export default cleanArray;

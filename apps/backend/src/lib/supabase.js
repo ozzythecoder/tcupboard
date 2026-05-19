@@ -9,8 +9,8 @@ if (!supabaseUrl || !supabaseServiceKey) {
     const e = [
         "Missing Supabase configuration:",
         {
-            supabaseUrl: !!supabaseUrl ? "found" : "missing",
-            supabaseServiceKey: !!supabaseServiceKey ? "found" : "missing",
+            supabaseUrl: supabaseUrl ? "found" : "missing",
+            supabaseServiceKey: supabaseServiceKey ? "found" : "missing",
         },
     ];
     throw new Error(e.join("\n"));
@@ -28,9 +28,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 // (This IIFE uses top-level await; if your Node version supports it, this is fine.)
 (async () => {
     try {
-        const { data, error } = await supabase
-            .from("forum_messages")
-            .select("count");
+        const { data, error } = await supabase.from("forum_messages").select("count");
         if (error) {
             console.error("Supabase connection test error:", error);
         } else {

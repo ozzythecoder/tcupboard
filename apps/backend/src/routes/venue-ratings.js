@@ -1,19 +1,20 @@
 // routes/venue-ratings.js
-import express from 'express';
-import { google } from 'googleapis';
+import express from "express";
+import { google } from "googleapis";
+
 const router = express.Router();
 
-router.get('/venue-ratings', async (req, res) => {
+router.get("/venue-ratings", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
             credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+            scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
         });
 
-        const sheets = google.sheets({ version: 'v4', auth });
+        const sheets = google.sheets({ version: "v4", auth });
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
-            range: 'Sheet1!A:I'  // Adjust range as needed
+            range: "Sheet1!A:I", // Adjust range as needed
         });
 
         res.json(response.data.values);
