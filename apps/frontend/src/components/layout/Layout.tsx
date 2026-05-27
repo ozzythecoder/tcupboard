@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import Header from './Header';
-import TopBar from './TopBar.js';
+import TopBar from './TopBar';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 

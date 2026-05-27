@@ -10,7 +10,7 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
         setupFiles: ["./src/setupTests.ts"],
-        passWithNoTests: true
+        passWithNoTests: true,
     },
     server: {
         port: 5173,
@@ -19,7 +19,7 @@ export default defineConfig({
     // resolve js files to jsx
     esbuild: {
         loader: "jsx",
-        include: /.*\.jsx?$/,
+        include: /.*\.(jsx|tsx)?$/,
         exclude: [],
     },
     optimizeDeps: {

@@ -3,17 +3,18 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { Auth0Provider } from '@auth0/auth0-react';
-import App from './App.js';
+import App from './App';
 import theme from './styles/theme.js';
 import * as Sentry from "@sentry/react";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 // Disable React's default error overlay in development mode
-if (process.env.NODE_ENV === "development") {
-  window.addEventListener("error", (event) => {
-    event.preventDefault();
-  });
-}
+// ...except maybe don't do that
+// if (process.env.NODE_ENV === "development") {
+//   window.addEventListener("error", (event) => {
+//     event.preventDefault();
+//   });
+// }
 
 // Initialize Sentry
 Sentry.init({

@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress } from '@mui/material';
 import Header from './components/layout/Header';
-import TopBar from './components/layout/TopBar.js';
+import TopBar from './components/layout/TopBar';
 
 // This component renders content unconditionally without auth checks
 const PublicRoute = () => {
