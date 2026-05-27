@@ -17,9 +17,6 @@ const checkJwt = auth({
 
 // Our custom middleware that uses checkJwt but preserves req.user
 const authMiddleware = (req, res, next) => {
-    console.log("=== Auth Debug Start ===");
-    console.log("Auth header present:", !!req.headers.authorization);
-
     // First run the official validator
     checkJwt(req, res, (err) => {
         if (err) {
@@ -36,9 +33,6 @@ const authMiddleware = (req, res, next) => {
                 roles: req.auth.payload["https://tcupboard.org/roles"] || [],
             };
 
-            console.log("User authenticated:", req.user.sub);
-            console.log("User roles:", req.user.roles);
-            console.log("=== Auth Debug End ===");
             next();
         } catch (error) {
             console.error("Error processing token:", error);
