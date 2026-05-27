@@ -1,4 +1,5 @@
 export const env = {
+    dev: process.env.NODE_ENV !== 'production',
     google: {
         credentials: process.env.GOOGLE_CREDENTIALS,
         spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
