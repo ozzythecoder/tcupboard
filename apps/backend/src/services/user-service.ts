@@ -1,39 +1,49 @@
-import db from "../config/db.js";
+import { supabase } from "../lib/supabase.js";
+import type { TablesInsert, TablesUpdate } from "../types/models.js";
+import { stripUndefined } from "../utils/stripUndefined.js";
 
-type UserIn = {
-    auth0Id: string;
-    email: string;
-    username: string;
-};
+type UserInsert = TablesInsert<"users">;
+type UserUpdate = TablesUpdate<"users">;
 
 export const userService = {
     getByAuthId: async (auth_id: string) => {
-        const res = await db.query("select * from users where auth0_id = $1", [auth_id]);
-        return res.rows[0];
+        const res = await supabase.from("users").select("*").eq("auth0_id", auth_id);
+        if (res.error) throw res.error;
+        return res.data[0];
     },
     getAll: async () => {
-        const res = await db.query("select * from users");
-        return res.rows;
+        const res = await supabase.from("users").select("*");
+        if (res.error) throw res.error;
+        return res.data;
     },
-    create: async (user: UserIn) => {
-        const res = await db.query(
-            `
-      insert into users (auth0_id, email, username)
-      values ($1 $2 $3) returning *
-      `,
-            [user.auth0Id, user.email, user.username],
-        );
-        return res;
+
+    create: async (user: UserInsert) => {
+        const res = await supabase
+            .from("users")
+            .insert([
+                {
+                    auth0_id: user.auth0_id,
+                    email: user.email,
+                    username: user.username,
+                },
+            ])
+            .select();
+        if (res.error) throw res.error;
+        return res.data;
     },
-    updateEmail: async (email: string, auth_id: string) => {
-        const res = await db.query(
-            `
-      update users
-      set email = $1 where auth0_id = $2
-      returning *
-      `,
-            [email, auth_id],
-        );
-        return res.rows[0];
+
+    update: async ({ username, avatar_url, bio, role, tagline }: UserUpdate, auth0_id: string) => {
+        const update = stripUndefined({
+            username,
+            avatar_url,
+            bio,
+            role,
+            tagline,
+        });
+
+        const res = await supabase.from("users").update(update).eq("auth0_id", auth0_id).select();
+
+        if (res.error) throw res.error;
+        return res.data;
     },
 };
