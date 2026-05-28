@@ -1,36 +1,28 @@
-// routes/chat/read-status.js
-import express from "express";
+import express, { type Request } from "express";
 import supabase from "../../lib/supabase.js";
+import authMiddleware from "../../middleware/auth.js";
 
 const router = express.Router();
 
-import authMiddleware from "../../middleware/auth.js";
 
 // Mark thread as read
-router.post("/:threadId", authMiddleware, async (req, res) => {
+router.post("/:threadId", authMiddleware, async (req: Request<{ threadId: string }>, res) => {
     try {
         const auth0Id = req.auth?.payload?.sub;
+        if (!auth0Id) return res.status(401);
         const { threadId } = req.params;
-
-        console.log("THREAD READ UPDATE:", {
-            auth0Id,
-            threadId,
-            timestamp: new Date().toISOString(),
-        });
 
         const { data, error } = await supabase
             .from("thread_read_status")
             .upsert(
                 {
                     auth0_id: auth0Id,
-                    thread_id: threadId,
+                    thread_id: parseInt(threadId),
                     last_read_at: new Date().toISOString(),
                 },
                 { onConflict: "auth0_id,thread_id" },
             )
             .select();
-
-        console.log("THREAD READ RESULT:", { data, error });
 
         if (error) throw error;
 
@@ -47,7 +39,7 @@ router.get("/", authMiddleware, async (req, res) => {
         const auth0Id = req.auth?.payload?.sub;
 
         if (!auth0Id) {
-            return res.json({});
+            return res.status(401);
         }
 
         const { data, error } = await supabase
@@ -57,12 +49,10 @@ router.get("/", authMiddleware, async (req, res) => {
 
         if (error) throw error;
 
-        const readStatus = {};
-        data.forEach((item) => {
-            readStatus[item.thread_id] = item.last_read_at;
-        });
-
-        res.json(readStatus);
+        const readStatus = Object.fromEntries(
+            data.map(v => [v.thread_id, v.last_read_at])
+        )
+        res.status(200).json(readStatus);
     } catch (error) {
         console.error("Error fetching read status:", error);
         res.status(500).json({ error: error.message });

@@ -1,5 +1,3 @@
-// routes/users.js
-
 import sgMail from "@sendgrid/mail";
 import axios from "axios";
 import express from "express";
@@ -10,7 +8,7 @@ import { userService } from "../../services/user-service.js";
 
 const router = express.Router();
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Get a user
 // create user profile
@@ -19,32 +17,22 @@ router.post("/profile", async (req, res) => {
         console.log("==== User Profile Creation ====");
         console.log("Incoming Auth0 data:", JSON.stringify(req.body, null, 2));
 
-        const { sub: auth0Id, email } = req.body; // Auth0 user info
+        const { sub: auth0_id, email } = req.body; // Auth0 user info
 
         // Auth0 namespace / custom claim - see ProfileSync.js in frontend for implementation
         const namespace = "https://tcupboard.org/";
         const username = req.body[`${namespace}username`] ?? email.split("@")[0];
 
         // Check if user exists
-        let user = await userService.getByAuthId(auth0Id);
+        const user = await userService.getByAuthId(auth0_id);
 
-        if (user.rows.length === 0) {
-            // console.log('Creating new user with username:', username);
-
+        if (!user) {
             // Create new user with extracted username
-            user = await userService.create({ auth0Id, email, username });
+            const newUser = await userService.create({ auth0_id, email, username });
+            return res.json(newUser);
         } else {
-            // console.log('User already exists:', user.rows[0]);
-
-            // ONLY update email if needed - leave username alone
-            if (user.rows[0].email !== email) {
-                // console.log('Updating user email from', user.rows[0].email, 'to', email);
-                user = await userService.updateEmail(email, auth0Id);
-            }
-            // Do NOT update username for existing users
+            return res.json(user);
         }
-
-        res.json(user.rows[0]);
     } catch (err) {
         console.error("Error in profile creation:", err);
         res.status(500).send("Server error");
@@ -133,10 +121,10 @@ router.get("/bands", authMiddleware, async (req, res) => {
         const auth0Id = req.user.sub;
 
         const result = await pool.query(
-            `SELECT b.*, ub.relationship_type 
-       FROM tcupbands b 
-       JOIN user_tcupbands ub ON b.id = ub.tcupband_id 
-       JOIN users u ON u.id = ub.user_id 
+            `SELECT b.*, ub.relationship_type
+       FROM tcupbands b
+       JOIN user_tcupbands ub ON b.id = ub.tcupband_id
+       JOIN users u ON u.id = ub.user_id
        WHERE u.auth0_id = $1`,
             [auth0Id],
         );
@@ -154,10 +142,10 @@ router.get("/shows", authMiddleware, async (req, res) => {
         const auth0Id = req.user.sub;
 
         const result = await pool.query(
-            `SELECT s.* 
-       FROM shows s 
-       JOIN user_shows us ON s.id = us.show_id 
-       JOIN users u ON u.id = us.user_id 
+            `SELECT s.*
+       FROM shows s
+       JOIN user_shows us ON s.id = us.show_id
+       JOIN users u ON u.id = us.user_id
        WHERE u.auth0_id = $1`,
             [auth0Id],
         );
@@ -283,56 +271,6 @@ router.put("/username", authMiddleware, async (req, res) => {
         console.error("Auth0 response:", error.response?.data);
         res.status(500).json({ error: error.response?.data || error.message });
     }
-});
-
-// routes/users.js or where you have your routes
-// In users.js routes
-router.get("/test-auth", authMiddleware, (req, res) => {
-    console.log("Test auth endpoint hit");
-    console.log("Full user object:", JSON.stringify(req.user, null, 2));
-
-    // Check for custom username claim
-    const namespace = "https://tcupboard.org/";
-    const customUsername = req.user[`${namespace}username`];
-    console.log("Custom username from token:", customUsername);
-
-    try {
-        if (!req.user) {
-            throw new Error("No user information available");
-        }
-
-        res.json({
-            message: "Authentication working!",
-            userId: req.user.sub,
-            timestamp: new Date(),
-            userInfo: req.user,
-            customClaims: {
-                username: customUsername,
-            },
-        });
-    } catch (err) {
-        console.error("Error in test-auth:", err);
-        res.status(500).json({ error: "Server error", details: err.message });
-    }
-});
-
-router.get("/auth-test", (req, res) => {
-    // No auth middleware - should always work
-    res.json({ message: "Public endpoint working" });
-});
-
-router.get("/token-debug", authMiddleware, (req, res) => {
-    // Will test if auth middleware passes
-    res.json({
-        message: "Token validated successfully",
-        user: {
-            sub: req.user.sub,
-            roles: req.user.roles,
-        },
-        headers: {
-            authorization: req.headers.authorization ? "Present (not shown)" : "Missing",
-        },
-    });
 });
 
 router.put("/password", authMiddleware, async (req, res) => {

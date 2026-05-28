@@ -440,6 +440,7 @@ export type Database = {
         Row: {
           auth0_id: string | null
           author: string | null
+          author_avatar: string | null
           category: string | null
           content: string | null
           created_at: string | null
@@ -453,9 +454,13 @@ export type Database = {
           is_thread_starter: boolean | null
           last_reply_at: string | null
           latest_reply_author: string | null
+          latest_reply_author_avatar: string | null
+          latest_reply_author_id: string | null
           latest_reply_date: string | null
           parent_id: number | null
           reply_count: number | null
+          replyCount: number | null
+          tags: Json | null
           title: string | null
           updated_at: string | null
           views: number | null

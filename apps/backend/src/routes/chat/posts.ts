@@ -1,177 +1,79 @@
 // posts.js
-import express from "express";
+import express, { type Request, type Response } from "express";
+import { z } from "zod";
 import pool from "../../config/db.js";
 import supabase from "../../lib/supabase.js";
 import authMiddleware from "../../middleware/auth.js";
+import { validateQuery } from "../../middleware/validator.js";
+import { createReplyNotification } from "../notifications.js";
+import type { ApiResponse, PaginatedResponse } from "../../types/apiResponse.js";
+import type { Tables } from "../../types/models.js";
 
 const router = express.Router();
 
-import { createReplyNotification } from "../notifications.js";
+const postsIndexSchema = z.object({
+    page: z.coerce.number().optional(),
+    limit: z.coerce.number().optional(),
+});
+type PostsIndexSchema = {
+    page?: string;
+    limit?: string;
+};
+export type ForumMessageWithReplyDetails = Tables<"forum_messages_with_last_reply">;
 
-router.get("/", async (req, res) => {
-    try {
-        const { tags } = req.query;
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 20;
-        const offset = (page - 1) * limit;
-        const tagIds = tags ? tags.split(",").map(Number) : [];
+// TODO: Migrate from /posts to /posts/allWithDetails or similar
+router.get(
+    "/",
+    validateQuery(postsIndexSchema),
+    async (
+        req: Request<unknown, ApiResponse<PaginatedResponse<ForumMessageWithReplyDetails[]>>, unknown, PostsIndexSchema>,
+        res,
+    ) => {
+        try {
+            const { query: q } = req;
+            const page = q.page ? parseInt(q.page, 10) : 1;
+            const limit = q.limit ? parseInt(q.limit, 10) : 50;
+            const offset = (page - 1) * limit;
 
-        // Get threads with pagination
-        let query = supabase
-            .from("forum_messages")
-            .select("*", { count: "exact" }) // Get total count for pagination
-            .is("parent_id", null)
-            .order("created_at", { ascending: false }) // Consider this for consistent ordering
-            .range(offset, offset + limit - 1); // Add LIMIT and OFFSET
+            const { data: threads, count } = await supabase
+                .from("forum_messages_with_last_reply")
+                .select("*", { count: "exact" })
+                .range(offset, offset + limit - 1);
 
-        if (tagIds.length > 0) {
-            // Filter by tags if needed
-            const { data: taggedThreadIds } = await supabase
-                .from("post_tags")
-                .select("post_id")
-                .in("tag_id", tagIds);
-
-            const postIds = taggedThreadIds.map((t) => t.post_id);
-            if (postIds.length > 0) {
-                query = query.in("id", postIds);
-            } else {
-                return res.json({
-                    posts: [],
-                    pagination: { page, limit, total: 0, pages: 0 },
-                });
+            if (!threads) {
+                return res.status(500).json({ message: "Internal error when getting messages." });
             }
-        }
-        const { data: threadsData, count } = await query;
-        if (!threadsData || threadsData.length === 0) {
+
+            const posts = threads.map((post) => {
+                const isImported = post.is_imported === true;
+                const author_avatar = isImported ? post.imported_avatar_url : post.author_avatar;
+                const author = isImported ? post.imported_author_name : post.author;
+
+                return {
+                    ...post,
+                    reply_count: post.replyCount,
+                    last_reply_at: post.latest_reply_date,
+                    last_reply_by: post.latest_reply_author,
+                    author_avatar,
+                    author,
+                };
+            });
+
             return res.json({
-                posts: [],
+                data: posts,
                 pagination: {
                     page,
                     limit,
-                    total: count || 0,
-                    pages: Math.ceil((count || 0) / limit),
+                    total: count ?? 0,
+                    pages: Math.ceil((count ?? 0) / limit),
                 },
             });
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+            res.status(500).json({ message: error.message });
         }
-
-        const postIds = threadsData.map((post) => post.id);
-
-        // Get all replies for these threads with auth0_id and author included
-        const { data: allReplies } = await supabase
-            .from("forum_messages")
-            .select("parent_id, created_at, auth0_id, author")
-            .in("parent_id", postIds);
-
-        // Create maps for latest reply info and count
-        const lastReplyMap = {};
-        const lastReplyByMap = {};
-        const lastReplyAuth0IdMap = {};
-        const replyCountMap = {};
-
-        allReplies.forEach((reply) => {
-            const parentId = reply.parent_id;
-
-            // Track reply count
-            replyCountMap[parentId] = (replyCountMap[parentId] || 0) + 1;
-
-            // Track latest reply
-            const replyDate = new Date(reply.created_at);
-            if (!lastReplyMap[parentId] || replyDate > new Date(lastReplyMap[parentId])) {
-                lastReplyMap[parentId] = reply.created_at;
-                lastReplyByMap[parentId] = reply.author;
-                lastReplyAuth0IdMap[parentId] = reply.auth0_id;
-            }
-        });
-
-        // Sort by latest activity (either last reply or created date)
-        const sortedThreadsData = threadsData.sort((a, b) => {
-            const aActivity = lastReplyMap[a.id] || a.created_at;
-            const bActivity = lastReplyMap[b.id] || b.created_at;
-            return new Date(bActivity) - new Date(aActivity);
-        });
-
-        // Collect all auth0_ids needed (thread authors and reply authors)
-        const allAuth0Ids = [
-            ...new Set([
-                ...sortedThreadsData.map((post) => post.auth0_id),
-                ...Object.values(lastReplyAuth0IdMap).filter((id) => id),
-            ]),
-        ];
-
-        // Get user data for both thread authors and repliers
-        const { rows: userData } = await pool.query(
-            "SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)",
-            [allAuth0Ids],
-        );
-
-        // Rest of your code (fetch tags, etc.)
-        const { data: postTags } = await supabase
-            .from("post_tags")
-            .select("post_id, tag:tags(*)")
-            .in("post_id", postIds);
-
-        const tagsByPostId = postTags.reduce((acc, { post_id, tag }) => {
-            if (!acc[post_id]) acc[post_id] = [];
-            acc[post_id].push(tag);
-            return acc;
-        }, {});
-
-        const postsWithData = sortedThreadsData.map((post) => {
-            // Find user data for thread author
-            const authorData = userData.find((u) => u.auth0_id === post.auth0_id);
-
-            // Check if this is an imported post
-            const isImported = post.is_imported === true;
-
-            // Derive avatar
-            const finalAvatarUrl = isImported
-                ? post.imported_avatar_url // fallback to DB column for imported avatar
-                : authorData?.avatar_url; // real user’s avatar if not imported
-
-            // If you also want a final author name (like "alex" or unknown):
-            const finalAuthorName = isImported
-                ? post.imported_author_name
-                : authorData?.username || "Unknown User";
-
-            // Last replier logic
-            const lastReplyAuth0Id = lastReplyAuth0IdMap[post.id];
-            const lastReplierData = lastReplyAuth0Id
-                ? userData.find((u) => u.auth0_id === lastReplyAuth0Id)
-                : null;
-
-            return {
-                ...post,
-                reply_count: replyCountMap[post.id] || 0,
-                last_reply_at: lastReplyMap[post.id] || null,
-                last_reply_by: lastReplierData?.username || lastReplyByMap[post.id] || null,
-
-                // Use your new final avatar & author
-                avatar_url: finalAvatarUrl,
-                author: finalAuthorName, // optional if you want to rely on 'author'
-
-                // Or if you prefer "username" for the front-end, set that too
-                username: isImported
-                    ? post.imported_author_name
-                    : authorData?.username || "Unknown User",
-
-                tags: tagsByPostId[post.id] || [],
-            };
-        });
-
-        res.json({
-            posts: postsWithData,
-            pagination: {
-                page,
-                limit,
-                total: count,
-                pages: Math.ceil(count / limit),
-            },
-        });
-    } catch (error) {
-        console.error("Error fetching posts:", error);
-        res.status(500).json({ error: error.message });
-    }
-});
+    },
+);
 
 const getThreadById = async (req, res) => {
     const { threadId } = req.params;

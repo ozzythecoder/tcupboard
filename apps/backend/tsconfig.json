@@ -2,6 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
+    "verbatimModuleSyntax": true,
 
     "module": "NodeNext",
     "target": "ESNext",

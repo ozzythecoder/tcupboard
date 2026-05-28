@@ -20,7 +20,7 @@ const authMiddleware = (req, res, next) => {
     // First run the official validator
     checkJwt(req, res, (err) => {
         if (err) {
-            console.error("Auth Error:", err);
+            console.warn("Authentication failed.", err);
             return res.status(401).json({ error: "Authentication failed", details: err.message });
         }
 

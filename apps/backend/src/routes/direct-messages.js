@@ -1,8 +1,4 @@
-// direct-messages.js
-
-import { createClient } from "@supabase/supabase-js";
 import express from "express";
-import pg from "pg";
 import pool from "../config/db.js";
 import supabase from "../lib/supabase.js";
 import authMiddleware from "../middleware/auth.js"; // Your existing Auth0 middleware

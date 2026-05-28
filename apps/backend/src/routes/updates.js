@@ -81,10 +81,10 @@ router.post("/", authMiddleware, checkRole(["admin"]), async (req, res) => {
     try {
         const result = await pool.query(
             `
-      INSERT INTO ${schema}.updates (title, content, content_json, image_url, auth0_id, is_published)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *
-    `,
+            INSERT INTO ${schema}.updates (title, content, content_json, image_url, auth0_id, is_published)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `,
             [title, content, content_json, image_url, auth0_id, is_published || true],
         );
 
