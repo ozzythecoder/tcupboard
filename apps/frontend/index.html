@@ -1,10 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="mona" data-mode="dark">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
-        <!-- OpenGraph Meta Tags (for link sharing) -->
         <meta property="og:title" content="tCUPBOARD" />
         <meta property="og:description" content="the Cupboard" />
         <meta property="og:image" content="https://res.cloudinary.com/dsll3ms2c/image/upload/v1742923428/512_r8fbg2.png" />
@@ -19,13 +18,13 @@
             // Polyfill global for Node.js packages (like fbjs used by draft-js)
             window.global = window;
             window.process = window.process || { env: {} };
+            document.documentElement.setAttribute('data-mode', localStorage.getItem('mode') || 'dark');
         </script>
     </head>
     <body>
-        <!-- Root container for React to render the app -->
         <div id="root"></div>
 
         <link rel="icon" href="./favicon.ico" />
-        <script type="module" src="./src/index.jsx"></script>
+        <script type="module" src="./src/main.jsx"></script>
     </body>
 </html>
