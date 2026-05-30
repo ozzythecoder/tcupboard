@@ -738,6 +738,36 @@ export type Database = {
         Args: { thread_id: number }
         Returns: undefined
       }
+      replies_by_thread: {
+        Args: { thread_id_in: string }
+        Returns: {
+          auth0_id: string
+          author: string | null
+          category: string | null
+          content: string
+          created_at: string
+          id: number
+          images: Json | null
+          imported_author_name: string | null
+          imported_avatar_url: string | null
+          imported_date: string | null
+          is_edited: boolean | null
+          is_imported: boolean | null
+          is_thread_starter: boolean | null
+          last_reply_at: string | null
+          parent_id: number | null
+          reply_count: number | null
+          title: string | null
+          updated_at: string
+          views: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "forum_messages"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
     }
     Enums: {
       [_ in never]: never
