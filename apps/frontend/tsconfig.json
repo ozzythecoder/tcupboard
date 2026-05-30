@@ -16,11 +16,21 @@
         "isolatedModules": true,
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
-        "jsx": "react-jsx",
+        "jsx": "preserve",
+        "jsxImportSource": "react",
         "types": ["vite/client"],
+        "rootDirs": [".", "./.react-router/types"],
         "paths": {
             "#/*": ["./src/*"]
         }
     },
-    "include": ["src", "*.config.ts", "vite-env.d.ts"],
+    "include": [
+        "src",
+        "*.config.ts",
+        "vite-env.d.ts",
+        "**/.server/**/*",
+        "**/.client/**/*",
+        ".react-router/types/**/*",
+        "app"
+    ],
 }
