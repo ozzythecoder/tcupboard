@@ -4,10 +4,10 @@ import { z } from "zod";
 import pool from "../../config/db.js";
 import supabase from "../../lib/supabase.js";
 import authMiddleware from "../../middleware/auth.js";
-import { validateQuery } from "../../middleware/validator.js";
+import { validatePathParams, validateQuery } from "../../middleware/validator.js";
 import { createReplyNotification } from "../notifications.js";
 import type { ApiResponse, PaginatedResponse } from "../../types/apiResponse.js";
-import type { Tables } from "../../types/models.js";
+import type { ForumMessageWithReplyDetails } from "../../types/resources.js";
 
 const router = express.Router();
 
@@ -19,14 +19,18 @@ type PostsIndexSchema = {
     page?: string;
     limit?: string;
 };
-export type ForumMessageWithReplyDetails = Tables<"forum_messages_with_last_reply">;
 
-// TODO: Migrate from /posts to /posts/allWithDetails or similar
+// TODO: Migrate from /posts to /threads/allWithDetails or similar
 router.get(
     "/",
     validateQuery(postsIndexSchema),
     async (
-        req: Request<unknown, ApiResponse<PaginatedResponse<ForumMessageWithReplyDetails[]>>, unknown, PostsIndexSchema>,
+        req: Request<
+            unknown,
+            ApiResponse<PaginatedResponse<ForumMessageWithReplyDetails[]>>,
+            unknown,
+            PostsIndexSchema
+        >,
         res,
     ) => {
         try {
@@ -75,125 +79,55 @@ router.get(
     },
 );
 
-const getThreadById = async (req, res) => {
+const postsRepliesByParentIdSchema = z
+    .object({
+        parentId: z.string(),
+    })
+    .required();
+type PostsRepliesByParentId = z.infer<typeof postsRepliesByParentIdSchema>;
+
+router.get(
+    "/replies/:parentId",
+    validatePathParams(postsRepliesByParentIdSchema),
+    async (req: Request<PostsRepliesByParentId>, res) => {
+        const { parentId } = req.params;
+
+        try {
+            const { data, error } = await supabase.rpc("replies_by_thread", {
+                thread_id_in: parentId,
+            });
+
+            if (error) throw error;
+
+            return res.json(data);
+        } catch (e) {
+            console.error("ERROR [/posts/replies/:parentId]:", e);
+            return res.status(500).json({ message: "internal server error" });
+        }
+    },
+);
+
+router.get("/thread/:threadId", async (req, res) => {
     const { threadId } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 50; // Higher limit for replies
-    const offset = (page - 1) * limit;
 
     try {
         // Get the thread (main post)
         const { data: threadData, error: threadError } = await supabase
             .from("forum_messages")
             .select("*")
-            .eq("id", threadId)
+            .eq("id", parseInt(threadId, 10))
             .single();
 
         if (threadError) {
             return res.status(404).json({ error: "Thread not found" });
         }
 
-        // Get replies with pagination
-        const {
-            data: repliesData,
-            count,
-            error: repliesError,
-        } = await supabase
-            .from("forum_messages")
-            .select("*", { count: "exact" })
-            .eq("parent_id", threadId)
-            .order("created_at", { ascending: true })
-            .range(offset, offset + limit - 1);
-
-        if (repliesError) {
-            return res.status(500).json({ error: "Failed to fetch replies" });
-        }
-
-        console.log("Supabase returned:", threadData, threadError);
-
-        // If these aren't imported posts, fetch user info from PostgreSQL as usual
-        // For imported posts, we'll use the imported_author_name directly
-        const authIds = [
-            ...new Set([
-                ...(!threadData.is_imported && threadData.auth0_id ? [threadData.auth0_id] : []),
-                ...repliesData
-                    .filter((reply) => !reply.is_imported && reply.auth0_id)
-                    .map((reply) => reply.auth0_id),
-            ]),
-        ];
-
-        let userInfo = {};
-        let userResult; // Declare it here so it's in scope
-
-        if (authIds.length > 0) {
-            // Get user info from PostgreSQL for real users
-            // This is your existing code to fetch user avatars, etc.
-            userResult = await pool.query(
-                "SELECT auth0_id, username, avatar_url FROM users WHERE auth0_id = ANY($1)",
-                [authIds],
-            );
-
-            userInfo = userResult.rows.reduce((acc, user) => {
-                acc[user.auth0_id] = user;
-                return acc;
-            }, {});
-        }
-
-        console.log("authIds:", authIds);
-        if (userResult) {
-            console.log("Found userData rows:", userResult.rows);
-        } else {
-            console.log("No userResult because authIds was empty or an error occurred.");
-        }
-
-        // Process the thread data
-        const processedThread = {
-            ...threadData,
-            // For imported posts, use the imported_author_name
-            // For regular posts, use the user info from PostgreSQL
-            author: threadData.is_imported
-                ? threadData.imported_author_name
-                : userInfo[threadData.auth0_id]?.username || "Unknown User",
-            avatar_url: threadData.is_imported
-                ? threadData.imported_avatar_url // <-- use the custom URL for imported
-                : userInfo[threadData.auth0_id]?.avatar_url,
-            date_display: threadData.is_imported
-                ? threadData.imported_date // Use the imported date text directly
-                : new Date(threadData.created_at).toLocaleString(), // Format regular dates
-        };
-
-        // Process the replies
-        const processedReplies = repliesData.map((reply) => ({
-            ...reply,
-            author: reply.is_imported
-                ? reply.imported_author_name
-                : userInfo[reply.auth0_id]?.username || "Unknown User",
-            avatar_url: reply.is_imported
-                ? reply.imported_avatar_url // Show the custom avatar if imported
-                : userInfo[reply.auth0_id]?.avatar_url,
-            date_display: reply.is_imported
-                ? reply.imported_date // Use the imported date text directly
-                : new Date(reply.created_at).toLocaleString(), // Format regular dates
-        }));
-
-        res.json({
-            post: processedThread,
-            replies: processedReplies,
-            pagination: {
-                page,
-                limit,
-                total: count,
-                pages: Math.ceil(count / limit),
-            },
-        });
+        res.json(threadData);
     } catch (error) {
         console.error("Error in getThreadById:", error);
         res.status(500).json({ error: "An unexpected error occurred" });
     }
-};
-
-// Use this updated function in your existing route
-router.get("/thread/:threadId", authMiddleware, getThreadById);
+});
 
 // Create new post
 router.post("/", authMiddleware, async (req, res) => {
