@@ -1,12 +1,13 @@
 # Frontend Rebuild
 
 ## Goals
-- [ ] Migrate frontend styles
-    - [ ] MUI -> CSS / CSS-first component library
-- [ ] Upgrade React Router
-- [ ] Move API logic to Tanstack Query
 - [ ] Move rich-text editor to TipTap or Lexical
-- [ ] Clean up folder hierarchy
+- [x] Migrate frontend styles
+    - [x] MUI -> CSS / CSS-first component library
+- [x] Move to Tanstack Router
+- [x] Move API logic to Tanstack Query
+- [x] Clean up folder hierarchy
+
     ```
     components  - feature-agnostic UI
     config      - application configuration
