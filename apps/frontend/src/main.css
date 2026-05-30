@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-react';
+@import '@skeletonlabs/skeleton/themes/mona';
+
+/* dark mode determined by data attributes rather than prefers-color-scheme */
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
