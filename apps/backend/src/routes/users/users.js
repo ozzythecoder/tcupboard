@@ -5,6 +5,7 @@ import cloudinary from "../../config/cloudinary.js";
 import pool from "../../config/db.js";
 import authMiddleware from "../../middleware/auth.js";
 import { userService } from "../../services/user-service.js";
+import supabase from "../../lib/supabase.js";
 
 const router = express.Router();
 
