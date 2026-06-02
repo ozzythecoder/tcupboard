@@ -12,6 +12,7 @@ export const useAllThreadsOptions = (pagination: Pagination) =>
                     searchParams: queryKey[2],
                 })
                 .json(),
+        staleTime: 60_000,
     });
 
 export const useAllThreadsQuery = (pagination: Pagination) =>
@@ -30,11 +31,12 @@ export const useThreadQuery = (threadId: string) => useQuery(useThreadOptions(th
 
 export const useThreadRepliesOptions = (threadId: string) =>
     queryOptions({
-        queryKey: ['thread', 'replies', threadId] as const,
+        queryKey: ["thread", "replies", threadId] as const,
         queryFn: async ({ queryKey }) => {
-            const id = queryKey[2]
+            const id = queryKey[2];
             return await api.get<ForumMessage[]>(`posts/replies/${id}`).json();
-        }
-    })
+        },
+    });
 
-export const useThreadRepliesQuery = (threadId: string) => useQuery(useThreadRepliesOptions(threadId))
+export const useThreadRepliesQuery = (threadId: string) =>
+    useQuery(useThreadRepliesOptions(threadId));
