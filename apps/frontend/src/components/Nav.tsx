@@ -47,7 +47,7 @@ function LinkElement({ l, location }: { l: (typeof links)[number]; location: str
 export function Navigation() {
     const location = useRouterState({ select: (s) => s.location });
     return (
-        <Nav layout="sidebar" className="min-h-screen max-h-screen sticky top-0 w-full grid grid-rows-[auto_1fr_auto] gap-4">
+        <Nav layout="sidebar" className="w-full min-h-screen grid grid-rows-[auto_1fr_auto] gap-4">
             <Nav.Header className="flex flex-col items-center mx-auto">
                 <Logo />
                 <h1 className="h3 text-2xl text-center tracking-tight">
