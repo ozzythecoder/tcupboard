@@ -1,0 +1,16 @@
+._thread-content {
+    blockquote {
+        padding-inline: 1rem;
+        border-left: 1px solid var(--color-surface-600-400);
+        font-style: italic;
+        color: color-mix(in oklch, var(--color-surface-900-100), transparent 10%);
+    }
+
+    a {
+        color: light-dark(var(--anchor-font-color), var(--anchor-font-color-dark));
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
