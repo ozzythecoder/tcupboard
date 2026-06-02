@@ -2,9 +2,19 @@ import { MenuIcon } from "lucide-react";
 import { useSidebarContext } from "./Sidebar";
 import { Link } from "@tanstack/react-router";
 
-export function TopBar({ title, href }: { title?: string; href?: string }) {
+type Props =
+    | {
+          title: string;
+          href?: string;
+      }
+    | {
+          title?: undefined;
+          href: never;
+      };
+
+export function TopBar({ title, href }: Props) {
     if (href && !title) {
-        throw new Error("A title must be supplied to a TopBar if it configured as a link");
+        throw new Error("A title must be supplied to a TopBar if configured as a link");
     }
 
     return (
