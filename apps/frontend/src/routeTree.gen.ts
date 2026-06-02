@@ -9,20 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ThreadsRouteRouteImport } from './routes/threads/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ThreadsIndexRouteImport } from './routes/threads/index'
 import { Route as ProtectedIndexRouteImport } from './routes/protected/index'
 import { Route as ThreadsIdRouteImport } from './routes/threads/$id'
 
+const ThreadsRouteRoute = ThreadsRouteRouteImport.update({
+  id: '/threads',
+  path: '/threads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ThreadsIndexRoute = ThreadsIndexRouteImport.update({
-  id: '/threads/',
-  path: '/threads/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ThreadsRouteRoute,
 } as any)
 const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   id: '/protected/',
@@ -30,13 +36,14 @@ const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ThreadsIdRoute = ThreadsIdRouteImport.update({
-  id: '/threads/$id',
-  path: '/threads/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ThreadsRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/threads': typeof ThreadsRouteRouteWithChildren
   '/threads/$id': typeof ThreadsIdRoute
   '/protected/': typeof ProtectedIndexRoute
   '/threads/': typeof ThreadsIndexRoute
@@ -50,27 +57,40 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/threads': typeof ThreadsRouteRouteWithChildren
   '/threads/$id': typeof ThreadsIdRoute
   '/protected/': typeof ProtectedIndexRoute
   '/threads/': typeof ThreadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/threads/$id' | '/protected/' | '/threads/'
+  fullPaths: '/' | '/threads' | '/threads/$id' | '/protected/' | '/threads/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/threads/$id' | '/protected' | '/threads'
-  id: '__root__' | '/' | '/threads/$id' | '/protected/' | '/threads/'
+  id:
+    | '__root__'
+    | '/'
+    | '/threads'
+    | '/threads/$id'
+    | '/protected/'
+    | '/threads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ThreadsIdRoute: typeof ThreadsIdRoute
+  ThreadsRouteRoute: typeof ThreadsRouteRouteWithChildren
   ProtectedIndexRoute: typeof ProtectedIndexRoute
-  ThreadsIndexRoute: typeof ThreadsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/threads': {
+      id: '/threads'
+      path: '/threads'
+      fullPath: '/threads'
+      preLoaderRoute: typeof ThreadsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -80,10 +100,10 @@ declare module '@tanstack/react-router' {
     }
     '/threads/': {
       id: '/threads/'
-      path: '/threads'
+      path: '/'
       fullPath: '/threads/'
       preLoaderRoute: typeof ThreadsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ThreadsRouteRoute
     }
     '/protected/': {
       id: '/protected/'
@@ -94,19 +114,32 @@ declare module '@tanstack/react-router' {
     }
     '/threads/$id': {
       id: '/threads/$id'
-      path: '/threads/$id'
+      path: '/$id'
       fullPath: '/threads/$id'
       preLoaderRoute: typeof ThreadsIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ThreadsRouteRoute
     }
   }
 }
 
+interface ThreadsRouteRouteChildren {
+  ThreadsIdRoute: typeof ThreadsIdRoute
+  ThreadsIndexRoute: typeof ThreadsIndexRoute
+}
+
+const ThreadsRouteRouteChildren: ThreadsRouteRouteChildren = {
+  ThreadsIdRoute: ThreadsIdRoute,
+  ThreadsIndexRoute: ThreadsIndexRoute,
+}
+
+const ThreadsRouteRouteWithChildren = ThreadsRouteRoute._addFileChildren(
+  ThreadsRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ThreadsIdRoute: ThreadsIdRoute,
+  ThreadsRouteRoute: ThreadsRouteRouteWithChildren,
   ProtectedIndexRoute: ProtectedIndexRoute,
-  ThreadsIndexRoute: ThreadsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
