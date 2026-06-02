@@ -93,11 +93,29 @@ router.get(
         const { parentId } = req.params;
 
         try {
-            const { data, error } = await supabase.rpc("replies_by_thread", {
-                thread_id_in: parentId,
-            });
+            const { data, error } = await supabase
+                .rpc("replies_by_thread", {
+                    thread_id_in: parentId,
+                })
+                .order("created_at", { ascending: true });
 
             if (error) throw error;
+
+            for (const reply of data) {
+                if (reply.is_imported) {
+                    reply.author = reply.imported_author_name;
+                } else {
+                    // TODO - consolidate into a single query, rather than O(n) queries
+                    const author = await supabase
+                        .from("users")
+                        .select("username")
+                        .eq("auth0_id", reply.auth0_id)
+                        .limit(1)
+                        .single();
+
+                    reply.author = author.data?.username ?? "Unknown User";
+                }
+            }
 
             return res.json(data);
         } catch (e) {
@@ -112,7 +130,7 @@ router.get("/thread/:threadId", async (req, res) => {
 
     try {
         // Get the thread (main post)
-        const { data: threadData, error: threadError } = await supabase
+        const { data, error: threadError } = await supabase
             .from("forum_messages")
             .select("*")
             .eq("id", parseInt(threadId, 10))
@@ -122,7 +140,7 @@ router.get("/thread/:threadId", async (req, res) => {
             return res.status(404).json({ error: "Thread not found" });
         }
 
-        res.json(threadData);
+        res.json(data);
     } catch (error) {
         console.error("Error in getThreadById:", error);
         res.status(500).json({ error: "An unexpected error occurred" });
