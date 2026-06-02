@@ -9,7 +9,7 @@ type Props =
       }
     | {
           title?: undefined;
-          href: never;
+          href?: never;
       };
 
 export function TopBar({ title, href }: Props) {
