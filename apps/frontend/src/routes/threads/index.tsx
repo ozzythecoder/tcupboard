@@ -1,7 +1,7 @@
 import { ThreadList, useAllThreadsQuery } from "#/features/threads";
 import { createFileRoute } from "@tanstack/react-router";
 import type { Pagination } from "#/types/apiResponse";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export const Route = createFileRoute("/threads/")({
     component: RouteComponent,
@@ -35,7 +35,7 @@ function RouteComponent() {
     }
 
     return (
-        <div>
+        <Fragment>
             <ThreadList threads={data.data} />
             {data.pagination.page > 1 && (
                 <button className="btn" type="button" onClick={() => handlePageChange(-1)}>
@@ -50,6 +50,6 @@ function RouteComponent() {
                     Next
                 </button>
             )}
-        </div>
+        </Fragment>
     );
 }

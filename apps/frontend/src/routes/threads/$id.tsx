@@ -1,3 +1,4 @@
+import { TopBar } from "#/components/TopBar";
 import { ThreadView, useThreadOptions, useThreadRepliesOptions } from "#/features/threads";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -26,15 +27,12 @@ function RouteComponent() {
     const replies = useQuery(threadReplyOptions);
 
     if (thread.isPending) {
-        return <div>Loading...</div>
+        return <div>Loading...</div>;
     }
 
     if (thread.error) {
-        return <div>Error</div>
+        return <div>Error</div>;
     }
 
-    
-    return <div>
-        <ThreadView thread={thread.data} replies={replies.data ?? []} />
-    </div>;
+    return <ThreadView thread={thread.data} replies={replies.data ?? []} />;
 }

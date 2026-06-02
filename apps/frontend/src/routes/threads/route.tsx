@@ -1,16 +1,16 @@
 import { TopBar } from "#/components/TopBar";
 import { Gutter } from "#/components/ui/Gutter";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/threads")({
     component: RouteComponent,
 });
 
 function RouteComponent() {
     return (
         <Gutter>
-            <TopBar />
-            <h4 className="h4">Welcome welcome my pretties</h4>
+            <TopBar title="Threads" href="/threads/" />
+            <Outlet />
         </Gutter>
     );
 }
