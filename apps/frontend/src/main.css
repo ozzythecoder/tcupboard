@@ -6,3 +6,10 @@
 
 /* dark mode determined by data attributes rather than prefers-color-scheme */
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+@theme {
+    --breakpoint-xxs: 320px;
+    --breakpoint-xs: 480px;
+
+    --heading-letter-spacing: -0.025em;
+}
