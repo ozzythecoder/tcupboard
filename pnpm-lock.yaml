@@ -289,6 +289,9 @@ importers:
       '@tanstack/router-plugin':
         specifier: ^1.168.11
         version: 1.168.11(@tanstack/react-router@1.170.8(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.3))(webpack@5.105.0(esbuild@0.28.0))
+      '@types/draft-js':
+        specifier: ^0.11.20
+        version: 0.11.20
       '@types/react':
         specifier: ^19.2.15
         version: 19.2.15
@@ -2151,6 +2154,9 @@ packages:
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
+
+  '@types/draft-js@0.11.20':
+    resolution: {integrity: sha512-bZHtHxXnCu4wlUXlDWrIlJSG2LJ6wcycSWoxcTCcGd0cVOm35p0vh87qpIPzGK2NALMMvJhQXdS330iYB3iGlw==}
 
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
@@ -7482,6 +7488,11 @@ snapshots:
       '@types/node': 25.2.1
 
   '@types/deep-eql@4.0.2': {}
+
+  '@types/draft-js@0.11.20':
+    dependencies:
+      '@types/react': 19.2.15
+      immutable: 3.7.6
 
   '@types/eslint-scope@3.7.7':
     dependencies:
