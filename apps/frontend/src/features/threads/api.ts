@@ -1,7 +1,8 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { mutationOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "#/config/api";
 import type { ForumMessage, ForumMessageWithReplyDetails } from "#/types/resources";
 import type { Pagination, PaginatedResponse } from "#/types/apiResponse";
+import { JSONContent } from "@tiptap/react";
 
 export const useAllThreadsOptions = (pagination: Pagination) =>
     queryOptions({
@@ -40,3 +41,18 @@ export const useThreadRepliesOptions = (threadId: string) =>
 
 export const useThreadRepliesQuery = (threadId: string) =>
     useQuery(useThreadRepliesOptions(threadId));
+
+export const useNewReplyOptions = mutationOptions({
+    mutationKey: ["threads"],
+    mutationFn: async (json: JSONContent) => {
+        return await api.post(`posts`, { body: JSON.stringify(json) });
+    },
+    onSuccess: (data, variables, result, ctx) => {
+        console.log("nice");
+    },
+    onError: (error) => {
+        console.log("uh oh", error);
+    },
+});
+
+export const useNewReplyMutation = () => useMutation(useNewReplyOptions);
