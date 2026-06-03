@@ -7,6 +7,8 @@ import { ArrowLeft } from "lucide-react";
 import { utils } from "#/utils/utils";
 import { Gutter } from "#/components/ui/Gutter";
 import { ImageGrid } from "./ImageGrid";
+import { ScrollToTopButton } from "#/components/ui/ScrollToTop";
+import { Editor } from "./Editor";
 
 function ThreadEntry({ message }: { message: ForumMessage }) {
     return (
@@ -34,18 +36,17 @@ function ThreadEntry({ message }: { message: ForumMessage }) {
 }
 
 export function ThreadView({ thread, replies }: { thread: ForumMessage; replies: ForumMessage[] }) {
-    console.log(thread.images);
     return (
         <Gutter>
-            <main className="mb-16">
-                <div className="flex flex-row items-center justify-between">
+            <main>
+                <div className="flex flex-row items-baseline justify-between">
                     <h2 className="h4 mb-4">{thread.title}</h2>
                     <Link
                         to="/threads"
                         from="/threads/$id"
                         className="text-sm anchor flex flex-row gap-2 items-center hover:text-primary-900-100"
                     >
-                        <ArrowLeft className="inline size-4" /> <span>Back to Threads</span>
+                        <ArrowLeft className="inline size-4" /> <span>Back</span>
                     </Link>
                 </div>
                 <ul className="flex flex-col gap-4">
@@ -54,6 +55,10 @@ export function ThreadView({ thread, replies }: { thread: ForumMessage; replies:
                         <ThreadEntry key={r.id} message={r} />
                     ))}
                 </ul>
+                <Editor />
+                <div className="grid place-items-center mt-4">
+                    <ScrollToTopButton />
+                </div>
             </main>
         </Gutter>
     );

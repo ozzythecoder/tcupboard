@@ -18,7 +18,7 @@ function RootComponent() {
             <div id="modal-root" className="relative" />
             <div className="flex flex-row relative">
                 <Sidebar />
-                <div id="content" className="flex-5 md:flex-4 bg-surface-200-800 px-3">
+                <div id="content" className="flex-5 md:flex-4 px-3 min-h-screen max-h-screen">
                     <Outlet />
                 </div>
             </div>
