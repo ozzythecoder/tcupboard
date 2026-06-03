@@ -1,7 +1,7 @@
 import { ThreadList, useAllThreadsQuery } from "#/features/threads";
 import { createFileRoute } from "@tanstack/react-router";
 import type { Pagination } from "#/types/apiResponse";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/threads/")({
     component: RouteComponent,
@@ -35,21 +35,35 @@ function RouteComponent() {
     }
 
     return (
-        <Fragment>
+        <div className="flex flex-col justify-between pb-12">
             <ThreadList threads={data.data} />
-            {data.pagination.page > 1 && (
-                <button className="btn" type="button" onClick={() => handlePageChange(-1)}>
-                    Previous
-                </button>
-            )}
-            <span>
-                Page {data.pagination.page} of {data.pagination.pages}
-            </span>
-            {data.pagination.page < data.pagination.pages && (
-                <button className="btn" type="button" onClick={() => handlePageChange(1)}>
-                    Next
-                </button>
-            )}
-        </Fragment>
+            <div className="grid grid-cols-3 place-items-center py-4 mx-auto w-full max-w-[60ch]">
+                {data.pagination.page > 1 ? (
+                    <button
+                        className="btn preset-outlined"
+                        type="button"
+                        onClick={() => handlePageChange(-1)}
+                    >
+                        Previous
+                    </button>
+                ) : (
+                    <div />
+                )}
+                <span>
+                    Page {data.pagination.page} of {data.pagination.pages}
+                </span>
+                {data.pagination.page < data.pagination.pages ? (
+                    <button
+                        className="btn preset-outlined"
+                        type="button"
+                        onClick={() => handlePageChange(1)}
+                    >
+                        Next
+                    </button>
+                ) : (
+                    <div />
+                )}
+            </div>
+        </div>
     );
 }
