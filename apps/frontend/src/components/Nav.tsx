@@ -5,9 +5,10 @@ import {
     type LinkProps,
     type RegisteredRouter,
 } from "@tanstack/react-router";
-import { Home, Lock, MessagesSquare, type LucideIcon } from "lucide-react";
+import { Home, Lock, MessagesSquare, X, type LucideIcon } from "lucide-react";
 import { Logo } from "./Logo";
 import { ThemeSwitch } from "./ui/ThemeSwitch";
+import { ToggleSidebarButton } from "./Sidebar";
 
 const links = [
     {
@@ -23,8 +24,8 @@ const links = [
     {
         to: "/protected",
         text: "Protected",
-        Icon: Lock
-    }
+        Icon: Lock,
+    },
 ] as const satisfies ReadonlyArray<
     LinkProps<RegisteredRouter> & { text: string; Icon?: LucideIcon }
 >;
@@ -49,6 +50,9 @@ export function Navigation() {
     return (
         <Nav layout="sidebar" className="w-full min-h-screen grid grid-rows-[auto_1fr_auto] gap-4">
             <Nav.Header className="flex flex-col items-center mx-auto">
+                <div className="w-full pl-1 mt-1">
+                    <ToggleSidebarButton icon={X} />
+                </div>
                 <Logo />
                 <h1 className="h3 text-2xl text-center tracking-tight">
                     <span className="text-secondary-800-200">TCUP</span>board
