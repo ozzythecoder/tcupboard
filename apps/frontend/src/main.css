@@ -13,3 +13,9 @@
 
     --heading-letter-spacing: -0.025em;
 }
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+}
