@@ -1,6 +1,9 @@
 import { convertFromRaw, type RawDraftContentState } from "draft-js";
 import htmlToJsx, { type HTMLReactParserOptions, Element } from "html-react-parser";
+import type { JSONContent } from "@tiptap/react";
+import { renderToReactElement } from "@tiptap/static-renderer";
 import * as draftJsHtml from "draft-js-export-html";
+import StarterKit from "@tiptap/starter-kit";
 
 const htmlToJsxOptions: HTMLReactParserOptions = {
     replace: (node) => {
@@ -45,6 +48,9 @@ function replaceQuotes(html: string) {
     return html;
 }
 
-export function TipTapContent() {}
+export function TipTapContent({ doc }: { doc: { content: JSONContent[] } }) {
+    
+    return renderToReactElement({ content: doc, extensions: [StarterKit] });
+}
 
 export function convertToTipTap() {}
