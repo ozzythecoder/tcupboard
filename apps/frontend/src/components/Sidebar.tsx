@@ -1,7 +1,7 @@
-import { createContext, use, useContext, useEffect, useRef, useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import type { Dispatch, JSX, SetStateAction } from "react";
 import { Navigation } from "./Nav";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, type LucideIcon } from "lucide-react";
 
 interface ISidebarContext {
     open: boolean;
@@ -43,12 +43,11 @@ export function Sidebar() {
             className="fixed md:sticky z-10 transition-all min-h-screen max-h-screen max-w-60 duration-200 ease-in-out top-0 -left-50 data-[open=true]:left-0 md:flex-1 border-r border-r-surface-300-700 drop-shadow-md"
         >
             <Navigation />
-            {/* user data */}
         </aside>
     );
 }
 
-export function ToggleSidebarButton() {
+export function ToggleSidebarButton({ icon: ToggleIcon = MenuIcon }: { icon?: LucideIcon }) {
     const { toggleOpen } = useSidebarContext();
 
     return (
@@ -64,7 +63,7 @@ export function ToggleSidebarButton() {
             <label className="sr-only" htmlFor="open-sidebar">
                 Open Sidebar
             </label>
-            <MenuIcon />
+            <ToggleIcon />
         </button>
     );
 }
