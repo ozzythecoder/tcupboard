@@ -7,7 +7,7 @@
     },
     "files": {
         "ignoreUnknown": false,
-        "includes": ["apps/**/*.{js,ts,jsx,tsx}", "!!**/{dist,build}", "!**/routeTree.gen.ts"]
+        "includes": ["apps/**/*.{js,ts,jsx,tsx}", "!!**/{dist,build}", "!**/routeTree.gen.ts", "!!**/src.bak/*"]
     },
     "formatter": {
         "enabled": true,
