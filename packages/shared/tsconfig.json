@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "verbatimModuleSyntax": true,
+        "noImplicitAny": true,
+        "composite": true
+    }
+}
