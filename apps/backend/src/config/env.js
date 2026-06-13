@@ -14,8 +14,7 @@ export const env = {
         apiSecret: process.env.CLOUDINARY_API_SECRET,
     },
     db: {
-        connectionString: process.env.DB_URL,
-        schema: process.env.DB_SCHEMA,
+        connectionString: process.env.NEON_URL,
     },
     supabase: {
         url: process.env.SUPABASE_URL,
