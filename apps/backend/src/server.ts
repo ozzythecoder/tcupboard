@@ -1,11 +1,12 @@
 import compression from "compression";
 import cors from "cors";
 import express from "express";
+import { ErrorHandlerMiddleware } from "./middleware/error-handler.js";
+import { registerThreadsRoute } from "./modules/threads/index.js";
 import scrapersRouter from "./routes/admin/run-scrapers.js";
 import adminShowsRouter from "./routes/admin/shows-admin.js";
 import authRoutes from "./routes/auth.js";
 import bandsRouter from "./routes/bands.js";
-import postsRouter from "./routes/chat/posts.js";
 import readStatusRouter from "./routes/chat/read-status.js";
 import contactRouter from "./routes/contact.js";
 import directMessagesRouter from "./routes/direct-messages.js";
@@ -30,6 +31,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(compression());
+app.use(ErrorHandlerMiddleware)
 
 // 5) Define allowed origins per environment
 const allowedOriginsMap = {
@@ -72,33 +74,39 @@ app.use((req, res, next) => {
     next();
 });
 
-// 10) Mount your routes (make sure these come after the CORS and body-parser middleware)
-app.use("/api/venues", venuesRoutes);
-app.use("/api/bands", bandsRouter);
-app.use("/api/shows", showsRouter);
-app.use("/api/people", peopleRouter);
-app.use("/api/users", usersRouter);
-app.use("/api/favorites", favoritesRouter);
-app.use("/api/sessionmusicians", sessionMusiciansRouter);
-app.use("/api/auth", authRoutes);
-app.use("/api/posts", postsRouter);
-app.use("/api/tags", tagsRouter);
-app.use("/api/pledges", pledgesRouter);
-app.use("/api/flyering", flyeringRouter);
-app.use("/api/images", imagesRouter);
-app.use("/api/notifications", notificationsRouter);
-app.use("/api/updates", updatesRouter);
-app.use("/api/contact", contactRouter);
-app.use("/api/upload", uploadRouter);
-app.use("/api/read-status", readStatusRouter);
-app.use("/api/direct-messages", directMessagesRouter);
-app.use("/api/scrapers", scrapersRouter);
-app.use("/api/sseroutes", sseRouter);
-app.use("/api/adminshows", adminShowsRouter);
+const apiRouter = express.Router()
 
-app.get("/api/bands/simple-test", (req, res) => {
+// 10) Mount your routes (make sure these come after the CORS and body-parser middleware)
+apiRouter.use("/venues", venuesRoutes);
+apiRouter.use("/bands", bandsRouter);
+apiRouter.use("/shows", showsRouter);
+apiRouter.use("/people", peopleRouter);
+apiRouter.use("/users", usersRouter);
+apiRouter.use("/favorites", favoritesRouter);
+apiRouter.use("/sessionmusicians", sessionMusiciansRouter);
+apiRouter.use("/auth", authRoutes);
+
+registerThreadsRoute(apiRouter)
+
+apiRouter.use("/tags", tagsRouter);
+apiRouter.use("/pledges", pledgesRouter);
+apiRouter.use("/flyering", flyeringRouter);
+apiRouter.use("/images", imagesRouter);
+apiRouter.use("/notifications", notificationsRouter);
+apiRouter.use("/updates", updatesRouter);
+apiRouter.use("/contact", contactRouter);
+apiRouter.use("/upload", uploadRouter);
+apiRouter.use("/read-status", readStatusRouter);
+apiRouter.use("/direct-messages", directMessagesRouter);
+apiRouter.use("/scrapers", scrapersRouter);
+apiRouter.use("/sseroutes", sseRouter);
+apiRouter.use("/adminshows", adminShowsRouter);
+
+apiRouter.get("/api/bands/simple-test", (req, res) => {
     res.json({ message: "Simple test route works" });
 });
+
+app.use('/api', apiRouter)
 
 // Print out routes (for debugging)
 app._router.stack.forEach((r) => {
