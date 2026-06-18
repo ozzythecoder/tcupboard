@@ -210,6 +210,7 @@ const transform_config = [
         shape_override: (row) => ({
             ...row,
             auth0Id: row.auth0_id,
+            avatarUrl: row.avatar_url,
             createdAt: row.created_at,
         }),
     }),
