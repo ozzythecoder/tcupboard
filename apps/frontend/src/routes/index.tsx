@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "#/components/ErrorBoundary";
 import { TopBar } from "#/components/TopBar";
 import { Gutter } from "#/components/ui/Gutter";
 import { createFileRoute } from "@tanstack/react-router";
