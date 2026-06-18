@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { MenuIcon } from "lucide-react";
 import { useSidebarContext } from "./Sidebar";
-import { Link } from "@tanstack/react-router";
 
 type Props =
     | {
@@ -21,17 +21,21 @@ export function TopBar({ title, href }: Props) {
         <div className="grid grid-cols-3 md:flex items-center gap-2 px-2 sm:px-0 py-4">
             <SidebarToggle />
 
-            <Link to="/">
-                <h1 className="h6 xs:text-lg tracking-tight text-center block md:hidden text-primary-800-200 hover:text-primary-800-200/80">
+            <Link to="/" className="block md:hidden">
+                <h1 className="h6 xs:text-lg tracking-tight text-center  text-primary-800-200 hover:text-primary-800-200/80">
                     TCUPboard
                 </h1>
             </Link>
             {href ? (
-                    <h1 className="text-right">
-                        <Link to={href} from="/" className="h1 text-2xl sm:text-3xl md:text-4xl tracking-tight md:text-left hover:text-surface-800-200">
+                <h1 className="text-right text-shadow-hard-surface-contrast-800-200">
+                    <Link
+                        to={href}
+                        from="/"
+                        className="h1 text-2xl sm:text-3xl md:text-4xl tracking-tight md:text-left hover:text-surface-800-200 text-shadow-hard"
+                    >
                         {title ?? " "}
-                        </Link>
-                    </h1>
+                    </Link>
+                </h1>
             ) : (
                 <h1 className="h1 text-2xl sm:text-3xl md:text-4xl tracking-tight text-right md:text-left">
                     {title ?? " "}
