@@ -18,7 +18,7 @@
         "noFallthroughCasesInSwitch": true,
         "jsx": "preserve",
         "jsxImportSource": "react",
-        "types": ["vite/client"],
+        "types": ["vite/client", "jsx/runtime"],
         "rootDirs": [".", "./.react-router/types"],
         "paths": {
             "#/*": ["./src/*"]
@@ -33,4 +33,9 @@
         ".react-router/types/**/*",
         "app"
     ],
+    "references": [
+        {
+            "path": "../../packages/shared"
+        }
+    ]
 }
