@@ -1,36 +1,38 @@
-// middleware/auth.js
-
-import dotenv from "dotenv";
+import { db, s } from "@/db/index.js";
+import { UserGateway } from "@/modules/users/users.gateway.js";
+import { UserService } from "@/modules/users/users.service.js";
 import { auth } from "express-oauth2-jwt-bearer";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // Create the JWT validator
 const checkJwt = auth({
     audience: process.env.AUTH0_API_IDENTIFIER,
-    issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+    issuerBaseURL: process.env.AUTH0_DOMAIN,
     tokenSigningAlg: "RS256",
 });
 
-// Our custom middleware that uses checkJwt but preserves req.user
-const authMiddleware = (req, res, next) => {
-    // First run the official validator
-    checkJwt(req, res, (err) => {
+const userGateway = new UserGateway(db, s)
+const userService = new UserService(userGateway)
+
+/**
+ *  Simple middleware to ensure that request is authenticated.
+ */
+const authGuard = (req, res, next) => {
+    checkJwt(req, res, async (err) => {
         if (err) {
             console.warn("Authentication failed.", err);
-            return res.status(401).json({ error: "Authentication failed", details: err.message });
+            return res.status(401).json({ error: "Unauthorized", details: err.message });
         }
 
         try {
-            // After validation succeeds, copy the validated data to req.user
-            // This preserves compatibility with your existing code
+            const dbUser = await userService.getOneByAuth0Id(req.auth.payload.sub)
+            if (!dbUser) {
+                return res.status(401).json({ error: "Unauthorized", details: "User does not exist" });
+            }
             req.user = {
                 ...req.auth.payload,
+                id: dbUser.id,
                 sub: req.auth.payload.sub,
-                roles: req.auth.payload["https://tcupboard.org/roles"] || [],
+                roles: (req.auth.payload["https://tcupboard.org/roles"] as string[]) || [],
             };
 
             next();
@@ -72,4 +74,4 @@ export const checkRole = (requiredRoles) => {
     };
 };
 
-export default authMiddleware;
+export default authGuard;
