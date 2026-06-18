@@ -3,8 +3,10 @@
     "strict": true,
     "strictNullChecks": true,
     "verbatimModuleSyntax": true,
+    "experimentalDecorators": true,
 
     "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "target": "ESNext",
 
     "outDir": "dist",
@@ -12,6 +14,15 @@
     "allowJs": true,
     "checkJs": true,
     "noImplicitAny": false,
+
+    "paths": {
+        "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+      {
+          "path": "../../packages/shared"
+      }
+  ]
 }
