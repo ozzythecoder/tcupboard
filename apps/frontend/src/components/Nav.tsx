@@ -5,10 +5,22 @@ import {
     type LinkProps,
     type RegisteredRouter,
 } from "@tanstack/react-router";
-import { Home, Lock, MessagesSquare, X, type LucideIcon } from "lucide-react";
+import {
+    Home,
+    Lock,
+    User2Icon,
+    MessageCirclePlus,
+    MessagesSquare,
+    X,
+    type LucideIcon,
+} from "lucide-react";
+import { Fragment } from "react/jsx-runtime";
+import { useAuth0Context } from "#/config/auth";
+import { LogoutButton } from "./auth/LogoutButton";
+import { MiniProfile } from "./auth/MiniProfile";
 import { Logo } from "./Logo";
-import { ThemeSwitch } from "./ui/ThemeSwitch";
 import { ToggleSidebarButton } from "./Sidebar";
+import { ThemeSwitch } from "./ui/ThemeSwitch";
 
 const links = [
     {
@@ -22,9 +34,19 @@ const links = [
         Icon: MessagesSquare,
     },
     {
+        to: "/threads/create",
+        text: "Create",
+        Icon: MessageCirclePlus,
+    },
+    {
         to: "/protected",
         text: "Protected",
         Icon: Lock,
+    },
+    {
+        to: "/profile/me",
+        text: "My Profile",
+        Icon: User2Icon,
     },
 ] as const satisfies ReadonlyArray<
     LinkProps<RegisteredRouter> & { text: string; Icon?: LucideIcon }
@@ -36,7 +58,8 @@ function LinkElement({ l, location }: { l: (typeof links)[number]; location: str
             <Link
                 data-active={location === l.to}
                 to={l.to}
-                className="anchor w-full py-2 px-4 rounded-md flex flex-row items-center data-[active=true]:bg-primary-100-900 group-hover:underline text-surface-900-100 data-[active=true]:text-primary-700-300"
+                from="/"
+                className="_navlink anchor w-full py-2 px-4 rounded-md flex flex-row items-center data-[active=true]:bg-primary-100-900 group-hover:underline text-surface-900-100 data-[active=true]:text-primary-700-300"
             >
                 <span className="grow">{l.text}</span>
                 {l.Icon && <l.Icon className="inline shrink" size={18} />}
@@ -54,7 +77,7 @@ export function Navigation() {
                     <ToggleSidebarButton icon={X} />
                 </div>
                 <Logo />
-                <h1 className="h3 text-2xl text-center tracking-tight">
+                <h1 className="h3 text-2xl text-center tracking-tight text-shadow-hard-surface-contrast-700-300">
                     <span className="text-secondary-800-200">TCUP</span>board
                 </h1>
             </Nav.Header>
@@ -69,10 +92,20 @@ export function Navigation() {
                 </Nav.Menu>
             </Nav.Content>
             <Nav.Footer>
-                {/*user data*/}
                 <ThemeSwitch />
-                <div className="rounded-full min-w-6 min-h-6 bg-black"></div>
+                <Footer />
             </Nav.Footer>
         </Nav>
     );
+}
+
+function Footer() {
+    const { user, isAuthenticated } = useAuth0Context();
+
+    return isAuthenticated ? (
+        <Fragment>
+            <MiniProfile user={user} />
+            <LogoutButton />
+        </Fragment>
+    ) : null;
 }
