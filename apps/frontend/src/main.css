@@ -18,4 +18,42 @@
     html {
         scroll-behavior: smooth;
     }
+
+    input {
+        outline-color: var(--color-surface-200-800);
+
+        &:focus {
+            outline-color: var(--color-surface-700-300)
+        }
+    }
+
+    button:focus:not(#content), a:focus:not(#content) {
+        outline: 2px solid var(--color-surface-900-100);
+        border-radius: 6px;
+        transition: border-radius .3s, outline-color .7s;
+    }
+
+    ._emoji {
+        font-variant-emoji: emoji;
+    }
+
+    #content {
+        --mesh-color: oklch(from var(--color-secondary-800) 0.4 c h );
+        background-color: light-dark( var(--color-primary-100), var(--color-primary-900) );
+        background-image:
+            radial-gradient(at 0% 30%, light-dark(var(--color-secondary-200), var(--mesh-color) ) 0px, transparent 50%),
+            linear-gradient(90deg, var(--color-surface-200-800) 0%, transparent 100%)
+        ;
+        background-attachment: fixed;
+    }
+}
+
+@utility preset-glass-* {
+    background: color-mix(in oklab, var(--color-surface-50-950) 60%, transparent);
+    box-shadow: 0 0 30px color-mix(in oklab, --value(--color-*) 40%, transparent) inset;
+    backdrop-filter: blur(16px);
+}
+
+@utility text-shadow-hard-* {
+    text-shadow: 4px 4px 0px --value(--color-*);
 }
