@@ -1,11 +1,29 @@
 import { Auth0Provider, type Auth0ProviderOptions, useAuth0 } from "@auth0/auth0-react";
+import { redirect } from "@tanstack/react-router";
 import { createContext, use } from "react";
+import { api, getProtectedApi } from "./api";
+
+export interface Auth0User {
+    id: string;
+    name: string;
+    nickname: string;
+    picture: string;
+    email: string;
+    email_verified: boolean;
+    updated_at: string;
+    sub: string;
+    "https://tcupboard.org/username": string;
+    "https://tcupboard.org/roles": Array<unknown>;
+}
 
 export interface Auth0ContextType {
     isAuthenticated: boolean;
-    user: Record<string, string | object>;
+    user: Auth0User;
     login: () => void;
     logout: () => void;
+    guard: () => void;
+    getToken: () => Promise<string>;
+    getId: () => Promise<string>;
     isLoading: boolean;
 }
 
@@ -16,7 +34,7 @@ const auth0options: Auth0ProviderOptions = {
     domain: import.meta.env.VITE_AUTH0_DOMAIN,
     authorizationParams: {
         scope: "openid profile email offline_access",
-        redirect_uri: `${import.meta.env.VITE_WEB_URL}/callback`,
+        redirect_uri: `${import.meta.env.VITE_WEB_URL}/threads`,
         audience: import.meta.env.VITE_AUTH0_API_IDENTIFIER,
     },
     cacheLocation: "localstorage",
@@ -39,17 +57,34 @@ export function Auth0Wrapper({ children }: { children: React.ReactNode }) {
 }
 
 function Auth0ContextProvider({ children }: { children: React.ReactNode }) {
-    const { isAuthenticated, user, loginWithRedirect, logout, isLoading } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, user, loginWithRedirect, logout, isLoading } =
+        useAuth0();
 
     const context = {
         isAuthenticated,
         user,
-        login: loginWithRedirect,
+        getToken: getAccessTokenSilently,
+        getId: async () => {
+            if (!isAuthenticated) return;
+            const api = getProtectedApi(await getAccessTokenSilently());
+            return api.get<Auth0User>(`users/byAuthId?auth0Id=${user?.sub}`).json().then((it) => it.id);
+        },
+        login: () =>
+            loginWithRedirect({
+                authorizationParams: {
+                    prompt: "login",
+                },
+            }),
         logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
+        guard: () => {
+            if (!isAuthenticated) {
+                throw redirect({ to: "/login" });
+            }
+        },
         isLoading,
     };
 
-    return <Auth0Context.Provider value={context}>{children}</Auth0Context.Provider>;
+    return <Auth0Context value={context}>{children}</Auth0Context>;
 }
 
 export function useAuth0Context() {
