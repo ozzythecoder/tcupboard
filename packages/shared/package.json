@@ -1,10 +1,20 @@
 {
     "name": "@repo/shared",
     "type": "module",
+    "scripts": {
+        "pull": "drizzle-kit pull && rm -rf drizzle/meta drizzle/*.sql"
+    },
     "exports": {
-        ".": "./types/index.ts"
+        ".": "./types/index.ts",
+        "./server": "./drizzle/index.ts"
     },
     "dependencies": {
         "zod": "^4.4.3"
+    },
+    "devDependencies": {
+        "@dotenvx/dotenvx": "^1.71.2",
+        "@types/node": "^25.9.3",
+        "drizzle-kit": "^0.31.10",
+        "drizzle-orm": "^0.45.2"
     }
 }

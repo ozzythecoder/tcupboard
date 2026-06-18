@@ -1,10 +1,15 @@
 {
     "compilerOptions": {
         "strict": true,
+        "strictNullChecks": true,
         "module": "NodeNext",
         "moduleResolution": "nodenext",
         "verbatimModuleSyntax": true,
         "noImplicitAny": true,
-        "composite": true
-    }
+        "composite": true,
+        "paths": {
+            "@drizzle/*": ["./drizzle/*"],
+            "@/*": ["./types/*"]
+        }
+    },
 }
