@@ -9,15 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ThreadsRouteRouteImport } from './routes/threads/route'
+import { Route as ProfileRouteRouteImport } from './routes/profile/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ThreadsIndexRouteImport } from './routes/threads/index'
 import { Route as ProtectedIndexRouteImport } from './routes/protected/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as ThreadsCreateRouteImport } from './routes/threads/create'
 import { Route as ThreadsIdRouteImport } from './routes/threads/$id'
+import { Route as ProfileMeRouteImport } from './routes/profile/me'
+import { Route as ProfileIdRouteImport } from './routes/profile/$id'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ThreadsRouteRoute = ThreadsRouteRouteImport.update({
   id: '/threads',
   path: '/threads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRouteRoute = ProfileRouteRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -35,60 +51,139 @@ const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   path: '/protected/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
+const ThreadsCreateRoute = ThreadsCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => ThreadsRouteRoute,
+} as any)
 const ThreadsIdRoute = ThreadsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ThreadsRouteRoute,
 } as any)
+const ProfileMeRoute = ProfileMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
+const ProfileIdRoute = ProfileIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/threads': typeof ThreadsRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/profile/me': typeof ProfileMeRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/threads/create': typeof ThreadsCreateRoute
+  '/profile/': typeof ProfileIndexRoute
   '/protected/': typeof ProtectedIndexRoute
   '/threads/': typeof ThreadsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/profile/me': typeof ProfileMeRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/threads/create': typeof ThreadsCreateRoute
+  '/profile': typeof ProfileIndexRoute
   '/protected': typeof ProtectedIndexRoute
   '/threads': typeof ThreadsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/threads': typeof ThreadsRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/profile/me': typeof ProfileMeRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/threads/create': typeof ThreadsCreateRoute
+  '/profile/': typeof ProfileIndexRoute
   '/protected/': typeof ProtectedIndexRoute
   '/threads/': typeof ThreadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/threads' | '/threads/$id' | '/protected/' | '/threads/'
+  fullPaths:
+    | '/'
+    | '/profile'
+    | '/threads'
+    | '/login'
+    | '/profile/$id'
+    | '/profile/me'
+    | '/threads/$id'
+    | '/threads/create'
+    | '/profile/'
+    | '/protected/'
+    | '/threads/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/threads/$id' | '/protected' | '/threads'
+  to:
+    | '/'
+    | '/login'
+    | '/profile/$id'
+    | '/profile/me'
+    | '/threads/$id'
+    | '/threads/create'
+    | '/profile'
+    | '/protected'
+    | '/threads'
   id:
     | '__root__'
     | '/'
+    | '/profile'
     | '/threads'
+    | '/login'
+    | '/profile/$id'
+    | '/profile/me'
     | '/threads/$id'
+    | '/threads/create'
+    | '/profile/'
     | '/protected/'
     | '/threads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
   ThreadsRouteRoute: typeof ThreadsRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/threads': {
       id: '/threads'
       path: '/threads'
       fullPath: '/threads'
       preLoaderRoute: typeof ThreadsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -112,6 +207,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile/': {
+      id: '/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
+    '/threads/create': {
+      id: '/threads/create'
+      path: '/create'
+      fullPath: '/threads/create'
+      preLoaderRoute: typeof ThreadsCreateRouteImport
+      parentRoute: typeof ThreadsRouteRoute
+    }
     '/threads/$id': {
       id: '/threads/$id'
       path: '/$id'
@@ -119,16 +228,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThreadsIdRouteImport
       parentRoute: typeof ThreadsRouteRoute
     }
+    '/profile/me': {
+      id: '/profile/me'
+      path: '/me'
+      fullPath: '/profile/me'
+      preLoaderRoute: typeof ProfileMeRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
+    '/profile/$id': {
+      id: '/profile/$id'
+      path: '/$id'
+      fullPath: '/profile/$id'
+      preLoaderRoute: typeof ProfileIdRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
   }
 }
 
+interface ProfileRouteRouteChildren {
+  ProfileIdRoute: typeof ProfileIdRoute
+  ProfileMeRoute: typeof ProfileMeRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+}
+
+const ProfileRouteRouteChildren: ProfileRouteRouteChildren = {
+  ProfileIdRoute: ProfileIdRoute,
+  ProfileMeRoute: ProfileMeRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+}
+
+const ProfileRouteRouteWithChildren = ProfileRouteRoute._addFileChildren(
+  ProfileRouteRouteChildren,
+)
+
 interface ThreadsRouteRouteChildren {
   ThreadsIdRoute: typeof ThreadsIdRoute
+  ThreadsCreateRoute: typeof ThreadsCreateRoute
   ThreadsIndexRoute: typeof ThreadsIndexRoute
 }
 
 const ThreadsRouteRouteChildren: ThreadsRouteRouteChildren = {
   ThreadsIdRoute: ThreadsIdRoute,
+  ThreadsCreateRoute: ThreadsCreateRoute,
   ThreadsIndexRoute: ThreadsIndexRoute,
 }
 
@@ -138,7 +279,9 @@ const ThreadsRouteRouteWithChildren = ThreadsRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProfileRouteRoute: ProfileRouteRouteWithChildren,
   ThreadsRouteRoute: ThreadsRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
 }
 export const routeTree = rootRouteImport
