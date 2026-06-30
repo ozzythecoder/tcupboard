@@ -7,81 +7,53 @@ on:
     workflow_dispatch:
 
 jobs:
-    deploy:
+    build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-            DB_URL: ${{ secrets.DB_URL }}
-            VITE_API_URL: ${{ secrets.DEV_API_URL }}
-            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-            VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-            SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-            VITE_SUPABASE_ANON_KEY: ${{ secrets.DEV_SUPABASE_ANON_KEY }}
-            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-            VITE_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-            AUTH0_API_IDENTIFIER: ${{ secrets.AUTH0_API_IDENTIFIER }}
-            VITE_AUTH0_API_IDENTIFIER: ${{ secrets.AUTH0_API_IDENTIFIER }}
-            VITE_AUTH0_CLIENT_ID: ${{ secrets.DEV_AUTH0_CLIENT_ID }}
-            VITE_AUTH0_REDIRECT_URI: "https://dev.tcupboard.org"
-            CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-            CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-            CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-            SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_SECRET }}
         steps:
             - uses: "actions/checkout@v4"
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+
+            - name: Write env file
+              run: echo "${{ secrets.STAGING_WEB_ENV }}" > apps/web/.env
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
+            - name: Log in to DigitalOcean registry
+              uses: docker/login-action@v4
               with:
-                  node-version: "20"
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v2
+                  registry: registry.digitalocean.com
+                  username: ${{ vars.DIGITALOCEAN_USERNAME }}
+                  password: ${{ secrets.DOCR_TOKEN }}
+
+            - name: Build and push backend
+              uses: docker/build-push-action@v7
               with:
-                  version: "10.25.0"
-            - name: Install dependencies
-              run: pnpm install
+                  context: .
+                  target: api-runner
+                  platforms: linux/amd64
+                  push: true
+                  tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
+                  cache-from: type=registry,scope=backend
+                  cache-to: type=registry,scope=backend,mode=max
 
-            - name: Build frontend
-              run: pnpm --filter web build
+            - name: Build and push caddy
+              uses: docker/build-push-action@v7
+              with:
+                  context: .
+                  target: caddy
+                  platforms: linux/amd64
+                  push: true
+                  tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:staging
+                  cache-from: type=registry,scope=caddy
+                  cache-to: type=registry,scope=caddy,mode=max
 
-            - name: Prepare backend for deployment
-              run: |
-                  pnpm --filter backend deploy --prod deploy-backend
-
-                  # .env file with runtime secrets
-                  cat > deploy-backend/.env << EOF
-                  AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }}
-                  AUTH0_API_IDENTIFIER=${{ secrets.AUTH0_API_IDENTIFIER }}
-                  CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
-                  CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
-                  CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-                  DB_URL=${{ secrets.DB_URL }}
-                  DB_SSL_CERT=${{ secrets.DB_SSL_CERT }}
-                  DB_SCHEMA=production
-                  SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
-                  SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-                  SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
-                  NODE_ENV=production
-                  PORT=4002
-                  EOF
-
-            - name: Setup SSH
-              run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/deploy_key
-                  chmod 600 ~/.ssh/deploy_key
-
-            - name: Deploy to DigitalOcean
-              run: |
-                  rsync -azvrO --delete \
-                      -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-                      apps/frontend/build \
-                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/frontend/
-
-                  rsync -azvrO --delete \
-                      -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-                      deploy-backend/ \
-                      ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/tcup-development/backend/build
-
-            - name: Start backend server
-              run: |
-                  ssh -i ~/.ssh/deploy_key ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} -o StrictHostKeyChecking=no \
-                    "sudo systemctl restart tcupboard.dev"
+            - name: Deploy to droplet
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.DROPLET_HOST }}
+                  username: ${{ secrets.DROPLET_USER }}
+                  key: ${{ secrets.DROPLET_SSH_KEY }}
+                  script: |
+                      cd /var/www/tcup-development
+                      IMAGE_TAG=staging docker compose pull
+                      IMAGE_TAG=staging docker compose up -d
