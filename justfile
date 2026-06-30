@@ -2,11 +2,38 @@ set dotenv-load
 set dotenv-required
 set dotenv-filename := '.env'
 
-prod_supabase_url := env('SUPABASE_PROD_URL')
+alias df := dev-fresh
+alias pf := prod-fresh
 
-gen_types:
-    pnpm dlx supabase gen types --project-id {{ prod_supabase_url }} > shared/models.ts
+dev:
+    docker compose -f docker-compose.dev.yaml up -d
+    open http://localhost:5173
 
-copy_shared_types:
-    cp shared/* apps/frontend/src/types/
-    cp shared/* apps/backend/src/types/
+dev-fresh:
+    docker compose -f docker-compose.dev.yaml build --no-cache
+    just dev
+
+dev-stop:
+    docker compose -f docker-compose.dev.yaml down
+
+prod:
+    docker compose -f docker-compose.prod.yaml up -d
+    open http://localhost
+
+prod-fresh:
+    docker compose -f docker-compose.prod.yaml build --no-cache
+    just prod
+
+prod-stop:
+    docker compose -f docker-compose.prod.yaml down
+
+push:
+    docker compose -f docker-compose.prod.yaml build --no-cache
+    docker compose -f docker-compose.prod.yaml push
+
+stop: dev-stop prod-stop
+
+kill:
+    docker compose -f docker-compose.dev.yaml down -v
+    docker compose -f docker-compose.prod.yaml down -v
+    docker volume prune

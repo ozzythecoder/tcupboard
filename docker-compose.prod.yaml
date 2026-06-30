@@ -1,0 +1,32 @@
+services:
+    backend:
+        image: registry.digitalocean.com/tcup-alpha/backend:latest
+        platform: linux/amd64
+        build:
+            context: .
+            target: api-runner
+        restart: unless-stopped
+        env_file:
+            - apps/backend/.env.development
+        ports:
+            - "3001:3001"
+
+    caddy:
+        image: registry.digitalocean.com/tcup-alpha/caddy:latest
+        platform: linux/amd64
+        build:
+            context: .
+            target: caddy
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - $PWD/conf:/etc/caddy
+            - caddy_data:/data
+            - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
