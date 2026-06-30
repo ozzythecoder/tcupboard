@@ -6,6 +6,7 @@ const ERROR_TAGS = [
     "BAD_REQUEST",
     "UNAUTHORIZED",
     "INTERNAL_SERVER_ERROR",
+    "NOT_IMPLEMENTED",
 ] as const;
 
 type ErrorTag = (typeof ERROR_TAGS)[number];
@@ -36,6 +37,9 @@ export class UnauthorizedError
 export class NotFoundError
     extends TaggedError("NOT_FOUND", 404, "Resource not found")
     implements ApplicationError {}
+export class NotImplementedError
+    extends TaggedError("NOT_IMPLEMENTED", 501, "Not implemented")
+    implements ApplicationError {}
 export class InternalServerError
     extends TaggedError("INTERNAL_SERVER_ERROR", 500, "Internal Server Error")
     implements ApplicationError {}
@@ -45,4 +49,16 @@ export class NetworkError
 
 export function isApplicationError(e: unknown): e is ApplicationError {
     return !!e && e instanceof Error && "_tag" in e && ERROR_TAGS.includes((e as any)._tag);
+}
+
+export class FatalError extends Error {
+    constructor(...message: unknown[]) {
+        super(String(message));
+        console.error("[ FATAL ERROR ] :", message);
+        this.die();
+    }
+
+    private die() {
+        process.exit(1);
+    }
 }

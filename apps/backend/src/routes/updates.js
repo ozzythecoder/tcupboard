@@ -1,6 +1,6 @@
 import express from "express";
 import pool from "../config/db.js";
-import authMiddleware, { checkRole } from "../middleware/auth.js";
+import authGuard, { checkRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -74,7 +74,7 @@ router.get("/:id", async (req, res) => {
 
 // Admin routes - protected by authentication and role
 // POST create a new update
-router.post("/", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.post("/", authGuard, checkRole(["admin"]), async (req, res) => {
     const { title, content, content_json, image_url, is_published } = req.body;
     const auth0_id = req.auth.payload.sub; // Get user from token
 
@@ -100,7 +100,7 @@ router.post("/", authMiddleware, checkRole(["admin"]), async (req, res) => {
 });
 
 // PUT update an existing update
-router.put("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.put("/:id", authGuard, checkRole(["admin"]), async (req, res) => {
     const { id } = req.params;
     const { title, content, content_json, image_url, is_published } = req.body;
 
@@ -135,7 +135,7 @@ router.put("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
 });
 
 // DELETE an update
-router.delete("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.delete("/:id", authGuard, checkRole(["admin"]), async (req, res) => {
     const { id } = req.params;
 
     try {

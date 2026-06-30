@@ -265,10 +265,10 @@ const transform_config = [
         }),
     }),
     entity({
-            old_name: "direct_messages",
-            new_name: "private_messages",
-            schema: schema.PrivateMessagesSchema,
-            selectQuery: `
+        old_name: "direct_messages",
+        new_name: "private_messages",
+        schema: schema.PrivateMessagesSchema,
+        selectQuery: `
             with unique_conversations
                      as (select distinct on (least(user1, user2), greatest(user1, user2))
                              id,
@@ -290,13 +290,13 @@ const transform_config = [
                      inner join users u
                                 on u.auth0_id = m.sender_id;
             `,
-            shape_override: (row) => ({
-                ...row,
-                conversationId: row.conversation_id,
-                senderId: row.sender_id,
-                createdAt: row.created_at,
-            }),
-        })
+        shape_override: (row) => ({
+            ...row,
+            conversationId: row.conversation_id,
+            senderId: row.sender_id,
+            createdAt: row.created_at,
+        }),
+    }),
 ];
 
 async function test_validation() {
@@ -341,13 +341,13 @@ async function test_validation() {
         const t = e.shape_override?.(r) ?? r;
         const res = e.schema.safeParse(t);
         if (res.error) {
-            console.log(t)
-            console.log(res.error)
-            process.exit(1)
+            console.log(t);
+            console.log(res.error);
+            process.exit(1);
         }
         x += 1;
     }
-    console.log('processed', x, 'records')
+    console.log("processed", x, "records");
 
     return;
 }
@@ -361,4 +361,3 @@ async function main() {
 
 // test_validation();
 void main();
-

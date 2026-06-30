@@ -1,11 +1,11 @@
 import express from "express";
 import pool from "../../config/db.js";
-import authMiddleware, { checkRole } from "../../middleware/auth.js";
+import authGuard, { checkRole } from "../../middleware/auth.js";
 
 const router = express.Router();
 
 // Get show counts from both schemas
-router.get("/shows/counts", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.get("/shows/counts", authGuard, checkRole(["admin"]), async (req, res) => {
     try {
         // Get count of shows in development schema
         const devResult = await pool.query(
@@ -29,7 +29,7 @@ router.get("/shows/counts", authMiddleware, checkRole(["admin"]), async (req, re
 });
 
 // Sync shows from development to production
-router.post("/shows/sync", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.post("/shows/sync", authGuard, checkRole(["admin"]), async (req, res) => {
     const client = await pool.connect();
 
     try {

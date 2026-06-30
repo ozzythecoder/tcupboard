@@ -5,22 +5,22 @@
 export function RedactDeletedEntries(
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
 ) {
-    const original = descriptor.value
+    const original = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-        const result = await original.apply(this, args)
+        const result = await original.apply(this, args);
 
-        if (!Array.isArray(result)) return result
+        if (!Array.isArray(result)) return result;
 
         return result.map((item) => {
             if (item.deleted_at) {
-                return { ...item, content: '[ This message has been deleted. ]' }
+                return { ...item, content: "[ This message has been deleted. ]" };
             }
-            return item
-        })
-    }
+            return item;
+        });
+    };
 
-    return descriptor
+    return descriptor;
 }

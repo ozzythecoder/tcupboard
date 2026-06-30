@@ -49,9 +49,7 @@ export class PostReactionGateway {
             if (reactionExists) {
                 await tx
                     .delete(this.s.postReactions)
-                    .where(
-                        eq(this.s.postReactions.id, reactionExists.id)
-                    )
+                    .where(eq(this.s.postReactions.id, reactionExists.id));
             } else {
                 await tx.insert(this.s.postReactions).values(input).returning({
                     id: this.s.postReactions.id,

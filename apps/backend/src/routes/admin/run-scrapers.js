@@ -7,7 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { promisify } from "util";
 import dbConfig from "../../config/db.js";
-import authMiddleware from "../../middleware/auth.js";
+import authGuard from "../../middleware/auth.js";
 import checkRole from "../../middleware/check-role.js";
 
 // Get the directory name for ES modules
@@ -413,7 +413,7 @@ async function runScraper(scraperName) {
 
 // Run scrapers endpoint
 // Inside router.post('/run-scrapers', ...)
-router.post("/run-scrapers", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.post("/run-scrapers", authGuard, checkRole(["admin"]), async (req, res) => {
     const { scraper } = req.body;
     const tasks = [];
     const validScraperIds = AVAILABLE_SCRAPERS.map((s) => s.id); // Make sure this is up-to-date
@@ -452,7 +452,7 @@ router.post("/run-scrapers", authMiddleware, checkRole(["admin"]), async (req, r
 });
 
 // Get available scrapers endpoint - optionally make it dynamic
-router.get("/available-scrapers", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.get("/available-scrapers", authGuard, checkRole(["admin"]), async (req, res) => {
     try {
         // Option: Use dynamic scraper list from config.py
         // Uncomment this to dynamically get the scraper list
@@ -498,7 +498,7 @@ router.get("/available-scrapers", authMiddleware, checkRole(["admin"]), async (r
 });
 
 // Get scraper history endpoint
-router.get("/scraper-history", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.get("/scraper-history", authGuard, checkRole(["admin"]), async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 20;
         const page = parseInt(req.query.page) || 1;
@@ -539,7 +539,7 @@ router.get("/scraper-history", authMiddleware, checkRole(["admin"]), async (req,
 });
 
 // Get scraper log details endpoint
-router.get("/scraper-logs/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.get("/scraper-logs/:id", authGuard, checkRole(["admin"]), async (req, res) => {
     try {
         const { id } = req.params;
 

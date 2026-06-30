@@ -1,17 +1,18 @@
+import { auth } from "express-oauth2-jwt-bearer";
+import { env } from "@/config/env.js";
 import { db, s } from "@/db/index.js";
 import { UserGateway } from "@/modules/users/users.gateway.js";
 import { UserService } from "@/modules/users/users.service.js";
-import { auth } from "express-oauth2-jwt-bearer";
 
 // Create the JWT validator
 const checkJwt = auth({
-    audience: process.env.AUTH0_API_IDENTIFIER,
-    issuerBaseURL: process.env.AUTH0_DOMAIN,
+    audience: env.auth0.apiIdentifier,
+    issuerBaseURL: env.auth0.domain,
     tokenSigningAlg: "RS256",
 });
 
-const userGateway = new UserGateway(db, s)
-const userService = new UserService(userGateway)
+const userGateway = new UserGateway(db, s);
+const userService = new UserService(userGateway);
 
 /**
  *  Simple middleware to ensure that request is authenticated.
@@ -20,13 +21,16 @@ const authGuard = (req, res, next) => {
     checkJwt(req, res, async (err) => {
         if (err) {
             console.warn("Authentication failed.", err);
+            console.log(req.headers);
             return res.status(401).json({ error: "Unauthorized", details: err.message });
         }
 
         try {
-            const dbUser = await userService.getOneByAuth0Id(req.auth.payload.sub)
+            const dbUser = await userService.getOneByAuth0Id(req.auth.payload.sub);
             if (!dbUser) {
-                return res.status(401).json({ error: "Unauthorized", details: "User does not exist" });
+                return res
+                    .status(401)
+                    .json({ error: "Unauthorized", details: "User does not exist" });
             }
             req.user = {
                 ...req.auth.payload,

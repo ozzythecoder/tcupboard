@@ -1,6 +1,6 @@
 import express from "express";
 import pool from "../config/db.js";
-import authMiddleware, { checkRole } from "../middleware/auth.js";
+import authGuard, { checkRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -319,7 +319,7 @@ router.post("/add", async (req, res) => {
 
 // Edit an existing show
 
-router.put("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.put("/:id", authGuard, checkRole(["admin"]), async (req, res) => {
     console.log("EDIT ROUTE HIT - REQUIRING ADMIN ROLE");
     try {
         const { flyer_image, event_link, start, venue_id, bands, manual_override } = req.body;
@@ -367,7 +367,7 @@ router.put("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
 });
 
 // Delete a specific show by ID
-router.delete("/:id", authMiddleware, checkRole(["admin"]), async (req, res) => {
+router.delete("/:id", authGuard, checkRole(["admin"]), async (req, res) => {
     const { id } = req.params;
 
     try {

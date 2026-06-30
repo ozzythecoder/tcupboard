@@ -3,7 +3,7 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 import pool from "../config/db.js";
-import authMiddleware from "../middleware/auth.js";
+import authGuard from "../middleware/auth.js";
 import sendSuccessResponse from "../utils/sendSuccessResponse.js";
 
 const router = express.Router();

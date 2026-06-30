@@ -1,4 +1,4 @@
-import type { UpdateUser } from "@repo/shared";
+import type { CreateUser, UpdateUser } from "@repo/shared";
 import { eq } from "drizzle-orm";
 import type { Database, Schema } from "@/db/index.js";
 
@@ -20,10 +20,23 @@ export class UserGateway {
         });
     }
 
+    async create(input: CreateUser, auth0Id: string) {
+        return this.db
+            .insert(this.s.users)
+            .values({
+                ...input,
+                auth0Id,
+            })
+            .returning();
+    }
+
     async edit(input: UpdateUser, userId: number) {
         return this.db
             .update(this.s.users)
-            .set(input)
+            .set({
+                ...input,
+                bio: typeof input.bio === "string" ? input.bio : JSON.stringify(input.bio),
+            })
             .where(eq(this.s.users.id, userId))
             .returning();
     }

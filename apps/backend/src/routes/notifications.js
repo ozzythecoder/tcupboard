@@ -2,7 +2,7 @@
 import express from "express";
 import pool from "../config/db.js";
 import supabase from "../lib/supabase.js";
-import authMiddleware from "../middleware/auth.js";
+import authGuard from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ export async function createReplyNotification(postId, actorId, originalPostAutho
 }
 
 // Get notifications
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authGuard, async (req, res) => {
     try {
         const userId = req.user.sub;
 
@@ -78,7 +78,7 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // Mark as read
-router.put("/:id/read", authMiddleware, async (req, res) => {
+router.put("/:id/read", authGuard, async (req, res) => {
     try {
         const notificationId = req.params.id;
         const userId = req.user.sub;
@@ -96,7 +96,7 @@ router.put("/:id/read", authMiddleware, async (req, res) => {
 });
 
 // Get unread count
-router.get("/unread/count", authMiddleware, async (req, res) => {
+router.get("/unread/count", authGuard, async (req, res) => {
     try {
         const userId = req.user.sub;
 

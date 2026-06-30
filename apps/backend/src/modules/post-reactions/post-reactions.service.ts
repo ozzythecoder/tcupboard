@@ -20,7 +20,7 @@ export class PostReactionService {
     }
 
     async toggle(userId: number, input: CreatePostReaction) {
-        return this.reactionGateway.toggle({ ...input, userId })
+        return this.reactionGateway.toggle({ ...input, userId });
     }
 
     async delete(reactionId: number) {

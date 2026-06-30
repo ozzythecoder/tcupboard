@@ -1,10 +1,9 @@
-import { env } from "@/config/env.js";
-import * as schema from "@/db/drizzle/schema.js";
-import * as relations from "@/db/drizzle/relations.js";
+import * as schema from "@repo/shared/server";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { env } from "@/config/env.js";
 
-const db = drizzle(env.db.connectionString!, {
-    schema: { ...schema, ...relations },
+const db = drizzle(env.db.connectionString, {
+    schema,
     casing: "camelCase",
 });
 

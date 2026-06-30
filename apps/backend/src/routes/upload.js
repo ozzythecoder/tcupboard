@@ -6,7 +6,7 @@ import express from "express";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import pool from "../config/db.js"; // Import the database pool
-import authMiddleware from "../middleware/auth.js";
+import authGuard from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -57,7 +57,7 @@ const upload = multer({
 // Route for image uploads (single file)
 router.post(
     "/single",
-    authMiddleware,
+    authGuard,
     (req, res, next) => {
         console.log("Upload single request received");
         next();
@@ -82,7 +82,7 @@ router.post(
 );
 
 // Route for multiple image uploads
-router.post("/multiple", authMiddleware, upload.array("files", 5), (req, res) => {
+router.post("/multiple", authGuard, upload.array("files", 5), (req, res) => {
     try {
         const uploadedImages = req.files.map((file) => ({
             url: file.path,

@@ -1,5 +1,4 @@
-exports.up = function(knex) {
-    return knex.raw(`
+exports.up = (knex) => knex.raw(`
       CREATE OR REPLACE FUNCTION ${knex.client.config.migrations.schemaName}.update_modified_column()
       RETURNS TRIGGER AS $$
       BEGIN
@@ -13,11 +12,8 @@ exports.up = function(knex) {
       FOR EACH ROW
       EXECUTE FUNCTION ${knex.client.config.migrations.schemaName}.update_modified_column();
     `);
-  };
   
-  exports.down = function(knex) {
-    return knex.raw(`
+  exports.down = (knex) => knex.raw(`
       DROP TRIGGER IF EXISTS update_bands_new_modtime ON ${knex.client.config.migrations.schemaName}.bands_new;
       DROP FUNCTION IF EXISTS ${knex.client.config.migrations.schemaName}.update_modified_column();
     `);
-  };

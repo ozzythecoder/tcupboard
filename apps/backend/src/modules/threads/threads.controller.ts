@@ -1,3 +1,1 @@
-export const threadsController = {
-    
-}
+export const threadsController = {};

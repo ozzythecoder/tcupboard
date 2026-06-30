@@ -1,16 +1,21 @@
-// routes/auth.js
-
-import sgMail from "@sendgrid/mail"; // Add this import
 import express from "express";
+import { env } from "@/config/env.js";
+import { UnauthorizedError } from "@/types/errors.js";
 import pool from "../config/db.js";
-import authMiddleware from "../middleware/auth.js";
-
-// Set up SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+import authGuard from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/register", authMiddleware, async (req, res) => {
+router.post("/sync", async (req, res) => {
+    if (req.headers["x-api-key"] !== env.privateAdminKey) {
+        return res.status(404).send();
+    }
+    // TODO: do db stuff
+    return res.status(200).send();
+});
+
+router.post("/register", authGuard, async (req, res) => {
+    if (!req.user) throw new UnauthorizedError("No user submitted");
     const auth0Id = req.user.sub;
     const email = req.user.email;
 
@@ -46,28 +51,6 @@ router.post("/register", authMiddleware, async (req, res) => {
                 "INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *",
                 [auth0Id, email, username],
             );
-
-            // Send notification email for new users
-            const msg = {
-                to: "admin@tcupboard.org",
-                from: "admin@tcupboard.org",
-                subject: "New User Registration: TCUP",
-                html: `
-                    <h1>New User Registration</h1>
-                    <p><strong>Username:</strong> ${username}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Auth0 ID:</strong> ${auth0Id}</p>
-                    <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-                `,
-            };
-
-            try {
-                await sgMail.send(msg);
-                console.log("New user notification email sent");
-            } catch (emailError) {
-                console.error("Error sending notification email:", emailError);
-                // Continue with the response even if email fails
-            }
 
             res.json(newUser.rows[0]);
         } else {

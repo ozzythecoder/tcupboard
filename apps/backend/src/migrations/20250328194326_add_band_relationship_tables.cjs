@@ -1,5 +1,4 @@
-exports.up = function(knex) {
-    return knex.schema.withSchema(knex.client.config.migrations.schemaName)
+exports.up = (knex) => knex.schema.withSchema(knex.client.config.migrations.schemaName)
       // Band admins table
       .createTable('band_admins', table => {
         table.increments('id').primary();
@@ -52,13 +51,10 @@ exports.up = function(knex) {
         table.string('description', 255);
         table.timestamp('created_at').defaultTo(knex.fn.now());
       });
-  };
   
-  exports.down = function(knex) {
-    return knex.schema.withSchema(knex.client.config.migrations.schemaName)
+  exports.down = (knex) => knex.schema.withSchema(knex.client.config.migrations.schemaName)
       .dropTableIfExists('band_media_embeds')
       .dropTableIfExists('band_influences')
       .dropTableIfExists('band_performance_preferences')
       .dropTableIfExists('band_member_instruments')
       .dropTableIfExists('band_admins');
-  };

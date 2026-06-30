@@ -1,6 +1,5 @@
 import type { CreateThreadReplySchema, CreateThreadSchema, EditThreadSchema } from "@repo/shared";
 import { RedactDeletedEntries } from "@/lib/redact-deleted.decorator.js";
-import supabase from "@/lib/supabase.js";
 import { NotFoundError } from "@/types/errors.js";
 import type { ThreadsGateway } from "./threads.gateway.js";
 
@@ -11,11 +10,14 @@ export class ThreadsService {
     async getOneById(threadId: number) {
         const [data] = await this.threadsGateway.getOne(threadId);
         if (!data) throw new NotFoundError("Thread not found");
+        console.log(data);
 
-        // resolve legacy posts
-        if (data.isImported) {
-            data.author = data.importedAuthorName;
-            data.authorAvatar = data.importedAvatarUrl;
+        if (data.isImported && data.importedAuthorName && data.importedAvatarUrl) {
+            return {
+                ...data,
+                author: data.importedAuthorName,
+                authorAvatar: data.importedAvatarUrl,
+            };
         }
 
         return data;
@@ -27,7 +29,7 @@ export class ThreadsService {
 
         // resolve legacy posts
         return data.map((e) => {
-            if (e.isImported) {
+            if (e.isImported && e.importedAuthorName && e.importedAvatarUrl) {
                 return {
                     ...e,
                     author: e.importedAuthorName,
@@ -70,10 +72,14 @@ export class ThreadsService {
         });
     }
 
+    async createReply(authorId: number, input: CreateThreadReplySchema) {
+        return this.threadsGateway.createReply(authorId, input);
+    }
+
     async createThread(authorId: number, input: CreateThreadSchema) {
         return this.threadsGateway.createThread(authorId, input);
     }
-    
+
     async updateThread(postId: number, input: EditThreadSchema) {
         return this.threadsGateway.updateThread(postId, input);
     }
@@ -82,80 +88,3 @@ export class ThreadsService {
         return this.threadsGateway.delete(postId);
     }
 }
-
-export const threadService = {
-    getOneById: async (id: number) => {
-        const { data, error } = await supabase
-            .from("forum_messages")
-            .select("*")
-            .eq("id", id)
-            .single();
-        if (error) throw error;
-        return data;
-    },
-    getAllReplies: async (parent_id: number) => {
-        const { data, error } = await supabase
-            .from("forum_messages")
-            .select("*")
-            .eq("parent_id", parent_id)
-            .order("created_at", { ascending: true });
-        if (error) throw error;
-        return data;
-    },
-    createReply: async (reply: CreateThreadReplySchema) => {
-        const { data, error } = await supabase
-            .from("forum_messages")
-            .insert({
-                auth0_id: reply.auth0_id,
-                parent_id: reply.parent_id,
-                content: reply.content,
-                images: reply.images,
-            })
-            .select("*")
-            .single();
-        if (error) throw error;
-        return data;
-    },
-    createThread: async (thread: CreateThreadSchema) => {
-        const { data, error } = await supabase
-            .from("forum_messages")
-            .insert({
-                title: thread.title,
-                auth0_id: thread.auth0_id,
-                content: thread.content,
-                images: thread.images,
-            })
-            .select("*")
-            .single();
-        if (error) throw error;
-        return data;
-    },
-};
-
-export const reactionService = {
-    getByThreadId: async (post_id: number) => {
-        const { data, count, error } = await supabase
-            .from("user_reactions")
-            .select("*")
-            .eq("post_id", post_id);
-        if (error) throw error;
-        return { data, count };
-    },
-    getAllFromThread: async (thread_id: number) => {
-        const { data: thread, error: error_0 } = await supabase
-            .from("forum_messages")
-            .select("*")
-            .eq("id", thread_id)
-            .single();
-        if (error_0) throw error_0;
-        const { data: replies, error: error_1 } = await supabase
-            .from("forum_messages")
-            .select("*")
-            .eq("parent_id", thread_id);
-        if (error_1) throw error_1;
-
-        const result = [thread, ...replies].reduce((acc, curr) => {
-            return acc;
-        }, {});
-    },
-};

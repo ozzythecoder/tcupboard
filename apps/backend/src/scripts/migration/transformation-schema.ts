@@ -60,13 +60,30 @@ export const PostsSchema = z
 
 export const RoleSchema = z.enum(["user", "admin", "moderator", "superadmin"]);
 
+export const convertStringToTipTap = (v: string) => ({
+    type: "doc",
+    content: [
+        {
+            type: "paragraph",
+            content: [
+                {
+                    type: "text",
+                    text: v,
+                },
+            ],
+        },
+    ],
+});
+
+export const BioSchema = z.string().transform(convertStringToTipTap);
+
 export const UsersSchema = z.object({
     id: IdSchema,
     email: z.string(),
     username: z.string().max(255, "username too long"),
     avatarUrl: z.string().nullish(),
     auth0Id: z.string(),
-    bio: z.string().nullish(),
+    bio: BioSchema.nullish(),
     createdAt: DateSchema,
     role: RoleSchema,
     tagline: z.string().nullish(),

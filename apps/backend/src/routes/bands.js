@@ -1,7 +1,7 @@
 import express from "express";
 import pool from "../config/db.js";
 import { getAllBands, getBandById, updateBand } from "../controllers/bandController.js";
-import authMiddleware from "../middleware/auth.js";
+import authGuard from "../middleware/auth.js";
 import fetchAllBandsMiddleware from "../middleware/fetchAllBands.js";
 import fetchBandMiddleware from "../middleware/fetchBand.js";
 import uploadAndParse from "../middleware/uploadAndParse.js";
@@ -10,7 +10,7 @@ const router = express.Router();
 const schema = process.env.DB_SCHEMA || "development";
 
 // Get all bands claimed by current user
-router.get("/myclaims", authMiddleware, async (req, res) => {
+router.get("/myclaims", authGuard, async (req, res) => {
     const userId = req.user.sub;
     console.log("Fetching claims for user:", userId);
 
@@ -97,7 +97,7 @@ router.get("/", async (req, res) => {
 });
 
 // Add a new band
-router.post("/add", authMiddleware, async (req, res) => {
+router.post("/add", authGuard, async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
@@ -323,7 +323,7 @@ router.post("/add", authMiddleware, async (req, res) => {
 });
 
 // Get bands for the logged-in user (including drafts)
-router.get("/user", authMiddleware, async (req, res) => {
+router.get("/user", authGuard, async (req, res) => {
     console.log("Received request to /bands/user");
     try {
         // More flexible user ID extraction, checking both common patterns
@@ -362,7 +362,7 @@ router.get("/user", authMiddleware, async (req, res) => {
 });
 
 // Create/update band draft
-router.post("/draft", authMiddleware, async (req, res) => {
+router.post("/draft", authGuard, async (req, res) => {
     const client = await pool.connect();
 
     try {
@@ -744,7 +744,7 @@ router.post("/draft", authMiddleware, async (req, res) => {
 });
 
 // Complete a draft (mark as published)
-router.post("/draft/:id/publish", authMiddleware, async (req, res) => {
+router.post("/draft/:id/publish", authGuard, async (req, res) => {
     const bandId = req.params.id;
     const auth0Id = req.user.sub;
     const { slug } = req.body;
@@ -854,7 +854,7 @@ router.post("/draft/:id/publish", authMiddleware, async (req, res) => {
 });
 
 // Get a specific draft for editing
-router.get("/draft/:id", authMiddleware, async (req, res) => {
+router.get("/draft/:id", authGuard, async (req, res) => {
     const bandId = req.params.id;
     const auth0Id = req.user.sub;
 
@@ -1106,7 +1106,7 @@ router.get("/:slug/shows", async (req, res) => {
 });
 
 // Update band
-router.put("/:slug/edit", authMiddleware, async (req, res) => {
+router.put("/:slug/edit", authGuard, async (req, res) => {
     const client = await pool.connect();
 
     try {
@@ -1370,7 +1370,7 @@ router.put("/:slug/edit", authMiddleware, async (req, res) => {
 });
 
 // Claim a band
-router.post("/:slug/claim", authMiddleware, async (req, res) => {
+router.post("/:slug/claim", authGuard, async (req, res) => {
     const slug = req.params.slug;
     const userId = req.user.sub;
 
@@ -1407,7 +1407,7 @@ router.post("/:slug/claim", authMiddleware, async (req, res) => {
 });
 
 // Release a band claim
-router.post("/:slug/release", authMiddleware, async (req, res) => {
+router.post("/:slug/release", authGuard, async (req, res) => {
     const slug = req.params.slug;
     const userId = req.user.sub;
 
@@ -1432,7 +1432,7 @@ router.post("/:slug/release", authMiddleware, async (req, res) => {
 });
 
 // Check if user owns a band (utility endpoint)
-router.get("/:slug/check-ownership", authMiddleware, async (req, res) => {
+router.get("/:slug/check-ownership", authGuard, async (req, res) => {
     const slug = req.params.slug;
     const userId = req.user.sub;
 
@@ -1452,7 +1452,7 @@ router.get("/:slug/check-ownership", authMiddleware, async (req, res) => {
 });
 
 // Route: Fetch data for edit form
-router.get("/:slug/edit", authMiddleware, async (req, res) => {
+router.get("/:slug/edit", authGuard, async (req, res) => {
     try {
         // Fetch main band data
         const bandResult = await pool.query(

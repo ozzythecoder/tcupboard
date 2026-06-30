@@ -1,7 +1,7 @@
 // tags.js
 import express from "express";
 import supabase from "../lib/supabase.js";
-import authMiddleware from "../middleware/auth.js";
+import authGuard from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authGuard, async (req, res) => {
     const { name, description } = req.body;
 
     try {

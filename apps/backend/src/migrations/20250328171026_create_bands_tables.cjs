@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = (knex) => {
     // First create the schema if it doesn't exist
     return knex.raw(`CREATE SCHEMA IF NOT EXISTS ${knex.client.config.migrations.schemaName}`)
       .then(() => {
@@ -123,7 +123,7 @@ exports.up = function(knex) {
       });
   };
   
-  exports.down = function(knex) {
+  exports.down = (knex) => {
     // Drop tables in reverse order
     return knex.schema.withSchema(knex.client.config.migrations.schemaName)
       .dropTableIfExists('band_group_sizes')

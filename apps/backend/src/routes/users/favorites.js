@@ -1,11 +1,11 @@
 import express from "express";
 import pool from "../../config/db.js";
-import authMiddleware from "../../middleware/auth.js";
+import authGuard from "../../middleware/auth.js";
 
 const router = express.Router();
 
 // POST /api/users/favorites
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authGuard, async (req, res) => {
     const { band_id } = req.body;
     const auth0Id = req.user.sub;
     console.log("POST favorite - auth0Id:", auth0Id, "band_id:", band_id);
@@ -43,7 +43,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // GET /api/users/favorites
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authGuard, async (req, res) => {
     const auth0Id = req.user.sub;
     console.log("GET favorites - auth0Id:", auth0Id);
 
@@ -84,7 +84,7 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // DELETE /api/favorites/:id
-router.delete("/:id", authMiddleware, async (req, res) => {
+router.delete("/:id", authGuard, async (req, res) => {
     const favoriteId = req.params.id; // Favorite ID from the route parameter
     const auth0Id = req.user.sub; // User's Auth0 ID from JWT token
 

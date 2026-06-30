@@ -2,8 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function(knex) {
-  return knex.schema.createTable('scraper_logs', function(table) {
+exports.up = (knex) => knex.schema.createTable('scraper_logs', (table) => {
     table.increments('id').primary();
     table.string('scraper_name').notNullable();
     table.timestamp('run_at').defaultTo(knex.fn.now());
@@ -14,7 +13,7 @@ exports.up = function(knex) {
     table.json('errors').defaultTo('[]');
     table.json('raw_output').defaultTo('{}');
   })
-  .createTable('scraper_show_additions', function(table) {
+  .createTable('scraper_show_additions', (table) => {
     table.increments('id').primary();
     table.integer('scraper_log_id').references('id').inTable('scraper_logs').onDelete('CASCADE');
     table.integer('show_id').references('id').inTable('shows').onDelete('CASCADE');
@@ -23,14 +22,11 @@ exports.up = function(knex) {
     table.string('venue_name');
     table.timestamp('show_date');
   });
-};
 
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
-  return knex.schema
+exports.down = (knex) => knex.schema
     .dropTableIfExists('scraper_show_additions')
     .dropTableIfExists('scraper_logs');
-};

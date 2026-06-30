@@ -1,7 +1,7 @@
 /**
  * Migration to add end-to-end encryption support for direct messages
  */
-exports.up = async function(knex) {
+exports.up = async (knex) => {
     // Create the update timestamp function if it doesn't exist
     const functionExists = await knex.raw(`
       SELECT EXISTS (
@@ -53,7 +53,7 @@ exports.up = async function(knex) {
     console.log('Successfully added encryption support to database');
   };
   
-  exports.down = async function(knex) {
+  exports.down = async (knex) => {
     // Remove the trigger
     await knex.raw(`DROP TRIGGER IF EXISTS update_user_encryption_keys_updated_at ON user_encryption_keys;`);
     

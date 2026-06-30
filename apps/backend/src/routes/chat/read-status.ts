@@ -1,12 +1,11 @@
 import express, { type Request } from "express";
 import supabase from "../../lib/supabase.js";
-import authMiddleware from "../../middleware/auth.js";
+import authGuard from "../../middleware/auth.js";
 
 const router = express.Router();
 
-
 // Mark thread as read
-router.post("/:threadId", authMiddleware, async (req: Request<{ threadId: string }>, res) => {
+router.post("/:threadId", authGuard, async (req: Request<{ threadId: string }>, res) => {
     try {
         const auth0Id = req.auth?.payload?.sub;
         if (!auth0Id) return res.status(401);
@@ -34,7 +33,7 @@ router.post("/:threadId", authMiddleware, async (req: Request<{ threadId: string
 });
 
 // Get read status for current user
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authGuard, async (req, res) => {
     try {
         const auth0Id = req.auth?.payload?.sub;
 
@@ -49,9 +48,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
         if (error) throw error;
 
-        const readStatus = Object.fromEntries(
-            data.map(v => [v.thread_id, v.last_read_at])
-        )
+        const readStatus = Object.fromEntries(data.map((v) => [v.thread_id, v.last_read_at]));
         res.status(200).json(readStatus);
     } catch (error) {
         console.error("Error fetching read status:", error);

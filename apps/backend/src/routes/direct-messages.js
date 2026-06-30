@@ -1,7 +1,7 @@
 import express from "express";
 import pool from "../config/db.js";
 import supabase from "../lib/supabase.js";
-import authMiddleware from "../middleware/auth.js"; // Your existing Auth0 middleware
+import authGuard from "../middleware/auth.js"; // Your existing Auth0 middleware
 
 const router = express.Router();
 
@@ -75,7 +75,7 @@ async function updateOrCreateConversation(userId1, userId2, messageContent, mess
 }
 
 // Get all conversations for the current user
-router.get("/conversations", authMiddleware, async (req, res) => {
+router.get("/conversations", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         console.log("Fetching conversations for user:", auth0_id);
@@ -172,7 +172,7 @@ router.get("/conversations", authMiddleware, async (req, res) => {
 });
 
 // Get messages between current user and specified user
-router.get("/conversation/:userId", authMiddleware, async (req, res) => {
+router.get("/conversation/:userId", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         const otherUserId = req.params.userId;
@@ -250,7 +250,7 @@ router.get("/conversation/:userId", authMiddleware, async (req, res) => {
 });
 
 // Get messages for a conversation with pagination
-router.get("/conversation-by-id/:conversationId", authMiddleware, async (req, res) => {
+router.get("/conversation-by-id/:conversationId", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         const conversationId = req.params.conversationId;
@@ -406,7 +406,7 @@ router.get("/conversation-by-id/:conversationId", authMiddleware, async (req, re
 });
 
 // Send a new message
-router.post("/send", authMiddleware, async (req, res) => {
+router.post("/send", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub; // Fixed to use .sub instead of destructuring
 
@@ -476,7 +476,7 @@ router.post("/send", authMiddleware, async (req, res) => {
 });
 
 // Send a message in an existing conversation
-router.post("/:conversationId/send", authMiddleware, async (req, res) => {
+router.post("/:conversationId/send", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         const conversationId = req.params.conversationId;
@@ -581,7 +581,7 @@ router.post("/:conversationId/send", authMiddleware, async (req, res) => {
 });
 
 // Mark conversation as read
-router.post("/:conversationId/read", authMiddleware, async (req, res) => {
+router.post("/:conversationId/read", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         const conversationId = req.params.conversationId;
@@ -641,7 +641,7 @@ router.post("/:conversationId/read", authMiddleware, async (req, res) => {
 });
 
 // Mark message as read
-router.put("/:messageId/read", authMiddleware, async (req, res) => {
+router.put("/:messageId/read", authGuard, async (req, res) => {
     try {
         const auth0_id = req.user.sub;
         const { messageId } = req.params;

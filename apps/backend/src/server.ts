@@ -1,121 +1,68 @@
 import compression from "compression";
 import cors from "cors";
 import express from "express";
+import { env } from "./config/env.js";
 import { ErrorHandlerMiddleware } from "./middleware/error-handler.js";
-import { registerThreadsRoute } from "./modules/threads/index.js";
-import scrapersRouter from "./routes/admin/run-scrapers.js";
-import adminShowsRouter from "./routes/admin/shows-admin.js";
-import authRoutes from "./routes/auth.js";
-import bandsRouter from "./routes/bands.js";
-import readStatusRouter from "./routes/chat/read-status.js";
-import contactRouter from "./routes/contact.js";
-import directMessagesRouter from "./routes/direct-messages.js";
-import flyeringRouter from "./routes/flyering.js";
-import imagesRouter from "./routes/images.js";
-import notificationsRouter from "./routes/notifications.js";
-import peopleRouter from "./routes/people.js";
-import pledgesRouter from "./routes/pledges.js";
-import sessionMusiciansRouter from "./routes/sessionmusicians.js";
-import showsRouter from "./routes/shows.js";
-import sseRouter from "./routes/sseRoutes.js";
-import tagsRouter from "./routes/tags.js";
-import updatesRouter from "./routes/updates.js";
-import uploadRouter from "./routes/upload.js";
-import favoritesRouter from "./routes/users/favorites.js";
-import usersRouter from "./routes/users/users.js";
-// Route imports
-import venuesRoutes from "./routes/venues.js";
+import { LoggerMiddleware } from "./middleware/logger.js";
+import { cloudinarySignatureRouter } from "./modules/cloudinary/signature.route.js";
+import { threadsRouter } from "./modules/threads/index.js";
+import { userRouter } from "./modules/users/index.js";
 
-// 4) Create the Express app
+// import authRoutes from "./routes/auth.js";
+// import tagsRouter from "./routes/tags.js";
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(compression());
-app.use(ErrorHandlerMiddleware)
-
-// 5) Define allowed origins per environment
-const allowedOriginsMap = {
-    development: ["http://localhost:3003", "http://localhost:5173"],
-    staging: ["https://staging.tcupboard.org"],
-    production: ["https://tcupboard.org", "https://tcupmn.org"],
-};
-
-// 6) Figure out which environment we’re in
-const currentEnv = process.env.NODE_ENV || "development";
-
-const allowedOrigins = allowedOriginsMap[currentEnv];
-
-// 7) Configure CORS
-//    If you need credentials (cookies, etc.), you must set credentials: true
-//    and cannot use a wildcard (*) for origin.
 app.use(
+    compression(),
+    LoggerMiddleware({ withTimestamp: !env.dev }),
     cors({
-        origin: (origin, callback) => {
-            // Allow requests with no origin (mobile apps, curl)
-            if (!origin) return callback(null, true);
-
-            if (allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error(`Not allowed by CORS: ${origin}`));
-            }
-        },
+        origin: env.allowedOrigins,
         credentials: true,
     }),
+    express.json({ limit: "10mb" }),
+    express.urlencoded({ extended: true, limit: "10mb" }),
 );
 
-// 8) Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const apiRouter = express.Router();
 
-// 9) Debug request logging
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`, req.body);
-    next();
-});
+apiRouter.use("/users", userRouter);
+apiRouter.use("/threads", threadsRouter);
+apiRouter.use("/cloudinary-signature", cloudinarySignatureRouter);
+// apiRouter.use("/auth", authRoutes);
+// apiRouter.use("/tags", tagsRouter);
+// apiRouter.use("/venues", venuesRoutes);
+// apiRouter.use("/bands", bandsRouter);
+// apiRouter.use("/shows", showsRouter);
+// apiRouter.use("/people", peopleRouter);
+// apiRouter.use("/favorites", favoritesRouter);
+// apiRouter.use("/sessionmusicians", sessionMusiciansRouter);
+// apiRouter.use("/pledges", pledgesRouter);
+// apiRouter.use("/flyering", flyeringRouter);
+// apiRouter.use("/images", imagesRouter);
+// apiRouter.use("/notifications", notificationsRouter);
+// apiRouter.use("/updates", updatesRouter);
+// apiRouter.use("/contact", contactRouter);
+// apiRouter.use("/upload", uploadRouter);
+// apiRouter.use("/read-status", readStatusRouter);
+// apiRouter.use("/direct-messages", directMessagesRouter);
+// apiRouter.use("/scrapers", scrapersRouter);
+// apiRouter.use("/sseroutes", sseRouter);
+// apiRouter.use("/adminshows", adminShowsRouter);
 
-const apiRouter = express.Router()
+app.use("/api", apiRouter);
 
-// 10) Mount your routes (make sure these come after the CORS and body-parser middleware)
-apiRouter.use("/venues", venuesRoutes);
-apiRouter.use("/bands", bandsRouter);
-apiRouter.use("/shows", showsRouter);
-apiRouter.use("/people", peopleRouter);
-apiRouter.use("/users", usersRouter);
-apiRouter.use("/favorites", favoritesRouter);
-apiRouter.use("/sessionmusicians", sessionMusiciansRouter);
-apiRouter.use("/auth", authRoutes);
-
-registerThreadsRoute(apiRouter)
-
-apiRouter.use("/tags", tagsRouter);
-apiRouter.use("/pledges", pledgesRouter);
-apiRouter.use("/flyering", flyeringRouter);
-apiRouter.use("/images", imagesRouter);
-apiRouter.use("/notifications", notificationsRouter);
-apiRouter.use("/updates", updatesRouter);
-apiRouter.use("/contact", contactRouter);
-apiRouter.use("/upload", uploadRouter);
-apiRouter.use("/read-status", readStatusRouter);
-apiRouter.use("/direct-messages", directMessagesRouter);
-apiRouter.use("/scrapers", scrapersRouter);
-apiRouter.use("/sseroutes", sseRouter);
-apiRouter.use("/adminshows", adminShowsRouter);
-
-apiRouter.get("/api/bands/simple-test", (req, res) => {
-    res.json({ message: "Simple test route works" });
-});
-
-app.use('/api', apiRouter)
+app.use(ErrorHandlerMiddleware);
 
 // Print out routes (for debugging)
 app._router.stack.forEach((r) => {
-    if (r.route && r.route.path) {
+    if (r.route?.path) {
         console.log(`Route: ${r.route.path}`);
     }
 });
 
 // 11) Start the server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}, environment: ${currentEnv}`);
+    console.log(`Server running on port ${PORT}`);
 });

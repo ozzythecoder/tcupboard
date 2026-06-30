@@ -11,7 +11,7 @@ const all: PolicyComposer =
         return true;
     };
 
-const or: PolicyComposer =
+const one: PolicyComposer =
     (...policies: Policy[]) =>
     async (req) => {
         for (const p of policies) {
@@ -30,14 +30,16 @@ const or: PolicyComposer =
  *
  * @example
  * // Will pass if both `policyOne` AND `policyTwo` pass, or if JUST `policyThree` passes.
- * app.get('/', accessControl( ({ all, or }) => or(all(policyOne, policyTwo), policyThree) ), (req, res) => {
- *   // handler logic...
+ * app.get('/',
+ *   accessControl( ({ all, or }) => or(all(policyOne, policyTwo), policyThree) ),
+ *   (req, res) => {
+ *     // handler logic...
  * })
  */
 export const accessControl =
     (factory: ComposerFactory): RequestHandler =>
     async (req, res, next) => {
-        const policy = factory({ all, or });
+        const policy = factory({ all, one });
         const allowed = await policy(req);
         if (allowed) return next();
         return res.status(403).json({ message: "Access denied" });

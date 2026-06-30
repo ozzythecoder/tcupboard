@@ -1,4 +1,4 @@
-import type { UpdateUser } from "@repo/shared";
+import type { CreateUser, UpdateUser } from "@repo/shared";
 import type { UserGateway } from "./users.gateway.js";
 
 export class UserService {
@@ -14,6 +14,10 @@ export class UserService {
 
     async edit(input: UpdateUser, userId: string) {
         return this.userGateway.edit(input, Number(userId));
+    }
+
+    async create(input: CreateUser, auth0Id: string) {
+        return this.userGateway.create(input, auth0Id);
     }
 
     async setEmail(email: string, userId: number) {
