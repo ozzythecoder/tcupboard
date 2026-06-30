@@ -1,4 +1,4 @@
-import { z, type json } from "zod";
+import { type json, z } from "zod";
 
 // https://github.com/colinhacks/zod/discussions/2215#discussioncomment-5356276
 

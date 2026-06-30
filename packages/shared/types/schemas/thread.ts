@@ -37,7 +37,6 @@ export const ZImageMetadataSchema = z.object({
 export type ImageMetadata = z.infer<typeof ZImageMetadataSchema>;
 
 export const ZCreateThreadSchema = z.object({
-    auth0_id: z.string(),
     author: z.string(),
     title: z.string(),
     content: ZThreadContentSchema,

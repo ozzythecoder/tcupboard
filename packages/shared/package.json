@@ -1,12 +1,20 @@
 {
     "name": "@repo/shared",
     "type": "module",
-    "scripts": {
-        "pull": "drizzle-kit pull && rm -rf drizzle/meta drizzle/*.sql"
-    },
     "exports": {
-        ".": "./types/index.ts",
-        "./server": "./drizzle/index.ts"
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/types/index.js"
+        },
+        "./server": {
+            "types": "./dist/drizzle/index.d.ts",
+            "import": "./dist/drizzle/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "pull": "drizzle-kit pull && rm -rf drizzle/meta drizzle/*.sql"
     },
     "dependencies": {
         "zod": "^4.4.3"
@@ -15,6 +23,7 @@
         "@dotenvx/dotenvx": "^1.71.2",
         "@types/node": "^25.9.3",
         "drizzle-kit": "^0.31.10",
-        "drizzle-orm": "^0.45.2"
+        "drizzle-orm": "^0.45.2",
+        "tsup": "^8.5.1"
     }
 }

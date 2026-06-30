@@ -6,7 +6,6 @@
         "moduleResolution": "nodenext",
         "verbatimModuleSyntax": true,
         "noImplicitAny": true,
-        "composite": true,
         "declaration": true,
         "declarationMap": true,
         "outDir": "./dist",
