@@ -13,6 +13,9 @@ onlyBuiltDependencies:
 
 injectWorkspacePackages: true
 
+syncInjectedDepsAfterScripts:
+  - build
+
 allowBuilds:
   browser-tabs-lock: false
   core-js: false

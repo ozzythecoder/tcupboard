@@ -12,8 +12,7 @@ frontend/node_modules/.cache/
 # Ignore environment variables file
 .env.DS_Store
 .env
-.env.development
-.env.development
+.env.*
 
 *.csr
 *.csv
@@ -31,6 +30,9 @@ CLAUDE.md
 # Ignore build folder
 build/
 dist/
+
+# notes
+project/
 
 token.json
 scrapers/credentials.json
