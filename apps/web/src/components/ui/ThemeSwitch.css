@@ -1,0 +1,16 @@
+._checkbox-container {
+    display: relative;
+    
+    ::before {
+        display: absolute;
+        top: 0;
+        left: 0;
+        width: 1.15em;
+        height: 1.15em;
+        border: 2px solid currentColor;
+    }
+
+    input[type='checkbox'] {
+        appearance: none;
+    }
+}

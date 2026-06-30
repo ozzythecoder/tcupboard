@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-react';
+@import '@skeletonlabs/skeleton/themes/mona';
+
+@import '@fontsource/arimo';
+
+/* dark mode determined by data attributes rather than prefers-color-scheme */
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+@theme {
+    --breakpoint-xxs: 320px;
+    --breakpoint-xs: 480px;
+
+    --container-ml: 30rem;
+
+    --font-fancy: 'Bodoni Moda Variable', serif;
+    --font-secondary: 'Sora Variable', serif;
+
+    --heading-letter-spacing: -0.025em;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    input  {
+        outline-color: var(--color-surface-200-800);
+
+        &:focus {
+            outline-color: var(--color-surface-700-300)
+        }
+    }
+
+    button:focus:not(#content), a:focus:not(#content) {
+        outline: 2px solid var(--color-surface-900-100);
+        border-radius: 6px;
+        transition: border-radius .3s, outline-color .7s;
+    }
+
+    ._emoji {
+        font-variant-emoji: emoji;
+    }
+
+    #content {
+        --mesh-color: oklch(from var(--color-secondary-800) 0.4 c h );
+        background-color: light-dark( var(--color-primary-100), var(--color-primary-900) );
+        background-image:
+            radial-gradient(at 0% 30%, light-dark(var(--color-secondary-200), var(--mesh-color) ) 0px, transparent 50%),
+            linear-gradient(90deg, var(--color-surface-200-800) 0%, transparent 100%)
+        ;
+        background-attachment: fixed;
+    }
+}
+
+/* bodoni-moda-latin-wght-normal */
+@font-face {
+  font-family: 'Bodoni Moda Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/bodoni-moda:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* sora-latin-wght-normal */
+@font-face {
+  font-family: 'Sora Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/sora:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@keyframes collapsible-open {
+    from { height: 0; }
+    to { height: var(--height); }
+}
+
+@keyframes collapsible-close {
+    from  { height: var(--height); }
+    to { height: 0; }
+}
+
+@utility font-fancy {
+    font-family: 'Bodoni Moda Variable', serif;
+}
+
+@utility font-secondary {
+    font-family: 'Sora Variable', serif;
+}
+
+@utility gradient-text-* {
+    background: linear-gradient(to right, var(--color-secondary-600-400), var(--color-tertiary-700-300), var(--color-primary-800-200), --value(--color-*));
+    display: inline-block;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+@utility preset-glass-* {
+    background: color-mix(in oklab, var(--color-surface-50-950) 60%, transparent);
+    box-shadow: 0 0 30px color-mix(in oklab, --value(--color-*) 40%, transparent) inset;
+    backdrop-filter: blur(16px);
+}
+
+@utility text-shadow-hard-* {
+    text-shadow: 4px 4px 0px --value(--color-*);
+}
