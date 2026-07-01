@@ -3,8 +3,14 @@
     "version": "2.0.0-alpha.1",
     "scripts": {
         "dev": "pnpm -r --stream dev",
+        "fresh": "pnpm --filter web clean && pnpm -r --stream dev",
         "test": "pnpm -r test",
-        "build": "pnpm -r build"
+        "build": "pnpm -r build",
+        "lint": "biome lint",
+        "fmt": "biome format"
     },
-    "packageManager": "pnpm@10.25.0"
+    "packageManager": "pnpm@11.7.0",
+    "devDependencies": {
+        "@biomejs/biome": "^2.5.1"
+    }
 }

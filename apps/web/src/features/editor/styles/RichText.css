@@ -1,0 +1,33 @@
+._rich-text-content {
+    max-width: 50ch;
+    margin-inline: auto;
+    text-size: var(--text-4xl);
+
+    h2, h3 {
+        color: var(--heading-font-color);
+        font-family: var(--heading-font-family);
+        font-weight: var(--heading-font-weight);
+        font-style: var(--heading-font-style);
+    }
+
+    h2 {
+        font-size: var(--text-3xl);
+    }
+
+    h3 {
+        font-size: var(--text-xl);
+        font-weight: 600;
+    }
+
+    ul {
+        padding-left: 1rem;
+        li {
+            list-style: disc;
+        }
+    }
+
+    a {
+        color: light-dark(var(--anchor-font-color), var(--anchor-font-color-dark));
+    }
+
+}

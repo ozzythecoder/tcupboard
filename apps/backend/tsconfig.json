@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "strictNullChecks": true,
+        "verbatimModuleSyntax": true,
+        "experimentalDecorators": true,
+
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "target": "ESNext",
+
+        "outDir": "dist",
+        "skipLibCheck": true,
+        "allowJs": true,
+        "checkJs": true,
+        "noImplicitAny": false,
+
+        "paths": {
+            "@/*": ["./src/*"],
+            "@env": ["./config/env.js"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["src/scripts", "src/routes", "src/calendar.js"],
+    "references": [
+        {
+            "path": "../../packages/shared"
+        }
+    ]
+}

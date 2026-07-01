@@ -1,34 +1,45 @@
 {
-  "name": "@repo/backend",
-  "type": "module",
-  "scripts": {
-    "start": "NODE_ENV=production node --env-file=.env server.js",
-    "dev": "NODE_ENV=development node --env-file=.env.development --watch server.js",
-    "test": "echo \"No tests yet. Skipping.\"; exit 0",
-    "migrate:dev": "knex migrate:latest --env development --knexfile ./migrate-config.cjs",
-    "migrate:production": "knex migrate:latest --env production --knexfile ./migrate-config.cjs",
-    "migrate:make": "knex migrate:make --knexfile ./migrate-config.cjs --migrations-extension cjs",
-    "migrate:rollback": "knex migrate:rollback --env development --knexfile ./migrate-config.cjs"
-  },
-  "dependencies": {
-    "@sendgrid/mail": "^8.1.4",
-    "@supabase/supabase-js": "^2.47.10",
-    "axios": "^1.7.9",
-    "cloudinary": "^1.41.3",
-    "compression": "^1.8.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "express-oauth2-jwt-bearer": "^1.6.0",
-    "googleapis": "^144.0.0",
-    "knex": "^3.1.0",
-    "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
-    "pg": "^8.13.1"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.3.14",
-    "supabase": "^2.76.12",
-    "typescript": "^5.9.3"
-  }
+    "name": "@repo/backend",
+    "type": "module",
+    "scripts": {
+        "build": "tsup",
+        "db:gen": "drizzle-kit generate",
+        "db:migrate": "tsx --env-file=.env.development src/db/migrate.ts",
+        "db:transfer": "tsx --env-file=.env.development src/scripts/migration/transform.ts",
+        "dev": "NODE_ENV=development tsx --env-file=.env.development --watch src/server.js",
+        "start": "node --env-file=.env.development dist/server.js",
+        "test": "echo \"No tests yet. Skipping.\"; exit 0"
+    },
+    "dependencies": {
+        "@dotenvx/dotenvx": "^1.71.2",
+        "@sendgrid/mail": "^8.1.4",
+        "@supabase/supabase-js": "^2.47.10",
+        "axios": "^1.7.9",
+        "cloudinary": "^2.10.0",
+        "compression": "^1.8.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "drizzle-orm": "^0.45.2",
+        "express": "^4.21.1",
+        "express-oauth2-jwt-bearer": "^1.6.0",
+        "googleapis": "^144.0.0",
+        "knex": "^3.1.0",
+        "multer": "^2.0.2",
+        "pg": "^8.18.0",
+        "zod": "^4.4.3"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.3.14",
+        "@repo/shared": "workspace:*",
+        "@types/compression": "^1.8.1",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.9.3",
+        "@types/pg": "^8.20.0",
+        "drizzle-kit": "^0.31.10",
+        "supabase": "^2.76.12",
+        "tsup": "^8.5.1",
+        "tsx": "^4.22.3",
+        "typescript": "^5.9.3"
+    }
 }

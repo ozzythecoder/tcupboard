@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "strictNullChecks": true,
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "verbatimModuleSyntax": true,
+        "noImplicitAny": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "paths": {
+            "@drizzle/*": ["./drizzle/*"],
+            "@/*": ["./types/*"]
+        }
+    },
+    "include": ["types", "drizzle"]
+}

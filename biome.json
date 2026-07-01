@@ -1,12 +1,21 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+    "root": true,
+    "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
     "vcs": {
         "enabled": false,
         "clientKind": "git",
         "useIgnoreFile": true
     },
     "files": {
-        "ignoreUnknown": false
+        "ignoreUnknown": false,
+        "includes": [
+            "apps/**/*.{js,ts,jsx,tsx,json}",
+            "packages/**/*.{js,ts,json}",
+            "!!**/{dist,build}",
+            "!!**/scrapers/logs/*.json",
+            "!**/routeTree.gen.ts",
+            "!!**/src.bak/*"
+        ]
     },
     "formatter": {
         "enabled": true,
@@ -17,7 +26,12 @@
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true
+            "preset": "recommended",
+            "correctness": {
+                "noChildrenProp": {
+                    "level": "off"
+                }
+            }
         }
     },
     "javascript": {
@@ -25,11 +39,21 @@
             "quoteStyle": "double"
         }
     },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        },
+        "formatter": {
+            "enabled": true
+        }
+    },
     "assist": {
         "enabled": true,
         "actions": {
             "source": {
-                "organizeImports": "on"
+                "organizeImports": "on",
+                "useSortedAttributes": "on",
+                "useSortedPackageJson": "on"
             }
         }
     }

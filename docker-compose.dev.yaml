@@ -1,0 +1,36 @@
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        working_dir: /app
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/apps/backend/node_modules
+            - /app/apps/web/node_modules
+            - pnpm-store:/pnpm/store
+        ports:
+            - "5173:5173"
+            - "24678:24678"
+        command: pnpm --filter web dev
+
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        working_dir: /app
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/apps/backend/node_modules
+            - /app/apps/web/node_modules
+            - pnpm-store:/pnpm/store
+        env_file:
+            - apps/backend/.env.development
+        ports:
+            - "3001:3001"
+        command: pnpm --filter backend dev
+
+volumes:
+    pnpm-store:

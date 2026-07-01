@@ -1,0 +1,4 @@
+._username-heading {
+    font-size: clamp(1.8rem, 3.966vw + 0.474rem, 3rem);
+    line-height: clamp(2.25rem, 4.476vw + 1.092rem, 4.225rem);
+}

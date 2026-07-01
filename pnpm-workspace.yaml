@@ -12,3 +12,12 @@ onlyBuiltDependencies:
   - supabase
 
 injectWorkspacePackages: true
+
+syncInjectedDepsAfterScripts:
+  - build
+
+allowBuilds:
+  browser-tabs-lock: false
+  core-js: false
+  esbuild: true
+  supabase: true
