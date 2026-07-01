@@ -33,8 +33,8 @@ jobs:
                   platforms: linux/amd64
                   push: true
                   tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
-                  cache-from: type=registry,scope=backend
-                  cache-to: type=registry,scope=backend,mode=max
+                  cache-from: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
+                  cache-to: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
 
             - name: Build and push caddy
               uses: docker/build-push-action@v7
@@ -44,8 +44,8 @@ jobs:
                   platforms: linux/amd64
                   push: true
                   tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:staging
-                  cache-from: type=registry,scope=caddy
-                  cache-to: type=registry,scope=caddy,mode=max
+                  cache-from: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache
+                  cache-to: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache,mode=max
 
             - name: Deploy to droplet
               uses: appleboy/ssh-action@v1
