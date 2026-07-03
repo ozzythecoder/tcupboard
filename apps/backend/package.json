@@ -6,7 +6,7 @@
         "db:gen": "drizzle-kit generate",
         "db:migrate": "tsx --env-file=.env.development src/db/migrate.ts",
         "db:transfer": "tsx --env-file=.env.development src/scripts/migration/transform.ts",
-        "dev": "NODE_ENV=development tsx --env-file=.env.development --watch src/server.js",
+        "dev": "tsx --watch src/server.js",
         "start": "node --env-file=.env.development dist/server.js",
         "test": "echo \"No tests yet. Skipping.\"; exit 0"
     },

@@ -5,9 +5,6 @@ ENV PATH="$PNPM_HOME/bin:$PATH"
 RUN corepack enable
 ENV CI=true
 
-# RUN mkdir -p /root/.config/pnpm && \
-#     printf "storeDir: /pnpm/store\npackageImportMethod: copy\n" > /root/.config/pnpm/config.yaml
-
 RUN pnpm config set storeDir /pnpm/store
 RUN pnpm config set packageImportMethod copy
 
