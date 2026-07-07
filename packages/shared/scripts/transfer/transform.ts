@@ -1,13 +1,13 @@
 import { writeFile } from "node:fs/promises";
 import { config } from "@dotenvx/dotenvx";
+import * as s from "@drizzle/schema.ts";
 import { Pool } from "pg";
 import z, { treeifyError, ZodError, type ZodType } from "zod";
-import { db } from "../../config/drizzle.ts";
-import * as s from "../../db/drizzle/schema.ts";
+import { db } from "./client.js";
 import * as schema from "./transformation-schema.ts";
 
 config({
-    path: ".env.development",
+    path: ".env",
 });
 
 const transferDb = new Pool({
