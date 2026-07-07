@@ -7,11 +7,14 @@ config({
 
 export default defineConfig({
     dialect: "postgresql",
-    out: "./drizzle",
+    out: "./drizzle/migrations",
     schema: "./drizzle/schema.ts",
     dbCredentials: {
-        url: process.env.NEON_URL!,
+        url: process.env.NEON_DEV_URL!,
     },
     verbose: true,
-    casing: "camelCase",
+    introspect: {
+        casing: 'camel'
+    },
+    tablesFilter: ["!directus_*"]
 });

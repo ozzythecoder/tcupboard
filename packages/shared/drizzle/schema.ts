@@ -299,7 +299,7 @@ export const threadsWithReplies = pgView("posts_with_replies", {
     latestReplyAuthor: text("latest_reply_author"),
     latestReplyAuthorId: integer("latest_reply_author_id").references(() => users.id),
     latestReplyAuthorAvatar: text("latest_reply_author_avatar"),
-    replyCount: integer(),
+    replyCount: integer("reply_count"),
 }).as(sql`
     select
       threads.*,

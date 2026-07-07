@@ -1,2 +1,2 @@
-export * from "./relations.js";
-export * from "./schema.js";
+export { relations } from "./relations.js";
+export * as schema from "./schema.js";
