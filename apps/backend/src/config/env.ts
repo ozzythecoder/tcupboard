@@ -1,5 +1,10 @@
+import { config } from "@dotenvx/dotenvx";
 import { z } from "zod";
 import { FatalError } from "@/types/errors.js";
+
+config({
+    path: ".env.development",
+});
 
 const envSchema = z.object({
     dev: z.boolean(),

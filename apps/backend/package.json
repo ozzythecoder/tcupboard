@@ -3,9 +3,6 @@
     "type": "module",
     "scripts": {
         "build": "tsup",
-        "db:gen": "drizzle-kit generate",
-        "db:migrate": "tsx --env-file=.env.development src/db/migrate.ts",
-        "db:transfer": "tsx --env-file=.env.development src/scripts/migration/transform.ts",
         "dev": "tsx --watch src/server.js",
         "start": "node --env-file=.env.development dist/server.js",
         "test": "echo \"No tests yet. Skipping.\"; exit 0"
@@ -19,7 +16,7 @@
         "compression": "^1.8.1",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
-        "drizzle-orm": "^0.45.2",
+        "drizzle-orm": "1.0.0-rc.4",
         "express": "^4.21.1",
         "express-oauth2-jwt-bearer": "^1.6.0",
         "googleapis": "^144.0.0",
@@ -36,7 +33,6 @@
         "@types/express": "^5.0.6",
         "@types/node": "^25.9.3",
         "@types/pg": "^8.20.0",
-        "drizzle-kit": "^0.31.10",
         "supabase": "^2.76.12",
         "tsup": "^8.5.1",
         "tsx": "^4.22.3",
