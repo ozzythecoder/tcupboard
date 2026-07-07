@@ -32,6 +32,7 @@ push:
     docker compose -f docker-compose.prod.yaml push
 
 stop: dev-stop prod-stop
+restart: stop dev
 
 kill:
     docker compose -f docker-compose.dev.yaml down -v
