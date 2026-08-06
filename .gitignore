@@ -5,6 +5,7 @@
 node_modules/
 **/node_modules/
 
+directus/
 database/
 entity_map.json
 

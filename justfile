@@ -6,8 +6,9 @@ alias df := dev-fresh
 alias pf := prod-fresh
 
 dev:
+    pnpm --filter tiptap build
     docker compose -f docker-compose.dev.yaml up -d
-    open http://localhost:5173
+    pnpm --filter slug dev
 
 dev-fresh:
     docker compose -f docker-compose.dev.yaml build --no-cache
@@ -17,6 +18,7 @@ dev-stop:
     docker compose -f docker-compose.dev.yaml down
 
 prod:
+    pnpm --filter tiptap build
     docker compose -f docker-compose.prod.yaml up -d
     open http://localhost
 

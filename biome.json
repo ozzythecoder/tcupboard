@@ -1,6 +1,6 @@
 {
     "root": true,
-    "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
     "vcs": {
         "enabled": false,
         "clientKind": "git",
@@ -11,6 +11,7 @@
         "includes": [
             "apps/**/*.{js,ts,jsx,tsx,json}",
             "packages/**/*.{js,ts,json}",
+            "!!**/node_modules",
             "!!**/{dist,build}",
             "!!**/scrapers/logs/*.json",
             "!**/routeTree.gen.ts",
