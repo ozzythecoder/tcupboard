@@ -8,6 +8,7 @@
         "test": "echo \"No tests yet. Skipping.\"; exit 0"
     },
     "dependencies": {
+        "@directus/sdk": "^23.0.0",
         "@dotenvx/dotenvx": "^1.71.2",
         "@sendgrid/mail": "^8.1.4",
         "@supabase/supabase-js": "^2.47.10",
