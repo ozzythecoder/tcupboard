@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ColorsRouteImport } from './routes/colors'
 import { Route as CallbackRouteImport } from './routes/callback'
-import { Route as AppRouteImport } from './routes/_app'
+import { Route as CampaignRouteRouteImport } from './routes/campaign/route'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CampaignIndexRouteImport } from './routes/campaign/index'
+import { Route as CampaignSlugRouteImport } from './routes/campaign/$slug'
+import { Route as AppUpdatesRouteRouteImport } from './routes/_app/updates/route'
 import { Route as AppThreadsRouteRouteImport } from './routes/_app/threads/route'
 import { Route as AppProfileRouteRouteImport } from './routes/_app/profile/route'
+import { Route as AppUpdatesIndexRouteImport } from './routes/_app/updates/index'
 import { Route as AppThreadsIndexRouteImport } from './routes/_app/threads/index'
 import { Route as AppProtectedIndexRouteImport } from './routes/_app/protected/index'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
+import { Route as AppUpdatesIdRouteImport } from './routes/_app/updates/$id'
 import { Route as AppThreadsCreateRouteImport } from './routes/_app/threads/create'
 import { Route as AppThreadsIdRouteImport } from './routes/_app/threads/$id'
 import { Route as AppProfileMeRouteImport } from './routes/_app/profile/me'
@@ -29,12 +37,27 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ColorsRoute = ColorsRouteImport.update({
+  id: '/colors',
+  path: '/colors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CallbackRoute = CallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
+const CampaignRouteRoute = CampaignRouteRouteImport.update({
+  id: '/campaign',
+  path: '/campaign',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -43,15 +66,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CampaignIndexRoute = CampaignIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CampaignRouteRoute,
+} as any)
+const CampaignSlugRoute = CampaignSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CampaignRouteRoute,
+} as any)
+const AppUpdatesRouteRoute = AppUpdatesRouteRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppThreadsRouteRoute = AppThreadsRouteRouteImport.update({
   id: '/threads',
   path: '/threads',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppProfileRouteRoute = AppProfileRouteRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppUpdatesIndexRoute = AppUpdatesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppUpdatesRouteRoute,
 } as any)
 const AppThreadsIndexRoute = AppThreadsIndexRouteImport.update({
   id: '/',
@@ -61,12 +104,17 @@ const AppThreadsIndexRoute = AppThreadsIndexRouteImport.update({
 const AppProtectedIndexRoute = AppProtectedIndexRouteImport.update({
   id: '/protected/',
   path: '/protected/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppProfileRouteRoute,
+} as any)
+const AppUpdatesIdRoute = AppUpdatesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppUpdatesRouteRoute,
 } as any)
 const AppThreadsCreateRoute = AppThreadsCreateRouteImport.update({
   id: '/create',
@@ -96,100 +144,147 @@ const AppProfileIdRoute = AppProfileIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/campaign': typeof CampaignRouteRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/profile': typeof AppProfileRouteRouteWithChildren
   '/threads': typeof AppThreadsRouteRouteWithChildren
+  '/updates': typeof AppUpdatesRouteRouteWithChildren
+  '/campaign/$slug': typeof CampaignSlugRoute
+  '/campaign/': typeof CampaignIndexRoute
   '/profile/$id': typeof AppProfileIdRoute
   '/profile/edit': typeof AppProfileEditRoute
   '/profile/me': typeof AppProfileMeRoute
   '/threads/$id': typeof AppThreadsIdRoute
   '/threads/create': typeof AppThreadsCreateRoute
+  '/updates/$id': typeof AppUpdatesIdRoute
   '/profile/': typeof AppProfileIndexRoute
   '/protected/': typeof AppProtectedIndexRoute
   '/threads/': typeof AppThreadsIndexRoute
+  '/updates/': typeof AppUpdatesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/campaign/$slug': typeof CampaignSlugRoute
+  '/campaign': typeof CampaignIndexRoute
   '/profile/$id': typeof AppProfileIdRoute
   '/profile/edit': typeof AppProfileEditRoute
   '/profile/me': typeof AppProfileMeRoute
   '/threads/$id': typeof AppThreadsIdRoute
   '/threads/create': typeof AppThreadsCreateRoute
+  '/updates/$id': typeof AppUpdatesIdRoute
   '/profile': typeof AppProfileIndexRoute
   '/protected': typeof AppProtectedIndexRoute
   '/threads': typeof AppThreadsIndexRoute
+  '/updates': typeof AppUpdatesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_app': typeof AppRouteWithChildren
+  '/_app': typeof AppRouteRouteWithChildren
+  '/campaign': typeof CampaignRouteRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/_app/profile': typeof AppProfileRouteRouteWithChildren
   '/_app/threads': typeof AppThreadsRouteRouteWithChildren
+  '/_app/updates': typeof AppUpdatesRouteRouteWithChildren
+  '/campaign/$slug': typeof CampaignSlugRoute
+  '/campaign/': typeof CampaignIndexRoute
   '/_app/profile/$id': typeof AppProfileIdRoute
   '/_app/profile/edit': typeof AppProfileEditRoute
   '/_app/profile/me': typeof AppProfileMeRoute
   '/_app/threads/$id': typeof AppThreadsIdRoute
   '/_app/threads/create': typeof AppThreadsCreateRoute
+  '/_app/updates/$id': typeof AppUpdatesIdRoute
   '/_app/profile/': typeof AppProfileIndexRoute
   '/_app/protected/': typeof AppProtectedIndexRoute
   '/_app/threads/': typeof AppThreadsIndexRoute
+  '/_app/updates/': typeof AppUpdatesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/campaign'
     | '/callback'
+    | '/colors'
+    | '/faq'
     | '/login'
     | '/profile'
     | '/threads'
+    | '/updates'
+    | '/campaign/$slug'
+    | '/campaign/'
     | '/profile/$id'
     | '/profile/edit'
     | '/profile/me'
     | '/threads/$id'
     | '/threads/create'
+    | '/updates/$id'
     | '/profile/'
     | '/protected/'
     | '/threads/'
+    | '/updates/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/callback'
+    | '/colors'
+    | '/faq'
     | '/login'
+    | '/campaign/$slug'
+    | '/campaign'
     | '/profile/$id'
     | '/profile/edit'
     | '/profile/me'
     | '/threads/$id'
     | '/threads/create'
+    | '/updates/$id'
     | '/profile'
     | '/protected'
     | '/threads'
+    | '/updates'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/campaign'
     | '/callback'
+    | '/colors'
+    | '/faq'
     | '/login'
     | '/_app/profile'
     | '/_app/threads'
+    | '/_app/updates'
+    | '/campaign/$slug'
+    | '/campaign/'
     | '/_app/profile/$id'
     | '/_app/profile/edit'
     | '/_app/profile/me'
     | '/_app/threads/$id'
     | '/_app/threads/create'
+    | '/_app/updates/$id'
     | '/_app/profile/'
     | '/_app/protected/'
     | '/_app/threads/'
+    | '/_app/updates/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRouteWithChildren
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  CampaignRouteRoute: typeof CampaignRouteRouteWithChildren
   CallbackRoute: typeof CallbackRoute
+  ColorsRoute: typeof ColorsRoute
+  FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -202,6 +297,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/colors': {
+      id: '/colors'
+      path: '/colors'
+      fullPath: '/colors'
+      preLoaderRoute: typeof ColorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -209,11 +318,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/campaign': {
+      id: '/campaign'
+      path: '/campaign'
+      fullPath: '/campaign'
+      preLoaderRoute: typeof CampaignRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -223,19 +339,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/campaign/': {
+      id: '/campaign/'
+      path: '/'
+      fullPath: '/campaign/'
+      preLoaderRoute: typeof CampaignIndexRouteImport
+      parentRoute: typeof CampaignRouteRoute
+    }
+    '/campaign/$slug': {
+      id: '/campaign/$slug'
+      path: '/$slug'
+      fullPath: '/campaign/$slug'
+      preLoaderRoute: typeof CampaignSlugRouteImport
+      parentRoute: typeof CampaignRouteRoute
+    }
+    '/_app/updates': {
+      id: '/_app/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof AppUpdatesRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/threads': {
       id: '/_app/threads'
       path: '/threads'
       fullPath: '/threads'
       preLoaderRoute: typeof AppThreadsRouteRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppRouteRoute
     }
     '/_app/profile': {
       id: '/_app/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AppProfileRouteRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/updates/': {
+      id: '/_app/updates/'
+      path: '/'
+      fullPath: '/updates/'
+      preLoaderRoute: typeof AppUpdatesIndexRouteImport
+      parentRoute: typeof AppUpdatesRouteRoute
     }
     '/_app/threads/': {
       id: '/_app/threads/'
@@ -249,7 +393,7 @@ declare module '@tanstack/react-router' {
       path: '/protected'
       fullPath: '/protected/'
       preLoaderRoute: typeof AppProtectedIndexRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppRouteRoute
     }
     '/_app/profile/': {
       id: '/_app/profile/'
@@ -257,6 +401,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/'
       preLoaderRoute: typeof AppProfileIndexRouteImport
       parentRoute: typeof AppProfileRouteRoute
+    }
+    '/_app/updates/$id': {
+      id: '/_app/updates/$id'
+      path: '/$id'
+      fullPath: '/updates/$id'
+      preLoaderRoute: typeof AppUpdatesIdRouteImport
+      parentRoute: typeof AppUpdatesRouteRoute
     }
     '/_app/threads/create': {
       id: '/_app/threads/create'
@@ -330,24 +481,59 @@ const AppThreadsRouteRouteWithChildren = AppThreadsRouteRoute._addFileChildren(
   AppThreadsRouteRouteChildren,
 )
 
-interface AppRouteChildren {
+interface AppUpdatesRouteRouteChildren {
+  AppUpdatesIdRoute: typeof AppUpdatesIdRoute
+  AppUpdatesIndexRoute: typeof AppUpdatesIndexRoute
+}
+
+const AppUpdatesRouteRouteChildren: AppUpdatesRouteRouteChildren = {
+  AppUpdatesIdRoute: AppUpdatesIdRoute,
+  AppUpdatesIndexRoute: AppUpdatesIndexRoute,
+}
+
+const AppUpdatesRouteRouteWithChildren = AppUpdatesRouteRoute._addFileChildren(
+  AppUpdatesRouteRouteChildren,
+)
+
+interface AppRouteRouteChildren {
   AppProfileRouteRoute: typeof AppProfileRouteRouteWithChildren
   AppThreadsRouteRoute: typeof AppThreadsRouteRouteWithChildren
+  AppUpdatesRouteRoute: typeof AppUpdatesRouteRouteWithChildren
   AppProtectedIndexRoute: typeof AppProtectedIndexRoute
 }
 
-const AppRouteChildren: AppRouteChildren = {
+const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppProfileRouteRoute: AppProfileRouteRouteWithChildren,
   AppThreadsRouteRoute: AppThreadsRouteRouteWithChildren,
+  AppUpdatesRouteRoute: AppUpdatesRouteRouteWithChildren,
   AppProtectedIndexRoute: AppProtectedIndexRoute,
 }
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
+interface CampaignRouteRouteChildren {
+  CampaignSlugRoute: typeof CampaignSlugRoute
+  CampaignIndexRoute: typeof CampaignIndexRoute
+}
+
+const CampaignRouteRouteChildren: CampaignRouteRouteChildren = {
+  CampaignSlugRoute: CampaignSlugRoute,
+  CampaignIndexRoute: CampaignIndexRoute,
+}
+
+const CampaignRouteRouteWithChildren = CampaignRouteRoute._addFileChildren(
+  CampaignRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRouteWithChildren,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  CampaignRouteRoute: CampaignRouteRouteWithChildren,
   CallbackRoute: CallbackRoute,
+  ColorsRoute: ColorsRoute,
+  FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
