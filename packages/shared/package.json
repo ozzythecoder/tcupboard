@@ -13,10 +13,12 @@
     },
     "scripts": {
         "build": "tsup",
+        "coverage": "vitest run --coverage",
         "dev": "tsup --watch",
         "gen": "drizzle-kit generate",
         "migrate": "drizzle-kit migrate",
         "pull": "drizzle-kit pull && rm -rf drizzle/meta drizzle/*.sql",
+        "test": "vitest",
         "transfer": "tsx --env-file=.env scripts/transfer/transform.ts"
     },
     "dependencies": {
@@ -26,10 +28,12 @@
         "@dotenvx/dotenvx": "^1.75.1",
         "@types/node": "^25.9.4",
         "@types/pg": "^8.20.0",
+        "@vitest/coverage-v8": "4.1.10",
         "drizzle-kit": "1.0.0-rc.4",
         "drizzle-orm": "1.0.0-rc.4",
         "pg": "^8.18.0",
         "tsup": "^8.5.1",
-        "tsx": "^4.22.5"
+        "tsx": "^4.22.5",
+        "vitest": "^4.1.10"
     }
 }

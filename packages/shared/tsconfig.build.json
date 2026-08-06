@@ -14,5 +14,6 @@
             "@/*": ["./types/*"]
         }
     },
-    "include": ["types", "drizzle"]
+    "include": ["types", "drizzle"],
+    "exclude": ["**/*.spec.ts"]
 }
