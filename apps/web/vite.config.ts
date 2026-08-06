@@ -1,7 +1,7 @@
+import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -19,6 +19,9 @@ export default defineConfig({
     },
     build: {
         outDir: "dist",
+        rolldownOptions: {
+            external: ["path", "fs", "url", "source-map-js"],
+        },
     },
     resolve: {
         tsconfigPaths: true,
@@ -28,7 +31,10 @@ export default defineConfig({
     },
     server: {
         port: 5173,
-        host: '0.0.0.0',
+        host: "0.0.0.0",
+        headers: {
+            "Content-Security-Policy": `frame-ancestors 'self' ${process.env.VITE_DIRECTUS_URL}`,
+        }
     },
     preview: {
         port: 5173,
