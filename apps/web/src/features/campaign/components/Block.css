@@ -1,0 +1,12 @@
+._block {
+    background-color: var(--block-bg-color);
+    color: var(--block-fg-color);
+    
+    ._block-content {
+        margin-inline: calc(var(--spacing) * 4);
+    }
+    
+    ._block-content > blockquote {
+        opacity: 0.80;
+    }
+}
