@@ -43,6 +43,7 @@ export const threadQueries = {
                 const id = queryKey[2];
                 return await api.get<PostWithAuthor>(`threads/${id}`).json();
             },
+            staleTime: ONE_MINUTE * 0.5,
         }),
     replies: (threadId: string, api: ProtectedApiInstance) =>
         queryOptions({
@@ -51,7 +52,7 @@ export const threadQueries = {
                 const id = queryKey[3];
                 return await api.get<PostWithAuthor[]>(`threads/${id}/replies`).json();
             },
-            staleTime: ONE_MINUTE * 10,
+            staleTime: ONE_MINUTE * 0.5,
         }),
 };
 
@@ -103,7 +104,7 @@ export const threadMutations = {
                 }
             },
             onSuccess: (_data, variables, _result, ctx) => {
-                ctx.client.invalidateQueries({ queryKey: threadKeys.one(variables.id) });
+                ctx.client.invalidateQueries({ queryKey: threadKeys.one(variables.parent_id.toString()) });
             },
         }),
 };
