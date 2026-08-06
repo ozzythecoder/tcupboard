@@ -1,7 +1,38 @@
 import { type LinkProps, linkOptions, type RegisteredRouter } from "@tanstack/react-router";
-import { type LucideIcon, MessageCirclePlus, MessagesSquare, User2Icon } from "lucide-react";
+import { type LucideIcon, Megaphone, MessageCirclePlus, MessagesSquare, Newspaper } from "lucide-react";
 
-export const NAVIGATION_LINKS = [
+export const FOOTER_NAVIGATION_LINKS = [
+    linkOptions({
+        to: "/updates",
+        text: "News",
+    }),
+    linkOptions({
+        to: "/campaign",
+        text: "Campaigns"
+    }),
+    linkOptions({
+        to: "/threads",
+        text: "TCUPboard Chat"
+    })
+] as const satisfies ReadonlyArray<NavItem>;
+
+export const SIDEBAR_NAVIGATION_LINKS = [
+    linkOptions({
+        to: "/campaign",
+        text: "Campaigns",
+        Icon: Megaphone,
+        activeOptions: {
+            exact: true,
+        },
+    }),
+    linkOptions({
+        to: "/updates",
+        text: "News",
+        Icon: Newspaper,
+        activeOptions: {
+            exact: true,
+        },
+    }),
     {
         text: "Chat",
         nested: [
@@ -24,14 +55,6 @@ export const NAVIGATION_LINKS = [
             }),
         ],
     },
-    linkOptions({
-        to: "/profile/me",
-        text: "My Profile",
-        Icon: User2Icon,
-        activeOptions: {
-            exact: true,
-        },
-    }),
 ] as const satisfies ReadonlyArray<NavItem>;
 
 export type NavItem = NavLink | NestedNavLink;
