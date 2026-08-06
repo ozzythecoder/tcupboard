@@ -32,12 +32,22 @@
         }
     },
     "TypeScript": { "formatter": { "language_server": { "name": "biome" } },
+        "language_servers": [
+            "!vue-language-server",
+            "..."
+        ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
             "source.organizeImports.biome": true,
         }
     },
-    "Vue.js": { "formatter": { "language_server": { "name": "biome" } } },
+    "Vue.js": {
+        "formatter": { "language_server": { "name": "vue-language-server" } },
+        "language_servers": [
+            "vue-language-server",
+            "vtsls"
+        ],
+    },
   },
   "tab_size": 4,
   "language_servers": [
@@ -48,13 +58,14 @@
       "vtsls",
       "biome",
       "tailwindcss-language-server",
-      "json-language-server"
+      "json-language-server",
+      "vue-language-server"
   ],
   "lsp": {
       "biome": {
           "settings": {
               "goto_definition": true
           }
-      }
+      },
   }
 }
