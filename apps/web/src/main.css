@@ -6,6 +6,7 @@
 @import '@skeletonlabs/skeleton/themes/mona';
 
 @import '@fontsource/arimo';
+@import '@fontsource/caprasimo';
 @import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
 
 /* dark mode determined by data attributes rather than prefers-color-scheme */
@@ -17,20 +18,24 @@
 
     --container-ml: 30rem;
 
-    --default-font-family: 'Atkinson Hyperlegible Next Variable';
-    
+    --font-base: 'Atkinson Hyperlegible Next Variable', sans-serif;
     --font-fancy: 'Bodoni Moda Variable', serif;
     --font-heading: 'Sora Variable', serif;
+}
 
+:root {
+    --default-font-family: 'Atkinson Hyperlegible Next Variable';
+    --heading-font-family: 'Sora Variable', serif;
     --heading-letter-spacing: -0.025em;
 }
 
 @layer base {
     html {
         scroll-behavior: smooth;
+        font-family: var(--default-font-family);
     }
 
-    input  {
+    input {
         outline-color: var(--color-surface-200-800);
 
         &:focus {
@@ -48,7 +53,7 @@
         font-variant-emoji: emoji;
     }
 
-    #content {
+    ._page-gradient {
         --mesh-color: oklch(from var(--color-secondary-800) 0.4 c h );
         background-color: light-dark( var(--color-primary-100), var(--color-primary-900) );
         background-image:
@@ -58,6 +63,16 @@
         background-attachment: fixed;
     }
 
+}
+/* caprasimo-latin-400-normal */
+@font-face {
+  font-family: 'Caprasimo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff2) format(woff2),
+       url(@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff) format('woff');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
 /* bodoni-moda-latin-wght-normal */
@@ -108,6 +123,10 @@
     font-family: 'Sora Variable', serif;
 }
 
+@utility font-caprasimo {
+    font-family: 'Caprasimo', sans-serif;
+}
+
 @utility gradient-text-* {
     background: linear-gradient(to right, var(--color-secondary-600-400), var(--color-tertiary-700-300), var(--color-primary-800-200), --value(--color-*));
     display: inline-block;
@@ -120,6 +139,10 @@
     background: color-mix(in oklab, var(--color-surface-50-950) 60%, transparent);
     box-shadow: 0 0 30px color-mix(in oklab, --value(--color-*) 40%, transparent) inset;
     backdrop-filter: blur(16px);
+}
+
+@utility drop-shadow-hard-* {
+    filter: drop-shadow(4px 4px 0px --value(--color-*));
 }
 
 @utility text-shadow-hard-* {

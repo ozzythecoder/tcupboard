@@ -6,6 +6,13 @@
             font-family: var(--default-font-family);
             font-size: 1.2rem;
         }
+        
+        blockquote {
+            padding-inline: 1rem;
+            border-left: 1px solid var(--color-surface-600-400);
+            font-style: italic;
+            color: color-mix(in oklch, var(--color-surface-900-100), transparent 10%);
+        }
 
         p {
             margin-block: var(--block-margin);
@@ -19,7 +26,6 @@
 
         h1 {
             font-size: var(--text-4xl);
-            @apply text-shadow-hard-surface-50-950;
         }
 
         em {
@@ -44,6 +50,10 @@
 
         a {
             color: light-dark(var(--anchor-font-color), var(--anchor-font-color-dark));
+
+            &:hover {
+                color: var(--surface-950-50);
+            }
         }
     }
 }
