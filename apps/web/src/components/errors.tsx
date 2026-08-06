@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { isAppError } from "#/config/error";
 import { TopBar } from "./TopBar";
+import { BackLink } from "./ui/BackLink";
 import { Gutter } from "./ui/Gutter";
 
 export function UnauthorizedComponent() {
@@ -18,13 +19,23 @@ export function UnauthorizedComponent() {
     );
 }
 
+export function NotFoundComponent() {
+    return (
+        <div className="grid place-items-center gap-4">
+            <h1 className="h1">Resource Not Found</h1>
+            <p>We didn't find anything matching your request. 😕</p>
+            <BackLink />
+        </div>
+    );
+}
+
 export function InternalErrorComponent() {
     return (
         <div className="grid place-items-center gap-4">
             <h1 className="h1">Internal Error</h1>
             <p>
                 You didn't do anything wrong; the server is dealing with an unknown error. Try again
-                later.
+                later, or contact the website administrators.
             </p>
         </div>
     );
@@ -46,7 +57,7 @@ export function ErrorComponent({ error }: { error: unknown }) {
     if (isAppError(error)) {
         switch (error._tag) {
             case "NOT_FOUND": {
-                return <h1 className="h1">Resource Not Found</h1>;
+                return <NotFoundComponent />;
             }
             case "UNAUTHORIZED": {
                 return <UnauthorizedComponent />;
