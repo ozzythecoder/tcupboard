@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, MessagesSquare } from "lucide-react";
 import { Teapot } from "#/components/Teapot";
 import { ThemeSwitch } from "#/components/ui/ThemeSwitch";
-import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
     component: RouteComponent,
@@ -25,20 +25,28 @@ function RouteComponent() {
                 <h3 className="font-secondary font-semibold">
                     Brought to you by{" "}
                     <a
-                        href="https://takeactionminnesota.org/twin-cities-united-performers/"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="anchor"
+                        href="https://takeactionminnesota.org/twin-cities-united-performers/"
+                        rel="noopener noreferrer"
+                        target="_blank"
                     >
                         Twin Cities United Performers
                     </a>
                 </h3>
-                <Link
-                    to="/threads"
-                    className="btn xs:btn-lg w-fit preset-filled-primary-800-200 font-secondary mx-auto"
-                >
-                    Join the Conversation <ArrowRight />
-                </Link>
+                <div className="flex flex-col gap-4 items-stretch md:items-center md:flex-row">
+                    <Link
+                        className="btn xs:btn-lg w-full md:w-fit preset-filled-secondary-800-200 font-secondary mx-auto"
+                        to="/updates"
+                    >
+                        See What's New <ArrowRight />
+                    </Link>
+                    <Link
+                        className="btn xs:btn-lg w-full md:w-fit preset-filled-primary-800-200 font-secondary mx-auto"
+                        to="/threads"
+                    >
+                        Join the Conversation <MessagesSquare />
+                    </Link>
+                </div>
                 <div>
                     <p className="pb-4">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris neque arcu,
