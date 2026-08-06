@@ -10,6 +10,12 @@ services:
             - /app/packages/shared/node_modules
             - pnpm-store:/pnpm/store
         command: pnpm --filter shared dev
+        healthcheck:
+            test: ["CMD", "test", "-f", "/app/packages/shared/dist/types/index.js"]
+            interval: 2s
+            timeout: 5s
+            retries: 30
+            start_period: 10s
 
     web:
         build:
@@ -30,7 +36,7 @@ services:
             - "24678:24678"
         depends_on:
             shared:
-                condition: service_started
+                condition: service_healthy
         command: pnpm --filter web dev
 
     backend:
@@ -51,7 +57,7 @@ services:
             - "3001:3001"
         depends_on:
             shared:
-                condition: service_started
+                condition: service_healthy
         command: pnpm --filter backend dev
 
     directus:
@@ -59,9 +65,7 @@ services:
         ports:
             - 8055:8055
         volumes:
-            - ./database:/directus/database
-            - ./uploads:/directus/uploads
-            - ./extensions:/directus/extensions
+            - ./packages/extensions:/directus/extensions
         env_file:
             - .env.directus.local
         environment:
