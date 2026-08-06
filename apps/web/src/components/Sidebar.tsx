@@ -76,11 +76,11 @@ export function ToggleSidebarButton({ icon: ToggleIcon = MenuIcon }: { icon?: Lu
         <button
             className="block md:hidden"
             id="open-sidebar"
-            type="button"
             onClick={(e) => {
                 e.stopPropagation();
                 toggleOpen();
             }}
+            type="button"
         >
             <label className="sr-only" htmlFor="open-sidebar">
                 Open Sidebar

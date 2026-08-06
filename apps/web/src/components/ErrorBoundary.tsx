@@ -24,7 +24,7 @@ export class ErrorBoundary extends Component<
         if (isAppError(error)) {
             switch (error._tag) {
                 case "NOT_FOUND": {
-                    return <h1 className="h1">Profile Not Found</h1>;
+                    return <h1 className="h1">Not Found</h1>;
                 }
                 case "UNAUTHORIZED": {
                     return <UnauthorizedComponent />;

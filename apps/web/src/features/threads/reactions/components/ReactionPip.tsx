@@ -26,9 +26,7 @@ export function ReactionList({ postId }: ReactionListProps) {
         );
     }
 
-    if (isError || !reactions) {
-        return null;
-    }
+    if (isError || !reactions) return null;
 
     const data = reactions.reduce(
         (ac, cr) => {
