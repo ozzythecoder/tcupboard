@@ -4,7 +4,7 @@ import { ExternalLink, X } from "lucide-react";
 import { useState } from "react";
 
 const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-const CAMPAIGN_CLOSED_KEY = "campaignHighlightClosed";
+const CAMPAIGN_CLOSED_KEY = "campaign_highlight_closed";
 
 export function CampaignHighlightWrapper({ campaign }: { campaign: Campaign }) {
     const closedState = localStorage.getItem(CAMPAIGN_CLOSED_KEY);
