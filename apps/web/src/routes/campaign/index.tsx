@@ -5,7 +5,7 @@ export const Route = createFileRoute("/campaign/")({
     beforeLoad: async ({ context }) => {
         const opts = campaignQueries.highlighted();
         const highlighted = await context.queryClient.ensureQueryData(opts);
-        throw redirect({ to: "/campaign/$slug", params: { slug: highlighted.campaign.slug } });
+        throw redirect({ to: "/campaign/$slug", params: { slug: highlighted.slug } });
     },
     component: RouteComponent,
 });
