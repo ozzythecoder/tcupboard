@@ -20,9 +20,7 @@ function RootComponent() {
         <>
             <SidebarContextProvider>
                 <SkipToContent />
-                <div className="flex-5 md:flex-4 min-h-screen">
-                    <Outlet />
-                </div>
+                <Outlet />
                 <ReactQueryDevtools initialIsOpen={false} />
             </SidebarContextProvider>
             <ToastProvider toast={toaster} />
