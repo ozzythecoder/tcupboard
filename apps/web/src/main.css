@@ -24,6 +24,7 @@
 }
 
 :root {
+    --base-font-family: 'Atkinson Hyperlegible Next Variable', sans-serif;
     --default-font-family: 'Atkinson Hyperlegible Next Variable';
     --heading-font-family: 'Sora Variable', serif;
     --heading-letter-spacing: -0.025em;
@@ -32,7 +33,6 @@
 @layer base {
     html {
         scroll-behavior: smooth;
-        font-family: var(--default-font-family);
     }
 
     input {
