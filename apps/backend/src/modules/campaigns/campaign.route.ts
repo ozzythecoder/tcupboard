@@ -1,4 +1,3 @@
-import type { Campaign } from "@repo/shared";
 import express from "express";
 import z from "zod";
 import { directus } from "@/config/cms.js";
@@ -14,11 +13,9 @@ const svc = new CampaignService(gateway);
 
 router.get("/highlight", async (_req, res, next) => {
     try {
-        let data = await svc.getHighlightedCampaign();
-        if (!data.id) {
-            console.log("Highlight failed. Getting random campaign");
-            data = (await svc.getAnyCampaign()) as Campaign;
-            if (!data) throw new NotFoundError("No campaign found.");
+        const data = await svc.getHighlightedCampaign();
+        if (!data) {
+            throw new NotFoundError("No campaign found.");
         }
         res.json(data);
     } catch (e) {
