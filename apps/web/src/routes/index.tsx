@@ -1,17 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessagesSquare } from "lucide-react";
+import { Info, MessagesSquare, Newspaper } from "lucide-react";
+import { ErrorComponent } from "#/components/errors";
+import { Footer } from "#/components/layouts/Footer";
 import { Teapot } from "#/components/Teapot";
 import { ThemeSwitch } from "#/components/ui/ThemeSwitch";
+import { FrontPageCampaignHighlight } from "#/features/campaign/components/FrontPageCampaignHighlight";
 
 export const Route = createFileRoute("/")({
     component: RouteComponent,
+    errorComponent: ErrorComponent,
 });
 
 function RouteComponent() {
     return (
         <div>
             <ThemeSwitch className="absolute top-4 right-4" />
-            <div className="pt-18 flex flex-col gap-8 max-w-[65ch] md:max-w-[80ch] px-4 mx-auto">
+            <main className="pt-18 pb-24 flex flex-col gap-8 max-w-[65ch] md:max-w-[80ch] px-4 mx-auto">
                 <div className="flex flex-row justify-between items-end">
                     <h1 className="h1 font-secondary text-4xl flex flex-col gap-1 md:text-6xl gradient-text-warning-800-200!">
                         <span className="text-xl md:text-2xl">The</span>{" "}
@@ -33,18 +37,22 @@ function RouteComponent() {
                         Twin Cities United Performers
                     </a>
                 </h3>
-                <div className="flex flex-col gap-4 items-stretch md:items-center md:flex-row">
-                    <Link
-                        className="btn xs:btn-lg w-full md:w-fit preset-filled-secondary-800-200 font-secondary mx-auto"
-                        to="/updates"
-                    >
-                        See What's New <ArrowRight />
+                <FrontPageCampaignHighlight />
+                <div className="flex flex-col md:flex-row justify-evenly gap-4">
+                    <Link className="card btn preset-filled-tertiary-600-400 p-2 w-full" to="/faq">
+                        Who are we? <Info />
                     </Link>
                     <Link
-                        className="btn xs:btn-lg w-full md:w-fit preset-filled-primary-800-200 font-secondary mx-auto"
+                        className="card btn preset-filled-primary-700-300 p-2 w-full"
+                        to="/updates"
+                    >
+                        What's new at TCUP <Newspaper />
+                    </Link>
+                    <Link
+                        className="card btn preset-filled-secondary-700-300 p-2 w-full"
                         to="/threads"
                     >
-                        Join the Conversation <MessagesSquare />
+                        TCUPboard chat <MessagesSquare />
                     </Link>
                 </div>
                 <div>
@@ -65,7 +73,8 @@ function RouteComponent() {
                         dolor sit amet, consectetur adipiscing elit.
                     </p>
                 </div>
-            </div>
+            </main>
+            <Footer />
         </div>
     );
 }
