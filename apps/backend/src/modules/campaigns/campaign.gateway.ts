@@ -1,20 +1,23 @@
-import { readItems, readSingleton } from "@directus/sdk";
+import { readItem, readItems, readSingleton } from "@directus/sdk";
+import type { Campaign } from "@repo/shared";
 import type { CmsClient } from "@/config/cms.js";
 
 export class CampaignGateway {
     constructor(private readonly cms: CmsClient) {}
 
+    private allCampaignFields = [
+        "*",
+        {
+            call_to_action: ["*"],
+            theme: ["*"],
+            blocks: ["*", { item: { block_richtext: ["*", { theme: ["*"] }] } }],
+        },
+    ];
+
     async getCampaignBySlug(slug: string, preview?: boolean) {
-        return await this.cms.request(
+        return await this.cms.request<Campaign>(
             readItems("campaigns", {
-                fields: [
-                    "*",
-                    {
-                        call_to_action: ["*"],
-                        theme: ["*"],
-                        blocks: ["*", { item: { block_richtext: ["*", { theme: ["*"] }] } }],
-                    },
-                ],
+                fields: this.allCampaignFields,
                 filter: {
                     slug: {
                         _eq: slug,
@@ -26,10 +29,16 @@ export class CampaignGateway {
     }
 
     async getHighlightedCampaign() {
-        return await this.cms.request(
+        const highlight = await this.cms.request<{
+            campaign: { id: string };
+        }>(
             readSingleton("global_campaign_highlight", {
-                fields: ["*", { campaign: ["slug"] }],
+                fields: [{ campaign: ["id"] }],
             }),
+        );
+
+        return await this.cms.request<Campaign>(
+            readItem("campaigns", highlight.campaign.id, { fields: this.allCampaignFields }),
         );
     }
 

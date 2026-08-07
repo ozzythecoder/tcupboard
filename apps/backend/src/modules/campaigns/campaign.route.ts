@@ -1,3 +1,4 @@
+import type { Campaign } from "@repo/shared";
 import express from "express";
 import z from "zod";
 import { directus } from "@/config/cms.js";
@@ -11,23 +12,20 @@ const router = express.Router();
 const gateway = new CampaignGateway(directus);
 const svc = new CampaignService(gateway);
 
-router.get(
-    "/highlight",
-    async (_req, res, next) => {
-        try {
-            let data = await svc.getHighlightedCampaign()
-            if (!data.id) {
-                console.log("Highlight failed. Getting random campaign")
-                data = await svc.getAnyCampaign()
-                if (data.length === 0) throw new NotFoundError("No campaign found.");
-            }
-            res.json(data)
-        } catch (e) {
-            console.error("Failed to get highlighted campaign:", e)
-            next(e)
+router.get("/highlight", async (_req, res, next) => {
+    try {
+        let data = await svc.getHighlightedCampaign();
+        if (!data.id) {
+            console.log("Highlight failed. Getting random campaign");
+            data = (await svc.getAnyCampaign()) as Campaign;
+            if (!data) throw new NotFoundError("No campaign found.");
         }
+        res.json(data);
+    } catch (e) {
+        console.error("Failed to get highlighted campaign:", e);
+        next(e);
     }
-)
+});
 
 router.get(
     "/:slug",
@@ -41,17 +39,16 @@ router.get(
         const pvw = req.query.preview === "true";
 
         try {
-            let data = await svc.getCampaignBySlug(slug, pvw);
-            if (data.length === 0) {
+            let campaign = await svc.getCampaignBySlug(slug, pvw);
+            if (!campaign) {
                 // will return 404 if no draft exists. fallback to published version
                 if (pvw) {
-                    data = await svc.getCampaignBySlug(slug);
-                    if (data.length === 0) throw new NotFoundError("No such campaign found.");
+                    campaign = await svc.getCampaignBySlug(slug);
+                    if (!campaign) throw new NotFoundError("No such campaign found.");
                 } else {
                     throw new NotFoundError("No such campaign found.");
                 }
             }
-            const campaign = data[0];
 
             res.json({
                 ...campaign,

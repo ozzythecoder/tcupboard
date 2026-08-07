@@ -5,8 +5,9 @@ export class CampaignService {
         private readonly campaignGateway: CampaignGateway,
     ) {}
 
-    getCampaignBySlug(slug: string, preview?: boolean) {
-        return this.campaignGateway.getCampaignBySlug(slug, preview);
+    async getCampaignBySlug(slug: string, preview?: boolean) {
+        const campaigns = await this.campaignGateway.getCampaignBySlug(slug, preview);
+        return campaigns[0]
     }
 
     getHighlightedCampaign() {
