@@ -43,7 +43,7 @@ export const campaignQueries = {
             queryKey: campaignKeys.highlighted(),
             queryFn: async () => {
                 try {
-                    const res = await api.get<{ id: number; campaign: { slug: string } }>(
+                    const res = await api.get<Campaign>(
                         "campaigns/highlight",
                     );
                     return await res.json();
