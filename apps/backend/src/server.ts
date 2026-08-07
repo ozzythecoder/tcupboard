@@ -1,4 +1,3 @@
-import compression from "compression";
 import cors from "cors";
 import express from "express";
 import { env } from "./config/env.js";
@@ -6,14 +5,14 @@ import { ErrorHandlerMiddleware } from "./middleware/error-handler.js";
 import { LoggerMiddleware } from "./middleware/logger.js";
 import { campaignRouter } from "./modules/campaigns/index.js";
 import { cloudinarySignatureRouter } from "./modules/cloudinary/signature.route.js";
+import { globalsRouter } from "./modules/globals/index.js";
 import { tcupUpdatesRouter } from "./modules/tcup-updates/index.js";
 import { threadsRouter } from "./modules/threads/index.js";
 import { userRouter } from "./modules/users/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.use(
-    compression(),
     LoggerMiddleware({ withTimestamp: true }),
     cors({
         origin: env.allowedOrigins,
@@ -30,6 +29,7 @@ apiRouter.use("/threads", threadsRouter);
 apiRouter.use("/cloudinary-signature", cloudinarySignatureRouter);
 apiRouter.use("/updates", tcupUpdatesRouter);
 apiRouter.use("/campaigns", campaignRouter);
+apiRouter.use("/globals", globalsRouter);
 
 // apiRouter.use("/auth", authRoutes);
 // apiRouter.use("/tags", tagsRouter);
