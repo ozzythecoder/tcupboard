@@ -9,6 +9,9 @@ ignoredBuiltDependencies:
   - core-js-pure
   - esbuild
 
+catalog:
+  "@biomejs/biome": "2.5.1"
+
 overrides:
   "@tiptap/core": "3.27.3"
   "@tiptap/pm": "3.27.3"
