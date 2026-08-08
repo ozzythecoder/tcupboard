@@ -54,16 +54,46 @@
     }
 
     ._page-gradient {
-        --mesh-color: oklch(from var(--color-secondary-800) 0.4 c h );
-        background-color: light-dark( var(--color-primary-100), var(--color-primary-900) );
-        background-image:
-            radial-gradient(at 0% 30%, light-dark(var(--color-secondary-200), var(--mesh-color) ) 0px, transparent 50%),
-            linear-gradient(90deg, var(--color-surface-200-800) 0%, transparent 100%)
+        position: relative;
+        --bg:
+            light-dark(
+                color-mix(in oklch, var(--color-surface-50) 90%, transparent),
+                color-mix(in oklch, var(--color-surface-950) 15%, transparent)
+            );
+        --mesh-color: oklch(from var(--color-secondary-200-800) l c h );
+
+        &::before {
+            position: absolute;
+            content: '';
+            inset: 0;
+            z-index: -1;
+            background: url('/assets/presentation/noise.svg');
+            opacity: .4;
+        }
+
+        background:
+            linear-gradient(
+                to top left,
+                var(--color-surface-200-800) 0%,
+                transparent 100%
+            )
+            , radial-gradient(at 0% 30%, var(--mesh-color) 0px, transparent 50%)
+            , var(--bg)
         ;
         background-attachment: fixed;
     }
 
+    ._noisy-background {
+        --bg:
+            light-dark(
+                color-mix(in oklch, var(--color-surface-50) 90%, transparent),
+                color-mix(in oklch, var(--color-surface-950) 75%, transparent)
+            );
+        background: url('/assets/presentation/noise.svg'), var(--bg);
+        background-blend-mode: darken;
+    }
 }
+
 /* caprasimo-latin-400-normal */
 @font-face {
   font-family: 'Caprasimo';
