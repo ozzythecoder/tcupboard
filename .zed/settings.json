@@ -8,11 +8,17 @@
     },
     "HTML": { "formatter": { "language_server": { "name": "biome" } } },
     "JSON": { "formatter": { "language_server": { "name": "biome" } },
+        "language_servers": [
+            "biome"
+        ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
         }
     },
     "JSONC": { "formatter": { "language_server": { "name": "biome" } },
+        "language_servers": [
+            "biome"
+        ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
         }
@@ -26,6 +32,13 @@
     },
     "Svelte": { "formatter": { "language_server": { "name": "biome" } } },
     "TSX": { "formatter": { "language_server": { "name": "biome" } },
+        "language_servers": [
+            "!deno",
+            "!oxlint",
+            "!oxfmt",
+            "vtsls",
+            "biome"
+        ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
             "source.organizeImports.biome": true,
@@ -34,7 +47,8 @@
     "TypeScript": { "formatter": { "language_server": { "name": "biome" } },
         "language_servers": [
             "!vue-language-server",
-            "..."
+            "vtsls",
+            "biome"
         ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
@@ -50,17 +64,6 @@
     },
   },
   "tab_size": 4,
-  "language_servers": [
-      "!deno",
-      "!oxlint",
-      "!oxfmt",
-      "!eslint",
-      "vtsls",
-      "biome",
-      "tailwindcss-language-server",
-      "json-language-server",
-      "vue-language-server"
-  ],
   "lsp": {
       "biome": {
           "settings": {
