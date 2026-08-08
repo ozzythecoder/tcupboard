@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import z from "zod";
+import { ErrorComponent } from "#/components/errors";
+import { Loading } from "#/components/Loading";
 import { getProtectedApi } from "#/config/api";
+import { NotFoundError } from "#/config/error";
 import { ThreadList, threadQueries } from "#/features/threads";
 import { ThreadsLoading } from "./-loading";
 
@@ -12,6 +15,8 @@ const routeQuerySchema = z.object({
 export const Route = createFileRoute("/_app/threads/")({
     validateSearch: routeQuerySchema,
     component: RouteComponent,
+    errorComponent: ErrorComponent,
+    pendingComponent: Loading,
     loaderDeps: ({ search }) => ({ page: search.page }),
     loader: async ({ context, deps }) => {
         const authApi = getProtectedApi(await context.auth.getId());
@@ -30,9 +35,8 @@ function RouteComponent() {
     if (isFetching) return <ThreadsLoading />;
     if (error) throw error;
     if (!data) {
-        return <div>nothin.</div>;
+        throw new NotFoundError();
     }
-    console.log(data);
 
     return (
         <div className="flex flex-col justify-between pb-12">
@@ -53,8 +57,8 @@ function PaginationButtons({ pageData }: { pageData: { current: number; total: n
             {pageData.current > 1 ? (
                 <Link
                     className="btn btn-sm preset-outlined"
-                    to={`/threads`}
                     search={{ page: pageData.current - 1 }}
+                    to={`/threads`}
                 >
                     Previous
                 </Link>
@@ -66,9 +70,9 @@ function PaginationButtons({ pageData }: { pageData: { current: number; total: n
             </span>
             {pageData.current < pageData.total ? (
                 <Link
-                    to={`/threads`}
                     className="btn btn-sm preset-outlined"
                     search={{ page: pageData.current + 1 }}
+                    to={`/threads`}
                 >
                     Next
                 </Link>
