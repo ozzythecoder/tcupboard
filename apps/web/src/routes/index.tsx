@@ -15,13 +15,19 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
     return (
         <div className="_noisy-background min-h-dvh flex flex-col justify-between">
-            <main className="pt-18 pb-24 relative flex flex-col gap-8 max-w-[65ch] md:max-w-[80ch] px-4 mx-auto">
+            <div className="pt-18 pb-24 relative flex flex-col gap-8 max-w-[65ch] md:max-w-[80ch] px-4 mx-auto">
                 <ThemeSwitch className="absolute top-4 right-4" />
-                <Hero />
-                <FrontPageCampaignHighlight />
-                <ActionLinks />
-                <Intro />
-            </main>
+                <main
+                    className="flex flex-col gap-8 max-w-[65ch] md:max-w-[80ch] px-4 mx-auto"
+                    id="content"
+                    tabIndex={-1}
+                >
+                    <Hero />
+                    <FrontPageCampaignHighlight />
+                    <ActionLinks />
+                    <Intro />
+                </main>
+            </div>
             <Footer />
         </div>
     );
