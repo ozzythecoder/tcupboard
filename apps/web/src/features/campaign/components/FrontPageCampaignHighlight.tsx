@@ -19,24 +19,25 @@ export function FrontPageCampaignHighlight() {
     }
 
     if (!data || error) {
-        // Placeholder
         return (
-            <div className="h-42 sm:h-28 _campaign-highlight-gradient flex flex-row items-center justify-center">
-                <h3 className="h3">Minnesota musicians are building power.</h3>
+            <div className="h-42 sm:h-28 _campaign-highlight-gradient flex flex-row items-center justify-center rounded-md">
+                <h3 className="h3 px-2">Minnesota musicians are building power.</h3>
             </div>
         );
     }
 
     return (
         <div
-            className="card p-4 flex flex-col hover:brightness-110"
+            className="card relative p-4 flex flex-col transition-all hover:brightness-110 drop-shadow-[0_4px_16px_var(--color-amber-300)]"
             style={{
-                backgroundImage: `linear-gradient(to right, ${data.theme.background} 10%, ${getGradientStop(data.theme.background)} 90%`,
+                border: `1px solid color-mix(in oklch, ${data.theme.background} 90%, var(--color-surface-50-950))`,
+                backgroundImage: `linear-gradient(to right, ${data.theme.background} 10%, ${getGradientStop(data.theme.background)} 90%)`,
                 color: data.theme.foreground,
             }}
         >
             <Link
                 className="h3 anchor flex flex-col xs:flex-row justify-between items-center gap-2"
+                id="campaign-highlight-link"
                 params={{ slug: data.slug }}
                 to="/campaign/$slug"
             >
@@ -51,7 +52,7 @@ export function FrontPageCampaignHighlight() {
 
 /**
  * Derives a gradient stop color based on the lightness of the passed color.
- * 
+ *
  * Dark colors return a slightly lighter color, light colors return a slightly darker color.
  * Colors with less than 0.5 luminance are considered dark.
  *
