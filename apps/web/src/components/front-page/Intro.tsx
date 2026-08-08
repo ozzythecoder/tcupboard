@@ -22,7 +22,7 @@ export function Intro() {
     if (error || !intro) throw error;
 
     return (
-        <div className="card p-4 _uncontrolled preset-glass-surface-200-800">
+        <div className="card p-8 _uncontrolled preset-glass-sky-100 drop-shadow-neutral-950/50 drop-shadow-lg">
             <RichTextContent content={intro.content} />
         </div>
     );
