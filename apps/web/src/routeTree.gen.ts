@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ColorsRouteImport } from './routes/colors'
 import { Route as CallbackRouteImport } from './routes/callback'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CampaignRouteRouteImport } from './routes/campaign/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -50,6 +51,11 @@ const ColorsRoute = ColorsRouteImport.update({
 const CallbackRoute = CallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CampaignRouteRoute = CampaignRouteRouteImport.update({
@@ -145,6 +151,7 @@ const AppProfileIdRoute = AppProfileIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/campaign': typeof CampaignRouteRouteWithChildren
+  '/admin': typeof AdminRoute
   '/callback': typeof CallbackRoute
   '/colors': typeof ColorsRoute
   '/faq': typeof FaqRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/callback': typeof CallbackRoute
   '/colors': typeof ColorsRoute
   '/faq': typeof FaqRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/campaign': typeof CampaignRouteRouteWithChildren
+  '/admin': typeof AdminRoute
   '/callback': typeof CallbackRoute
   '/colors': typeof ColorsRoute
   '/faq': typeof FaqRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/campaign'
+    | '/admin'
     | '/callback'
     | '/colors'
     | '/faq'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/callback'
     | '/colors'
     | '/faq'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/campaign'
+    | '/admin'
     | '/callback'
     | '/colors'
     | '/faq'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
   CampaignRouteRoute: typeof CampaignRouteRouteWithChildren
+  AdminRoute: typeof AdminRoute
   CallbackRoute: typeof CallbackRoute
   ColorsRoute: typeof ColorsRoute
   FaqRoute: typeof FaqRoute
@@ -316,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: '/callback'
       fullPath: '/callback'
       preLoaderRoute: typeof CallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/campaign': {
@@ -531,6 +551,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
   CampaignRouteRoute: CampaignRouteRouteWithChildren,
+  AdminRoute: AdminRoute,
   CallbackRoute: CallbackRoute,
   ColorsRoute: ColorsRoute,
   FaqRoute: FaqRoute,
