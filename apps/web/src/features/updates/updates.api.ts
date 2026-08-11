@@ -20,13 +20,14 @@ export const updateQueries = {
             },
             staleTime: 60 * ONE_MINUTE,
         }),
-    one: (id: string) =>
+    one: (id: string, preview: boolean = false) =>
         queryOptions({
             queryKey: updateKeys.one(id),
             queryFn: async ({ queryKey }) => {
                 try {
                     const [_, updateId] = queryKey;
-                    const response = await api.get<TcupUpdate>(`updates/${updateId}`);
+                    const p = preview ? "?preview=true" : "";
+                    const response = await api.get<TcupUpdate>(`updates/${updateId}${p}`);
                     return await response.json();
                 } catch (e) {
                     throw handleHttpError(e);
