@@ -59,7 +59,8 @@
         "formatter": { "language_server": { "name": "vue-language-server" } },
         "language_servers": [
             "vue-language-server",
-            "vtsls"
+            "vtsls",
+            "biome"
         ],
     },
   },
