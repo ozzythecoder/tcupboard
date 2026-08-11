@@ -28,13 +28,14 @@ services:
             - caddy_config:/config
 
     directus:
-        image: directus/directus:12.1.1
+        image: registry.digitalocean.com/tcup-alpha/directus:latest
         platform: linux/amd64
+        build:
+            context: .
+            target: directus
         restart: unless-stopped
         ports:
             - 8055:8055
-        volumes:
-            - ./packages/extensions:/directus/extensions
         env_file:
             - .env.directus.prod
         environment:
