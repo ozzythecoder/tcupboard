@@ -28,20 +28,28 @@ export class TcupUpdatesService {
     }
 
     async getById(id: string, preview: boolean = false) {
-        const data = await this.cms.request<TcupUpdate>(
-            readItem("tcup_updates", id, {
-                version: preview ? "draft" : undefined,
-            }),
-        );
+        const data = await this.cms
+            .request<TcupUpdate>(
+                readItem("tcup_updates", id, {
+                    version: preview ? "draft" : undefined,
+                }),
+            )
+            .catch(async () => {
+                // throws an error if draft is unavailable
+                // just return the published version
+                return await this.cms.request<TcupUpdate>(readItem("tcup_updates", id));
+            });
 
         return {
             ...data,
-            image: data.image ? `${this.getImageUrl(data.image, 'hero-image')}` : undefined,
-        }
+            image: data.image ? `${this.getImageUrl(data.image, "hero-image")}` : undefined,
+        };
     }
 
     // build a fetch-ready URL for article images
     private getImageUrl(image_id: string, key?: string) {
-        return new URL(`${env.directus.publicUrl}/assets/${image_id}${key ? `?key=${key}` : ""}`).toString();
+        return new URL(
+            `${env.directus.publicUrl}/assets/${image_id}${key ? `?key=${key}` : ""}`,
+        ).toString();
     }
 }
