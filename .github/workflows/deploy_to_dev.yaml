@@ -47,8 +47,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
-          cache-from: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
-          cache-to: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
+          cache-from: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
+          cache-to: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
 
       - name: Build and push directus
         if: ${{ github.event.inputs.mode != 'config-only' }}
@@ -59,8 +59,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:staging
-          cache-from: type=registry,scope=directus,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache
-          cache-to: type=registry,scope=directus,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache,mode=max
+          cache-from: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache
+          cache-to: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache,mode=max
       
 
       - name: Build and push frontend & caddy
@@ -72,8 +72,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:staging
-          cache-from: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache
-          cache-to: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache,mode=max
+          cache-from: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache
+          cache-to: type=registry,scope=shared,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache,mode=max
 
       - name: Copy env files to droplet
         uses: appleboy/scp-action@v1
