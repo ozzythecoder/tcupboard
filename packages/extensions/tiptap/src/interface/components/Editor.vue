@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { useEditor, EditorContent } from '@tiptap/vue-3'
+import { useEditor, EditorContent, type NodeType } from '@tiptap/vue-3'
 import { StarterKit } from '@tiptap/starter-kit'
 import { Image } from '@tiptap/extension-image'
 import { FileHandlePluginOptions, FileHandler } from '@tiptap/extension-file-handler'
 import { ref, watch } from 'vue'
+import { useApi } from '@directus/extensions-sdk'
+
+const api = useApi()
 
 const props = defineProps<{ content: any, value: any }>()
 const emit = defineEmits<{
@@ -16,26 +19,74 @@ function handleEditorUpdate(value: any) {
     val.value = value
 }
 
-const handleImageDrop: FileHandlePluginOptions['onDrop'] = (editor, files, pos) => {
-    files.forEach(file => {
-        const rdr = new FileReader()
+async function uploadFile(file: File) {
+    const form = new FormData()
+    form.append('file', file)
+    const { data } = await api.post('/files', form)
+    const id = data.data.id
+    return `/assets/${id}`
+}
 
-        rdr.readAsDataURL(file)
-        rdr.onload = () => {
-            editor
-                .chain()
-                .insertContentAt(pos, {
-                    type: 'image',
-                    attrs: {
-                        src: rdr.result,
-                    }
-                })
-                .focus()
-                .run()
+const handleImageDrop: FileHandlePluginOptions['onDrop'] = (editor, files, pos) => {
+    //TODO:
+    files.forEach(async (file) => {
+        const blob = URL.createObjectURL(file)
+
+        editor
+            .chain()
+            .insertContentAt(pos, {
+                type: 'image',
+                attrs: {
+                    src: blob,
+                }
+            })
+            .focus()
+            .run()
+
+        const { state, view } = editor
+
+        try {
+            const assetUrl = await uploadFile(file)
+            let target: number | null = null;
+            state.doc.descendants((node, position) => {
+                if (node.type.name === 'image' && node.attrs.src === blob) {
+                    target = position
+                }
+            })
+            if (target !== null) {
+                const tr = view.state.tr.setNodeAttribute(target, 'src', assetUrl)
+                view.dispatch(tr)
+            }
+        } catch (e) {
+            let from: number | null = null;
+            let to: number | null = null;
+            state.doc.descendants((node, position) => {
+                if (node.type.name === 'image' && node.attrs.src === blob) {
+                    from = position;
+                    to = position + node.nodeSize;
+                }
+            })
+            if (from && to) {
+                const tr = state.tr.delete(from, to)
+                state.apply(tr)
+            }
+        } finally {
+            URL.revokeObjectURL(blob)
         }
+
     })
 }
 
+const stripImages = (obj: NodeType) => {
+    if (obj.content) {
+        return { ...obj, content: obj.content.map(stripImages) }
+    }
+    if (obj.type === 'image' && obj.attrs.src.startsWith('blob:')) {
+        console.log('stripping image...')
+        return undefined
+    }
+    return obj;
+}
 
 const editor = useEditor({
     editorProps: {
@@ -49,10 +100,25 @@ const editor = useEditor({
                 openOnClick: false
             }
         }),
-        Image,
+        Image.configure({
+            HTMLAttributes: {
+                class: 'image-upload'
+            },
+            resize: {
+                enabled: true,
+                minHeight: 100,
+                minWidth: 100,
+                alwaysPreserveAspectRatio: true
+            },
+        }),
         FileHandler.configure({
             allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif'],
-            onDrop: handleImageDrop,
+            onDrop: () => {
+                alert('Inline image upload is not supported yet.')
+            },
+            onPaste: () => {
+                alert('Inline image upload is not supported yet.')
+            },
         })],
     content: props.value,
     onUpdate(props) {
@@ -124,10 +190,16 @@ watch(
 .uncontrolled {
     margin-top: .5rem;
     padding: 1rem;
+    background-color: var(--background-input);
     border: 1px solid var(--theme--form--field--input--border-color);
     border-radius: var(--theme--border-radius);
     font-size: 1rem;
     font-weight: 400;
+
+    img {
+        object-fit: contain;
+        max-width: 500px;
+    }
 
     p {
         margin-bottom: 0.25rem;
