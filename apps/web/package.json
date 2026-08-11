@@ -9,7 +9,7 @@
         "fmt": "biome format",
         "lint": "biome lint",
         "preview": "vite preview",
-        "test": "vitest"
+        "test": "vitest --passWithNoTests"
     },
     "dependencies": {
         "@auth0/auth0-react": "^2.3.0",
