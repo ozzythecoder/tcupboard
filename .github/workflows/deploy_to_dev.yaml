@@ -14,7 +14,6 @@ on:
           - full          # full rebuild and push to DO registry
           - config-only   # redeploys env files (env changes in /apps/web will still require a rebuild)
 
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -50,6 +49,19 @@ jobs:
           tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
           cache-from: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
           cache-to: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
+
+      - name: Build and push directus
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: directus
+          platforms: linux/amd64
+          push: true
+          tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:staging
+          cache-from: type=registry,scope=directus,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache
+          cache-to: type=registry,scope=directus,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/directus:cache,mode=max
+      
 
       - name: Build and push frontend & caddy
         if: ${{ github.event.inputs.mode != 'config-only' }}
