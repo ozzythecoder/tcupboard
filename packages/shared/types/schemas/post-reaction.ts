@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { PostReactionWithUsername } from "@/models/index.js";
-import { numberOrNumericStringSchema } from "./utils.ts";
+import { numberOrNumericStringSchema } from "./utils.js";
 
 export const ZCreatePostReactionSchema = z.object({
     postId: numberOrNumericStringSchema,
