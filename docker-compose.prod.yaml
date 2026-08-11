@@ -1,6 +1,6 @@
 services:
     backend:
-        image: registry.digitalocean.com/tcup-alpha/backend:latest
+        image: registry.digitalocean.com/tcup-alpha/backend:${IMAGE_TAG:-latest}
         platform: linux/amd64
         build:
             context: .
@@ -12,7 +12,7 @@ services:
             - "3001:3001"
 
     caddy:
-        image: registry.digitalocean.com/tcup-alpha/caddy:latest
+        image: registry.digitalocean.com/tcup-alpha/caddy:${IMAGE_TAG:-latest}
         platform: linux/amd64
         build:
             context: .
@@ -28,7 +28,7 @@ services:
             - caddy_config:/config
 
     directus:
-        image: registry.digitalocean.com/tcup-alpha/directus:latest
+        image: registry.digitalocean.com/tcup-alpha/directus:${IMAGE_TAG:-latest}
         platform: linux/amd64
         build:
             context: .
