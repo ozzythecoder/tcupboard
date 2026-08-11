@@ -19,7 +19,6 @@ dev-stop:
 prod:
     pnpm --filter tiptap build
     docker compose -f docker-compose.prod.yaml up -d
-    open http://localhost
 
 prod-fresh:
     docker compose -f docker-compose.prod.yaml build --no-cache
