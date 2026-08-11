@@ -6,9 +6,8 @@ alias df := dev-fresh
 alias pf := prod-fresh
 
 dev:
-    pnpm --filter tiptap build
     docker compose -f docker-compose.dev.yaml up -d
-    pnpm --filter slug dev
+    ./dev.sh
 
 dev-fresh:
     docker compose -f docker-compose.dev.yaml build --no-cache
