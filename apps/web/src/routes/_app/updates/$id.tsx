@@ -35,7 +35,7 @@ function RouteComponent() {
     return (
         <main>
             {preview && (
-                <div className="min-w-screen grid place-items-center bg-amber-400 fixed z-100">
+                <div className="min-w-screen grid place-items-center bg-amber-400 fixed z-100 absolute inset-0 h-6">
                     <pre>DRAFT PREVIEW</pre>
                 </div>
             )}
