@@ -6,7 +6,7 @@ import { env } from "@/config/env.js";
 export class TcupUpdatesService {
     constructor(private readonly cms: CmsClient) {}
 
-    async getAll(preview: boolean = false) {
+    async getAll() {
         const data = await this.cms.request<TcupUpdate[]>(
             readItems("tcup_updates", {
                 filter: {
@@ -17,14 +17,13 @@ export class TcupUpdatesService {
                         _lte: "$NOW",
                     },
                 },
-                version: preview ? "draft" : undefined,
             }),
         );
 
         // return data with client-friendly urls for images
         return data.map((d) => ({
             ...d,
-            image: d.image ? `${this.getImageUrl(d.image, 'card-thumb')}` : undefined,
+            image: d.image ? `${this.getImageUrl(d.image, "card-thumb")}` : undefined,
         }));
     }
 

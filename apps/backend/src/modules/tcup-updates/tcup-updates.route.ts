@@ -9,24 +9,15 @@ import { TcupUpdatesService } from "./tcup-updates.service.js";
 const tcupUpdatesRouter = express.Router();
 const svc = new TcupUpdatesService(directus);
 
-tcupUpdatesRouter.get(
-    "/",
-    validateRequest({
-        query: z.object({
-            preview: z.string().optional(),
-        }),
-    }),
-    async (req, res, next) => {
-        try {
-            const { preview } = req.query;
-            const data = await svc.getAll(preview === "true");
-            return res.json(data);
-        } catch (error) {
-            console.log(error);
-            next(error);
-        }
-    },
-);
+tcupUpdatesRouter.get("/", async (_req, res, next) => {
+    try {
+        const data = await svc.getAll();
+        return res.json(data);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
 
 tcupUpdatesRouter.get(
     "/:id",
