@@ -1,62 +1,87 @@
 name: Deploy to Dev Environment
 
 on:
-    push:
-        branches:
-            - develop
-    workflow_dispatch:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "What to deploy"
+        type: choice
+        default: full
+        options:
+          - full          # full rebuild and push to DO registry
+          - config-only   # redeploys env files (env changes in /apps/web will still require a rebuild)
+
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: "actions/checkout@v4"
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v4"
 
-            - name: Write env file
-              run: |
-                 echo "${{ secrets.STAGING_WEB_ENV }}" > apps/web/.env
-                 echo "${{ secrets.STAGING_BACKEND_ENV }}" > apps/backend/.env.production
-                 echo "${{ secrets.STAGING_DIRECTUS_ENV }}" > .env.directus.prod
+      - name: Write env file
+        run: |
+          echo "${{ secrets.STAGING_WEB_ENV }}" > apps/web/.env
+          echo "${{ secrets.STAGING_BACKEND_ENV }}" > apps/backend/.env.production
+          echo "${{ secrets.STAGING_DIRECTUS_ENV }}" > .env.directus.prod
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v4
+      - name: Set up Docker Buildx
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: docker/setup-buildx-action@v4
 
-            - name: Log in to DigitalOcean registry
-              uses: docker/login-action@v4
-              with:
-                  registry: registry.digitalocean.com
-                  username: ${{ vars.DIGITALOCEAN_USERNAME }}
-                  password: ${{ secrets.DOCR_TOKEN }}
+      - name: Log in to DigitalOcean registry
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: docker/login-action@v4
+        with:
+          registry: registry.digitalocean.com
+          username: ${{ vars.DIGITALOCEAN_USERNAME }}
+          password: ${{ secrets.DOCR_TOKEN }}
 
-            - name: Build and push backend
-              uses: docker/build-push-action@v7
-              with:
-                  context: .
-                  target: api-runner
-                  platforms: linux/amd64
-                  push: true
-                  tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
-                  cache-from: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
-                  cache-to: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
+      - name: Build and push backend
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: api-runner
+          platforms: linux/amd64
+          push: true
+          tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:staging
+          cache-from: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache
+          cache-to: type=registry,scope=backend,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:cache,mode=max
 
-            - name: Build and push caddy
-              uses: docker/build-push-action@v7
-              with:
-                  context: .
-                  target: caddy
-                  platforms: linux/amd64
-                  push: true
-                  tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:staging
-                  cache-from: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache
-                  cache-to: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache,mode=max
+      - name: Build and push frontend & caddy
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: caddy
+          platforms: linux/amd64
+          push: true
+          tags: registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:staging
+          cache-from: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache
+          cache-to: type=registry,scope=caddy,ref=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/caddy:cache,mode=max
 
-            - name: Deploy to droplet
-              uses: appleboy/ssh-action@v1
-              with:
-                  host: ${{ secrets.DROPLET_HOST }}
-                  username: ${{ secrets.DROPLET_USER }}
-                  key: ${{ secrets.DROPLET_SSH_KEY }}
-                  script: |
-                      cd /var/www/tcup-development
-                      IMAGE_TAG=staging docker compose pull
-                      IMAGE_TAG=staging docker compose up -d
+      - name: Copy env files to droplet
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          source: 'apps/web/.env,apps/backend/.env.production,.env.directus.prod'
+          target: /var/www/tcup-development
+
+      - name: Deploy to droplet
+        if: ${{ github.event.inputs.mode != 'config-only' }}
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            cd /var/www/tcup-development
+            if [ "${{ github.event.inputs.mode }}" != "config-only" ]; then
+              IMAGE_TAG=staging docker compose pull
+            fi
+            IMAGE_TAG=staging docker compose up -d
