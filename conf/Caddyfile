@@ -4,7 +4,7 @@ dev.tcupboard.org {
     }
 
     handle /content/* {
-        reverse_proxy directus:8005
+        reverse_proxy directus:8055
     }
 
     handle {
