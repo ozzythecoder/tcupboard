@@ -6,7 +6,7 @@ import { env } from "@/config/env.js";
 export class TcupUpdatesService {
     constructor(private readonly cms: CmsClient) {}
 
-    async getAll() {
+    async getAll(preview: boolean = false) {
         const data = await this.cms.request<TcupUpdate[]>(
             readItems("tcup_updates", {
                 filter: {
@@ -17,6 +17,7 @@ export class TcupUpdatesService {
                         _lte: "$NOW",
                     },
                 },
+                version: preview ? "draft" : undefined,
             }),
         );
 
@@ -27,9 +28,11 @@ export class TcupUpdatesService {
         }));
     }
 
-    async getById(id: string) {
+    async getById(id: string, preview: boolean = false) {
         const data = await this.cms.request<TcupUpdate>(
-            readItem("tcup_updates", id),
+            readItem("tcup_updates", id, {
+                version: preview ? "draft" : undefined,
+            }),
         );
 
         return {
