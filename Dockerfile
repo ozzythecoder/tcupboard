@@ -19,11 +19,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm run -r build
-RUN pnpm deploy --filter=web --prod /app/web
-RUN pnpm deploy --filter=backend --prod /app/api
-RUN pnpm deploy --filter=shared --prod /app/shared
-RUN pnpm deploy --filter=slug --prod /app/extensions/slug
-RUN pnpm deploy --filter=tiptap --prod /app/extensions/tiptap
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm deploy --filter=web --prod /app/web && \
+    pnpm deploy --filter=backend --prod /app/api && \
+    pnpm deploy --filter=shared --prod /app/shared && \
+    pnpm deploy --filter=slug --prod /app/extensions/slug && \
+    pnpm deploy --filter=tiptap --prod /app/extensions/tiptap
 
 # Serve API
 FROM base AS api-runner
