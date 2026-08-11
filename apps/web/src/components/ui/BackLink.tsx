@@ -30,9 +30,9 @@ export function BackLink({ to, label, variant = "ghost" }: Props) {
     } as const satisfies Record<typeof variant, string>;
     return (
         <button
-            type="button"
-            onClick={handle}
             className={`btn flex flex-row items-center justify-center gap-2 text-xs ${variantClasses[variant]}`}
+            onClick={handle}
+            type="button"
         >
             <ArrowLeft className="size-3" />
             <span className="sr-only md:not-sr-only">{label ?? "Back"}</span>

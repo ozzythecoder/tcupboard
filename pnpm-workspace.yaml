@@ -1,5 +1,6 @@
 packages:
   - apps/*
+  - packages/extensions/*
   - packages/*
 
 ignoredBuiltDependencies:
@@ -7,6 +8,17 @@ ignoredBuiltDependencies:
   - core-js
   - core-js-pure
   - esbuild
+
+catalog:
+  "@biomejs/biome": "2.5.1"
+
+overrides:
+  "@tiptap/core": "3.27.3"
+  "@tiptap/pm": "3.27.3"
+  prosemirror-model: "1.25.10"
+  prosemirror-view: "1.42.0"
+  prosemirror-state: "1.4.4"
+  typescript: "5.9.3"
 
 onlyBuiltDependencies:
   - supabase
@@ -21,3 +33,4 @@ allowBuilds:
   core-js: false
   esbuild: true
   supabase: false
+  vue-demi: true

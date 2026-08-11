@@ -8,7 +8,7 @@ export const ZCreateUserSchema = z.object({
     email: z.string(),
     role: ZUserRoleSchema,
     username: z.string(),
-    avatarUrl: z.string().nullish(),
+    avatarUrl: z.url().nullish(),
 });
 export type CreateUser = z.infer<typeof ZCreateUserSchema>;
 
@@ -21,7 +21,7 @@ export const ZUpdateUserSchema = z.object({
     role: z.never().optional(), // never changed by user
 
     username: z.string(),
-    avatarUrl: z.string().nullish(),
+    avatarUrl: z.url().nullish(),
     avatarFile: z.file().nullish(),
     // hideous type cast to avoid recursive type hell
     bio: ZRichTextContentSchema.nullish() as unknown as z.ZodOptional<
@@ -43,12 +43,7 @@ export const ZProfileUpdateSchema = z.object({
 export type ProfileUpdate = z.infer<typeof ZProfileUpdateSchema>;
 
 export function toUpdateUser(user: User): UpdateUser {
-    return {
-        ...user,
-        id: undefined,
-        auth0Id: undefined,
-        email: undefined,
-        role: undefined,
-        createdAt: undefined,
-    };
+    // oxlint-disable-next-line no-unused-vars
+    const { id, auth0Id, email, role, createdAt, ...rest } = user;
+    return rest;
 }

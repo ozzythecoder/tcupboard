@@ -27,6 +27,19 @@ services:
             - caddy_data:/data
             - caddy_config:/config
 
+    directus:
+        image: directus/directus:12.1.1
+        platform: linux/amd64
+        restart: unless-stopped
+        ports:
+            - 8055:8055
+        volumes:
+            - ./packages/extensions:/directus/extensions
+        env_file:
+            - .env.directus.prod
+        environment:
+            WEBSOCKETS_ENABLED: true
+
 volumes:
   caddy_data:
   caddy_config:

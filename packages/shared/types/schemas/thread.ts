@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { stringToJSONSchema } from "./utils.js";
+import { ZDraftJsJsonSchema, ZTipTapJsonSchema } from "./rich-text.js";
+import { numberOrNumericStringSchema, stringToJSONSchema } from "./utils.js";
 
 /**
  * Rich text content in TipTap format
@@ -22,16 +23,16 @@ export const ZThreadDraftJsJsonSchema = z
     .required();
 
 export const ZThreadContentSchema = z.union([
+    stringToJSONSchema.pipe(ZTipTapJsonSchema),
+    stringToJSONSchema.pipe(ZDraftJsJsonSchema),
     z.string(),
-    stringToJSONSchema.pipe(ZThreadTipTapJsonSchema),
-    stringToJSONSchema.pipe(ZThreadDraftJsJsonSchema),
 ]);
 export type ThreadContent = z.infer<typeof ZThreadContentSchema>;
 
 export const ZImageMetadataSchema = z.object({
     url: z.string(),
-    width: z.coerce.number(),
-    height: z.coerce.number(),
+    width: numberOrNumericStringSchema,
+    height: numberOrNumericStringSchema,
     publicId: z.string(),
 });
 export type ImageMetadata = z.infer<typeof ZImageMetadataSchema>;
@@ -53,7 +54,7 @@ export const ZEditThreadSchema = ZCreateThreadSchema.pick({
 export type EditThreadSchema = z.infer<typeof ZEditThreadSchema>;
 
 export const ZCreateThreadReplySchema = ZCreateThreadSchema.omit({ title: true }).extend({
-    parent_id: z.coerce.number(),
+    parent_id: numberOrNumericStringSchema,
 });
 export type CreateThreadReplySchema = z.infer<typeof ZCreateThreadReplySchema>;
 

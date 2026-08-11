@@ -26,16 +26,16 @@ function ThreadEntry({ post }: { post: PostWithAuthor }) {
             <div className="flex sm:flex-col items-center justify-between sm:min-w-16 md:min-w-24">
                 <div className="flex flex-row sm:flex-col items-center gap-2">
                     <Avatar
-                        user={post.author ?? "Unknown User"}
                         avatarUrl={post.authorAvatar}
                         className="not-sm:size-8"
-                        link
                         id={post.authorId.toString()}
+                        link
+                        user={post.author ?? "Unknown User"}
                     />
                     <Link
-                        to="/profile/$id"
-                        params={{ id: post.authorId.toString() }}
                         className="text-surface-600-400 anchor"
+                        params={{ id: post.authorId.toString() }}
+                        to="/profile/$id"
                     >
                         {post.author}
                     </Link>
@@ -43,19 +43,19 @@ function ThreadEntry({ post }: { post: PostWithAuthor }) {
                 {/* mobile date and time */}
                 <time className="text-xs italic text-surface-600-400 sm:hidden">
                     {miniSizeDate.map((e) => (
-                        <span key={e} className="block text-right">
+                        <span className="block text-right" key={e}>
                             {e}
                         </span>
                     ))}
                 </time>
             </div>
-            <DeleteButton post={post} className="absolute top-4 right-4" />
+            <DeleteButton className="absolute top-4 right-4" post={post} />
             <div>
                 {/* full-size date and time */}
                 <time className="text-xs italic text-surface-600-400 hidden sm:block mb-2">
                     {fullSizeDate}
                 </time>
-                <div className="_thread-content">
+                <div className="_thread-content _uncontrolled">
                     <RichTextContent content={post.content} />
                 </div>
                 <ImageGrid images={post.images} />
@@ -77,7 +77,7 @@ export function ThreadView({
             <main>
                 <div className="flex flex-row-reverse gap-4 sm:flex-row items-center justify-end sm:justify-between mb-4">
                     <h2 className="h4">{thread.title}</h2>
-                    <BackLink variant="ghost" label="Threads" />
+                    <BackLink label="Threads" variant="ghost" />
                 </div>
                 <ul className="flex flex-col gap-4 mb-8">
                     <ThreadEntry post={thread} />
@@ -110,10 +110,10 @@ function DeleteButton({ className, post }: { className: string; post: PostWithAu
 
     return (
         <button
-            type="button"
-            onClick={handleConfirm}
-            data-confirmed={confirm}
             className={`btn text-sm h-8 preset-outlined-error-500 data-[confirmed='true']:preset-filled-error-400-600 transition-colors ${className}`}
+            data-confirmed={confirm}
+            onClick={handleConfirm}
+            type="button"
         >
             {confirm ? "Confirm?" : null} <Trash className="size-4" />
         </button>

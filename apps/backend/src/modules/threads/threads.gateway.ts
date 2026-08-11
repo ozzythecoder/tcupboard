@@ -4,7 +4,7 @@ import type {
     EditThreadReplySchema,
     EditThreadSchema,
 } from "@repo/shared";
-import { count, eq, getTableColumns, sql } from "drizzle-orm";
+import { count, eq, getColumns, sql } from "drizzle-orm";
 import type { Database, Schema } from "@/db/index.js";
 
 export class ThreadsGateway {
@@ -16,7 +16,7 @@ export class ThreadsGateway {
     async getOne(id: number) {
         return await this.db
             .select({
-                ...getTableColumns(this.s.posts),
+                ...getColumns(this.s.posts),
                 author: this.s.users.username,
                 authorAvatar: this.s.users.avatarUrl,
             })
@@ -47,7 +47,7 @@ export class ThreadsGateway {
     async getReplies(parent_thread_id: number) {
         return await this.db
             .select({
-                ...getTableColumns(this.s.posts),
+                ...getColumns(this.s.posts),
                 author: this.s.users.username,
                 authorAvatar: this.s.users.avatarUrl,
             })

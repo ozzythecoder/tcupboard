@@ -1,0 +1,1 @@
+export { tcupUpdatesRouter } from './tcup-updates.route.js'

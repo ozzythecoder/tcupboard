@@ -1,8 +1,27 @@
 services:
+    shared:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        working_dir: /app
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/packages/shared/node_modules
+            - pnpm-store:/pnpm/store
+        command: pnpm --filter shared dev
+        healthcheck:
+            test: ["CMD", "test", "-f", "/app/packages/shared/dist/types/index.js"]
+            interval: 2s
+            timeout: 5s
+            retries: 30
+            start_period: 10s
+
     web:
         build:
             context: .
             dockerfile: Dockerfile.dev
+            target: builder
         working_dir: /app
         volumes:
             - .:/app
@@ -15,12 +34,16 @@ services:
         ports:
             - "5173:5173"
             - "24678:24678"
+        depends_on:
+            shared:
+                condition: service_healthy
         command: pnpm --filter web dev
 
     backend:
         build:
             context: .
             dockerfile: Dockerfile.dev
+            target: builder
         working_dir: /app
         volumes:
             - .:/app
@@ -32,7 +55,21 @@ services:
             - apps/backend/.env.development
         ports:
             - "3001:3001"
+        depends_on:
+            shared:
+                condition: service_healthy
         command: pnpm --filter backend dev
+
+    directus:
+        image: directus/directus:12.1.1
+        ports:
+            - 8055:8055
+        volumes:
+            - ./packages/extensions:/directus/extensions
+        env_file:
+            - .env.directus.local
+        environment:
+            WEBSOCKETS_ENABLED: true
 
 volumes:
     pnpm-store:

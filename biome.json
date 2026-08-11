@@ -11,6 +11,7 @@
         "includes": [
             "apps/**/*.{js,ts,jsx,tsx,json}",
             "packages/**/*.{js,ts,json}",
+            "!!**/node_modules",
             "!!**/{dist,build}",
             "!!**/scrapers/logs/*.json",
             "!**/routeTree.gen.ts",

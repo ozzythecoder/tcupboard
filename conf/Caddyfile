@@ -3,13 +3,23 @@ dev.tcupboard.org {
         reverse_proxy backend:3001
     }
 
+    handle /content/* {
+        reverse_proxy directus:8005
+    }
+
     handle {
         root /app/www/
         try_files {path} /index.html
         file_server
     }
 
-    header X-Content-Type-Options "nosniff" 
-    header X-Frame-Options "SAMEORIGIN" 
-    header X-XSS-Protection "1; mode=block" 
+    header X-Content-Type-Options "nosniff"
+    header X-Frame-Options "SAMEORIGIN"
+    header X-XSS-Protection "1; mode=block"
+}
+
+admin.tcupboard.org {
+    handle {
+        reverse_proxy directus:8055
+    }
 }

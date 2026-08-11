@@ -30,8 +30,8 @@ export function ProfileView({ user }: { user: User }) {
                 </div>
                 {editReady && (
                     <Link
-                        to="/profile/edit"
                         className="btn py-1 px-2 absolute top-2 left-2 text-sm preset-filled-primary-400-600 hidden md:flex flex-row gap-2"
+                        to="/profile/edit"
                     >
                         <Pencil className="size-4" />
                         Edit
@@ -40,9 +40,9 @@ export function ProfileView({ user }: { user: User }) {
                 {user.avatarUrl ? (
                     <div className="rounded-container xs:rounded-r-none overflow-hidden">
                         <img
+                            alt=""
                             className="absolute w-full h-full top-0 left-0 -z-20 brightness-50 object-cover xs:max-w-2xs xs:brightness-100"
                             src={user.avatarUrl}
-                            alt=""
                         />
                     </div>
                 ) : (
@@ -52,8 +52,8 @@ export function ProfileView({ user }: { user: User }) {
             <div className="flex flex-col mt-4 gap-4">
                 {editReady && (
                     <Link
-                        to="/profile/edit"
                         className="btn py-1 px-2 preset-filled-primary-400-600 md:hidden flex flex-row gap-2"
+                        to="/profile/edit"
                     >
                         <Pencil className="size-4 inline" />
                         Edit Profile

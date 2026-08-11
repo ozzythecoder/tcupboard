@@ -1,0 +1,32 @@
+{
+    "name": "@repo/slug",
+    "version": "1.0.0",
+    "description": "A small plugin to generate a URL-safe slug from a different field.",
+    "keywords": [
+        "directus",
+        "directus-extension",
+        "directus-extension-interface"
+    ],
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "directus-extension build",
+        "dev": "directus-extension build -w --no-minify",
+        "link": "directus-extension link",
+        "validate": "directus-extension validate"
+    },
+    "devDependencies": {
+        "@directus/extensions-sdk": "18.0.1",
+        "typescript": "5.9.3",
+        "vue": "^3.5.40"
+    },
+    "icon": "extension",
+    "directus:extension": {
+        "type": "interface",
+        "path": "dist/index.js",
+        "source": "src/index.ts",
+        "host": "^12.1.1"
+    }
+}

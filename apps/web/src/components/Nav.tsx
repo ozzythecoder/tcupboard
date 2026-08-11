@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { Fragment } from "react/jsx-runtime";
 import { useAuth0Context } from "#/config/auth-context";
-import { NAVIGATION_LINKS, type NavLink, type NestedNavLink } from "#/config/links";
+import { SIDEBAR_NAVIGATION_LINKS, type NavLink, type NestedNavLink } from "#/config/links";
 import { LogoutButton } from "./auth/LogoutButton";
 import { MiniProfile } from "./auth/MiniProfile";
 import { Logo } from "./Logo";
@@ -54,7 +54,7 @@ function Dropdown({ l }: { l: NestedNavLink }) {
             </Collapsible.Trigger>
             <Collapsible.Content className="overflow-hidden data-[state=open]:animate-[collapsible-open_200ms_ease-out] data-[state=closed]:animate-[collapsible-close_200ms_ease-out] w-full pl-4 flex flex-col items-center gap-2">
                 {nested.map((c) => (
-                    <Nav.Trigger key={c.text} element={() => <LinkElement l={c} />} />
+                    <Nav.Trigger element={() => <LinkElement l={c} />} key={c.text} />
                 ))}
             </Collapsible.Content>
         </Collapsible>
@@ -63,7 +63,7 @@ function Dropdown({ l }: { l: NestedNavLink }) {
 
 export function Navigation() {
     return (
-        <Nav layout="sidebar" className="w-full min-h-screen grid grid-rows-[auto_1fr_auto] gap-4">
+        <Nav className="w-full min-h-screen grid grid-rows-[auto_1fr_auto] gap-4" layout="sidebar">
             <Nav.Header className="flex flex-col items-center mx-auto">
                 <div className="w-full pl-1 mt-1">
                     <ToggleSidebarButton icon={X} />
@@ -75,24 +75,24 @@ export function Navigation() {
             </Nav.Header>
             <Nav.Content>
                 <Nav.Menu>
-                    {NAVIGATION_LINKS.map((l) => {
+                    {SIDEBAR_NAVIGATION_LINKS.map((l) => {
                         return "nested" in l ? (
-                            <Dropdown l={l} key={l.text} />
+                            <Dropdown key={l.text} l={l} />
                         ) : (
-                            <Nav.Trigger key={l.text} element={() => <LinkElement l={l} />} />
+                            <Nav.Trigger element={() => <LinkElement l={l} />} key={l.text} />
                         );
                     })}
                 </Nav.Menu>
             </Nav.Content>
             <Nav.Footer className="flex flex-col items-end">
                 <ThemeSwitch />
-                <Footer />
+                <SidebarFooter />
             </Nav.Footer>
         </Nav>
     );
 }
 
-function Footer() {
+function SidebarFooter() {
     const { user } = useAuth0Context();
 
     return user ? (

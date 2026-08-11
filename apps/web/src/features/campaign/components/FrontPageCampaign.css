@@ -1,0 +1,28 @@
+._campaign-highlight-gradient {
+    --default-bg-color: var(--color-surface-50-950);
+    --stripe-color: color-mix(in oklch, var(--default-bg-color) 80%, transparent);
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            var(--default-bg-color),
+            var(--default-bg-color) 6px,
+            var(--stripe-color) 3px,
+            var(--stripe-color) 9px
+        ),
+        linear-gradient(
+            to right,
+            var(--color-red-500),
+            var(--color-yellow-200),
+            var(--color-green-400),
+            var(--color-fuchsia-500)
+        );
+}
+
+/* Makes entire card clickable */
+#campaign-highlight-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}

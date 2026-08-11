@@ -7,7 +7,7 @@ alias pf := prod-fresh
 
 dev:
     docker compose -f docker-compose.dev.yaml up -d
-    open http://localhost:5173
+    ./dev.sh
 
 dev-fresh:
     docker compose -f docker-compose.dev.yaml build --no-cache
@@ -17,6 +17,7 @@ dev-stop:
     docker compose -f docker-compose.dev.yaml down
 
 prod:
+    pnpm --filter tiptap build
     docker compose -f docker-compose.prod.yaml up -d
     open http://localhost
 
@@ -32,6 +33,7 @@ push:
     docker compose -f docker-compose.prod.yaml push
 
 stop: dev-stop prod-stop
+restart: stop dev
 
 kill:
     docker compose -f docker-compose.dev.yaml down -v

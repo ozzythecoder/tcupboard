@@ -60,20 +60,22 @@ export const PostsSchema = z
 
 export const RoleSchema = z.enum(["user", "admin", "moderator", "superadmin"]);
 
-export const convertStringToTipTap = (v: string) => ({
-    type: "doc",
-    content: [
-        {
-            type: "paragraph",
-            content: [
-                {
-                    type: "text",
-                    text: v,
-                },
-            ],
-        },
-    ],
-});
+export const convertStringToTipTap = (v: string) => {
+    return JSON.stringify({
+        type: "doc",
+        content: [
+            {
+                type: "paragraph",
+                content: [
+                    {
+                        type: "text",
+                        text: v,
+                    },
+                ],
+            },
+        ],
+    });
+};
 
 export const BioSchema = z.string().transform(convertStringToTipTap);
 

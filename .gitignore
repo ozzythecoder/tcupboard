@@ -5,6 +5,10 @@
 node_modules/
 **/node_modules/
 
+directus/
+database/
+entity_map.json
+
 # Ignore cache files in frontend/node_modules/.cache/ and recursively
 frontend/node_modules/.cache/
 **/node_modules/.cache/
@@ -13,6 +17,8 @@ frontend/node_modules/.cache/
 .env.DS_Store
 .env
 .env.*
+!.env.example
+!.env.*.example
 
 *.csr
 *.csv

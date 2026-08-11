@@ -1,10 +1,13 @@
 @import 'tailwindcss';
+@import './styles/prose.css';
 
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-react';
 @import '@skeletonlabs/skeleton/themes/mona';
 
 @import '@fontsource/arimo';
+@import '@fontsource/caprasimo';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
 
 /* dark mode determined by data attributes rather than prefers-color-scheme */
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
@@ -15,9 +18,15 @@
 
     --container-ml: 30rem;
 
+    --font-base: 'Atkinson Hyperlegible Next Variable', sans-serif;
     --font-fancy: 'Bodoni Moda Variable', serif;
-    --font-secondary: 'Sora Variable', serif;
+    --font-heading: 'Sora Variable', serif;
+}
 
+:root {
+    --base-font-family: 'Atkinson Hyperlegible Next Variable', sans-serif;
+    --default-font-family: 'Atkinson Hyperlegible Next Variable';
+    --heading-font-family: 'Sora Variable', serif;
     --heading-letter-spacing: -0.025em;
 }
 
@@ -26,7 +35,7 @@
         scroll-behavior: smooth;
     }
 
-    input  {
+    input {
         outline-color: var(--color-surface-200-800);
 
         &:focus {
@@ -44,15 +53,56 @@
         font-variant-emoji: emoji;
     }
 
-    #content {
-        --mesh-color: oklch(from var(--color-secondary-800) 0.4 c h );
-        background-color: light-dark( var(--color-primary-100), var(--color-primary-900) );
-        background-image:
-            radial-gradient(at 0% 30%, light-dark(var(--color-secondary-200), var(--mesh-color) ) 0px, transparent 50%),
-            linear-gradient(90deg, var(--color-surface-200-800) 0%, transparent 100%)
+    ._page-gradient {
+        position: relative;
+        --bg:
+            light-dark(
+                color-mix(in oklch, var(--color-surface-50) 90%, transparent),
+                color-mix(in oklch, var(--color-surface-950) 15%, transparent)
+            );
+        --mesh-color: oklch(from var(--color-secondary-200-800) l c h );
+
+        &::before {
+            position: absolute;
+            content: '';
+            inset: 0;
+            z-index: -1;
+            background: url('/assets/presentation/noise.svg');
+            opacity: .4;
+        }
+
+        background:
+            linear-gradient(
+                to top left,
+                var(--color-surface-200-800) 0%,
+                transparent 100%
+            )
+            , radial-gradient(at 0% 30%, var(--mesh-color) 0px, transparent 50%)
+            , var(--bg)
         ;
         background-attachment: fixed;
     }
+
+    ._noisy-background {
+        --bg:
+            light-dark(
+                color-mix(in oklch, var(--color-surface-50) 90%, transparent),
+                color-mix(in oklch, var(--color-surface-950) 75%, transparent)
+            );
+        background: url('/assets/presentation/noise.svg'), var(--bg);
+        background-blend-mode: darken;
+    }
+}
+
+/* caprasimo-latin-400-normal */
+@font-face {
+  font-family: 'Caprasimo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff2) format(woff2),
+       url(@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff) format('woff');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
 /* bodoni-moda-latin-wght-normal */
@@ -75,6 +125,16 @@
   unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
+/* atkinson-hyperlegible-next-latin-wght-normal */
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/atkinson-hyperlegible-next:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
 @keyframes collapsible-open {
     from { height: 0; }
     to { height: var(--height); }
@@ -93,6 +153,10 @@
     font-family: 'Sora Variable', serif;
 }
 
+@utility font-caprasimo {
+    font-family: 'Caprasimo', sans-serif;
+}
+
 @utility gradient-text-* {
     background: linear-gradient(to right, var(--color-secondary-600-400), var(--color-tertiary-700-300), var(--color-primary-800-200), --value(--color-*));
     display: inline-block;
@@ -105,6 +169,10 @@
     background: color-mix(in oklab, var(--color-surface-50-950) 60%, transparent);
     box-shadow: 0 0 30px color-mix(in oklab, --value(--color-*) 40%, transparent) inset;
     backdrop-filter: blur(16px);
+}
+
+@utility drop-shadow-hard-* {
+    filter: drop-shadow(4px 4px 0px --value(--color-*));
 }
 
 @utility text-shadow-hard-* {

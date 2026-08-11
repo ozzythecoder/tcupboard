@@ -1,0 +1,12 @@
+<svg
+    height="300"
+    width="300"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <filter id="n" x="0" y="0">
+        <feTurbulence baseFrequency="0.85" stitchTiles="stitch" type="fractalNoise" />
+    </filter>
+
+    <rect filter="url(#n)" height="300" opacity="0.80" width="300" />
+</svg>
