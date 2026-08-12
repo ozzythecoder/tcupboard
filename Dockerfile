@@ -19,12 +19,17 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm run -r build
+
+RUN mkdir -p /app/extensions/slug /app/extensions/tiptap && \
+    cp packages/extensions/slug/package.json   /app/extensions/slug/ && \
+    cp -r packages/extensions/slug/dist        /app/extensions/slug/ && \
+    cp packages/extensions/tiptap/package.json /app/extensions/tiptap/ && \
+    cp -r packages/extensions/tiptap/dist      /app/extensions/tiptap/
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm deploy --filter=web --prod /app/web && \
     pnpm deploy --filter=backend --prod /app/api && \
-    pnpm deploy --filter=shared --prod /app/shared && \
-    pnpm deploy --filter=slug --prod /app/extensions/slug && \
-    pnpm deploy --filter=tiptap --prod /app/extensions/tiptap
+    pnpm deploy --filter=shared --prod /app/shared
 
 # Serve API
 FROM base AS api-runner
