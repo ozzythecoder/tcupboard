@@ -6,7 +6,10 @@
             "source.fixAll.biome": true,
         }
     },
-    "HTML": { "formatter": { "language_server": { "name": "biome" } } },
+    "HTML": {
+        "formatter": { "language_server": { "name": "biome" } },
+        "tab_size": 2
+    },
     "JSON": { "formatter": { "language_server": { "name": "biome" } },
         "language_servers": [
             "biome"
