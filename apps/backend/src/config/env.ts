@@ -3,7 +3,7 @@ import { z } from "zod";
 import { FatalError } from "@/types/errors.js";
 
 config({
-    path: ".env.development",
+    path: process.env.NODE_ENV === "development" ? ".env.development" : ".env.production",
 });
 
 const envSchema = z.object({
