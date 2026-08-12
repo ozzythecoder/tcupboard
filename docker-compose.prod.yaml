@@ -1,45 +1,48 @@
 services:
-    backend:
-        image: registry.digitalocean.com/tcup-alpha/backend:${IMAGE_TAG:-latest}
-        platform: linux/amd64
-        build:
-            context: .
-            target: api-runner
-        restart: unless-stopped
-        env_file:
-            - apps/backend/.env.production
-        ports:
-            - "3001:3001"
+  backend:
+    image: registry.digitalocean.com/tcup-alpha/backend:${IMAGE_TAG:-latest}
+    platform: linux/amd64
+    build:
+      context: .
+      target: api-runner
+    restart: unless-stopped
+    env_file:
+      - apps/backend/.env.production
+    ports:
+      - "3001:3001"
 
-    caddy:
-        image: registry.digitalocean.com/tcup-alpha/caddy:${IMAGE_TAG:-latest}
-        platform: linux/amd64
-        build:
-            context: .
-            target: caddy
-        restart: unless-stopped
-        ports:
-            - "80:80"
-            - "443:443"
-            - "443:443/udp"
-        volumes:
-            - $PWD/conf:/etc/caddy
-            - caddy_data:/data
-            - caddy_config:/config
+  caddy:
+    image: registry.digitalocean.com/tcup-alpha/caddy:${IMAGE_TAG:-latest}
+    platform: linux/amd64
+    build:
+      context: .
+      target: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - $PWD/conf:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
 
-    directus:
-        image: registry.digitalocean.com/tcup-alpha/directus:${IMAGE_TAG:-latest}
-        platform: linux/amd64
-        build:
-            context: .
-            target: directus
-        restart: unless-stopped
-        ports:
-            - 8055:8055
-        env_file:
-            - .env.directus.prod
-        environment:
-            WEBSOCKETS_ENABLED: true
+  directus:
+    image: registry.digitalocean.com/tcup-alpha/directus:${IMAGE_TAG:-latest}
+    platform: linux/amd64
+    build:
+      context: .
+      target: directus
+    restart: unless-stopped
+    ports:
+      - 8055:8055
+    env_file:
+      - .env.directus.prod
+    environment:
+      WEBSOCKETS_ENABLED: true
 
 volumes:
   caddy_data:
