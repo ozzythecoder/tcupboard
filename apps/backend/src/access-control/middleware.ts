@@ -1,8 +1,10 @@
-import type { RequestHandler } from "express";
-import type { ComposerFactory, Policy, PolicyComposer } from "./types.js";
+import type { Request } from "express";
+import type { Authed } from "@/middleware/auth.js";
+import { UnauthorizedError } from "@/types/errors.js";
+import type { ComposerFactory, Policy } from "./types.js";
 
-const all: PolicyComposer =
-    (...policies: Policy[]) =>
+const all =
+    <P, Q, B>(...policies: Policy<P, Q, B>[]): Policy<P, Q, B> =>
     async (req) => {
         for (const p of policies) {
             if (await p(req)) continue;
@@ -11,8 +13,8 @@ const all: PolicyComposer =
         return true;
     };
 
-const one: PolicyComposer =
-    (...policies: Policy[]) =>
+const one =
+    <P, Q, B>(...policies: Policy<P, Q, B>[]): Policy<P, Q, B> =>
     async (req) => {
         for (const p of policies) {
             if (await p(req)) return true;
@@ -31,16 +33,19 @@ const one: PolicyComposer =
  * @example
  * // Will pass if both `policyOne` AND `policyTwo` pass, or if JUST `policyThree` passes.
  * app.get('/',
- *   accessControl( ({ all, or }) => or(all(policyOne, policyTwo), policyThree) ),
+ *   accessControl(({ all, or }) =>
+ *      or(all(policyOne, policyTwo), policyThree)
+ *   ),
  *   (req, res) => {
  *     // handler logic...
  * })
  */
 export const accessControl =
-    (factory: ComposerFactory): RequestHandler =>
-    async (req, res, next) => {
+    <P, Q, B>(factory: ComposerFactory<P, Q, B>) =>
+    async (req: Request<P, any, B, Q> & Authed, _res, next) => {
         const policy = factory({ all, one });
         const allowed = await policy(req);
         if (allowed) return next();
-        return res.status(403).json({ message: "Access denied" });
+        console.warn("Access control failed in route", req.url);
+        return next(new UnauthorizedError("Access denied"));
     };
