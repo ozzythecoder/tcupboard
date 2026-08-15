@@ -15,7 +15,7 @@ export class CampaignGateway {
     ];
 
     async getCampaignBySlug(slug: string, preview?: boolean) {
-        return await this.cms.request<Campaign>(
+        return await this.cms.request<Campaign[]>(
             readItems("campaigns", {
                 fields: this.allCampaignFields,
                 filter: {
@@ -37,9 +37,11 @@ export class CampaignGateway {
             }),
         );
 
-        return await this.cms.request<Campaign>(
-            readItem("campaigns", highlight.campaign.id, { fields: this.allCampaignFields }),
-        );
+        return highlight.campaign
+            ? this.cms.request<Campaign>(
+                  readItem("campaigns", highlight.campaign.id, { fields: this.allCampaignFields }),
+              )
+            : null;
     }
 
     async getAllCampaigns() {
