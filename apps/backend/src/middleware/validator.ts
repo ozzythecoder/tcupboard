@@ -1,39 +1,52 @@
+import { BadRequestError } from "@/types/errors.js";
 import type { RequestHandler } from "express";
 import type { ZodError, ZodType } from "zod";
 import { safeParse, treeifyError } from "zod";
 
-type Schema<Params, Query, Body> = {
+/**
+ * A schema for validating params, query, and body on the request object. Each key is a {@link ZodType}.
+ */
+export type ValidatorSchema<Params, Query, Body> = {
     params?: ZodType<Params>;
     query?: ZodType<Query>;
     body?: ZodType<Body>;
 };
 
 export const validateRequest = <Params = any, Query = any, Body = any>(
-    schema: Schema<Params, Query, Body>,
+    schema: ValidatorSchema<Params, Query, Body>,
 ): RequestHandler<Params, unknown, Body, Query> => {
     return async (req, res, next) => {
         const { params, query, body } = schema;
         const errors: Array<ZodError> = [];
         if (params) {
             const result = params.safeParse(req.params);
-            if (result.error) errors.push(result.error);
+            if (result.error) {
+                errors.push(result.error);
+            } else {
+                req.params = result.data as Params;
+            }
         }
         if (query) {
             const result = query.safeParse(req.query);
-            if (result.error) errors.push(result.error);
+            if (result.error) {
+                errors.push(result.error);
+            } else {
+                req.query = result.data as Query;
+            }
         }
         if (body) {
             const result = body.safeParse(req.body);
-            if (result.error) errors.push(result.error);
+            if (result.error) {
+                errors.push(result.error);
+            } else {
+                req.body = result.data as Body;
+            }
         }
         if (errors.length > 0) {
             console.warn("Validation failed:", errors);
-            return res.status(400).json({
-                message: "Validation failed",
-                errors,
-            });
+            return next(new BadRequestError(JSON.stringify(errors)))
         }
-        next();
+        return next();
     };
 };
 

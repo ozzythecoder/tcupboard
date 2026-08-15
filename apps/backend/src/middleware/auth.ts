@@ -1,6 +1,7 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { env } from "@/config/env.js";
 import { db, s } from "@/db/index.js";
+import type { ProvidingHandler } from "@/middleware/pipe.js";
 import { UserGateway } from "@/modules/users/users.gateway.js";
 import { UserService } from "@/modules/users/users.service.js";
 
@@ -14,29 +15,39 @@ const checkJwt = auth({
 const userGateway = new UserGateway(db, s);
 const userService = new UserService(userGateway);
 
+/** What `authGuard` guarantees on `req` once it calls `next()`. */
+export type Authed = { user: Auth0User };
+
 /**
  *  Simple middleware to ensure that request is authenticated.
+ *
+ *  When piped through {@link pipeMiddleware}, downstream handlers see
+ *  `req.user` as non-optional.
  */
-const authGuard = (req, res, next) => {
+const authGuard: ProvidingHandler<Authed> = (req, res, next) => {
     checkJwt(req, res, async (err) => {
         if (err) {
             console.warn("Authentication failed.", err);
-            console.log(req.headers);
             return res.status(401).json({ error: "Unauthorized", details: err.message });
         }
 
+        const payload = req.auth?.payload;
+        if (!payload?.sub) {
+            return res.status(401).json({ error: "Unauthorized", details: "Invalid token" });
+        }
+
         try {
-            const dbUser = await userService.getOneByAuth0Id(req.auth.payload.sub);
+            const dbUser = await userService.getOneByAuth0Id(payload.sub);
             if (!dbUser) {
                 return res
                     .status(401)
                     .json({ error: "Unauthorized", details: "User does not exist" });
             }
             req.user = {
-                ...req.auth.payload,
+                ...payload,
                 id: dbUser.id,
-                sub: req.auth.payload.sub,
-                roles: (req.auth.payload["https://tcupboard.org/roles"] as string[]) || [],
+                sub: payload.sub,
+                roles: (payload["https://tcupboard.org/roles"] as string[]) || [],
             };
 
             next();
