@@ -1,5 +1,5 @@
 import { type LinkProps, linkOptions, type RegisteredRouter } from "@tanstack/react-router";
-import { type LucideIcon, Megaphone, MessageCirclePlus, MessagesSquare, Newspaper } from "lucide-react";
+import { type LucideIcon, Megaphone, MessageCirclePlus, MessageSquareDotIcon, MessagesSquare, Newspaper } from "lucide-react";
 
 export const FOOTER_NAVIGATION_LINKS = [
     linkOptions({
@@ -49,6 +49,14 @@ export const SIDEBAR_NAVIGATION_LINKS = [
                 to: "/threads/create",
                 text: "Create",
                 Icon: MessageCirclePlus,
+                activeOptions: {
+                    exact: true,
+                },
+            }),
+            linkOptions({
+                to: "/messages",
+                text: "Messages",
+                Icon: MessageSquareDotIcon,
                 activeOptions: {
                     exact: true,
                 },
