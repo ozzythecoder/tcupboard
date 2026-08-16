@@ -1,12 +1,11 @@
 import type { AxiosInstance } from "axios";
-import type { Database, Schema } from "@/db/index.js";
 import { env } from "@/config/env.js";
 
 export class Auth0Gateway {
     constructor(private readonly api: AxiosInstance) {}
 
     getToken() {
-        return this.api.post(`${env.auth0.domain}/oauth/token`, {
+        return this.api.post<{ access_token?: string }>(`${env.auth0.domain}/oauth/token`, {
             client_id: env.auth0.clientId,
             client_secret: env.auth0.clientSecret,
             audience: env.auth0.apiIdentifier,

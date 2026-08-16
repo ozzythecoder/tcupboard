@@ -11,7 +11,7 @@ export const LoggerMiddleware =
         const timestamp = config?.withTimestamp ? `[${formatDate(new Date())}]: ` : "";
         console.log(`${timestamp}${req.method} ${req.url}`);
         if (req.body) {
-            console.log(req.body);
+            console.debug(req.body);
         }
         next();
     };
