@@ -52,5 +52,6 @@ export const campaignQueries = {
                 }
             },
             staleTime: ONE_HOUR,
+            retry: false,
         }),
 };
