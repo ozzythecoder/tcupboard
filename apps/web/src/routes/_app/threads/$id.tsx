@@ -32,10 +32,10 @@ export const Route = createFileRoute("/_app/threads/$id")({
     },
     loader: async ({ context: { queryClient, auth, id } }) => {
         const authApi = getProtectedApi(await auth.getToken());
-        const threadOptions = threadQueries.one(id, authApi);
-        const replyOptions = threadQueries.replies(id, authApi);
+        const threadOptions = threadQueries.one(Number(id), authApi);
+        const replyOptions = threadQueries.replies(Number(id), authApi);
         const threadReactionOptions = reactionQueries.getByPostId(Number(id), authApi);
-        const replyReactionOptions = reactionQueries.getAllForThread(id, authApi);
+        const replyReactionOptions = reactionQueries.getAllForThread(Number(id), authApi);
 
         queryClient.prefetchQuery(threadOptions);
         queryClient.prefetchQuery(replyOptions);
@@ -87,8 +87,7 @@ function RouteComponent() {
 
     const threadActionContext: IThreadActionContext = {
         canDeletePostsBy: (author_id) => {
-            console.log(auth.user);
-            return auth.user.sub === author_id || auth.user.role === "admin";
+            return auth.user.id === author_id || auth.user.role === "admin";
         },
         deleteThread: async (id, redirect = false) => {
             const r = await deleteMutation.mutateAsync(id);
@@ -109,7 +108,7 @@ function RouteComponent() {
         <Fragment>
             <ThreadActionContext value={threadActionContext}>
                 <PostReactionContext value={postReactionContext}>
-                    <ThreadView thread={thread.data} replies={replies.data ?? []} />
+                    <ThreadView replies={replies.data ?? []} thread={thread.data} />
                 </PostReactionContext>
             </ThreadActionContext>
             <ThreadEditor {...editorOpts} />
