@@ -1,4 +1,5 @@
 import type { Response } from "express";
+import { DatabaseError } from "pg";
 
 const ERROR_TAGS = [
     "NOT_FOUND",
@@ -60,5 +61,55 @@ export class FatalError extends Error {
 
     private die() {
         process.exit(1);
+    }
+}
+
+export function isPgError(e: unknown): e is DatabaseError {
+    return e instanceof DatabaseError;
+}
+
+/**
+ * Postgres error codes by their name.
+ */
+export const PG = {
+    UNIQUE_VIOLATION: "23505",
+    FOREIGN_KEY_VIOLATION: "23503",
+    NOT_NULL_VIOLATION: "23502",
+    CHECK_VIOLATION: "23514",
+    EXCLUSION_VIOLATION: "23P01",
+    SERIALIZATION_FAILURE: "40001",
+    DEADLOCK_DETECTED: "40P01",
+    LOCK_NOT_AVAILABLE: "55P03",
+    QUERY_CANCELED: "57014",
+} as const;
+
+/**
+ * Performs the database query, and re-maps errors from postgres errors to an error from
+ * the supplied map.
+ *
+ * @param fn the database call.
+ * @param map the error(s) to throw, keyed on the constraint that was violated.
+ * @returns the result of the database call.
+ * @example 
+ * ```ts
+ * mapPgErrors(
+ *      () => db.query.users.create(user),
+ *      {
+ *          users_email_key: () => 
+ *              new BadRequestError("Email is already in use"),
+ *          // other errors...
+ *      }
+ * )
+ * ```
+ */
+export async function mapPgErrors<T>(
+    fn: () => Promise<T>,
+    map: Record<string, () => ApplicationError>,
+): Promise<T> {
+    try {
+        return await fn();
+    } catch (e) {
+        if (isPgError(e) && e.constraint && map[e.constraint]) throw map[e.constraint]();
+        throw e;
     }
 }
