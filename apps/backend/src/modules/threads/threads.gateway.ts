@@ -14,7 +14,7 @@ export class ThreadsGateway {
     ) {}
 
     async getOne(id: number) {
-        return await this.db
+        return this.db
             .select({
                 ...getColumns(this.s.posts),
                 author: this.s.users.username,
@@ -26,22 +26,22 @@ export class ThreadsGateway {
     }
 
     async getAll() {
-        return await this.db
+        return this.db
             .select()
             .from(this.s.posts)
             .orderBy((p) => p.createdAt);
     }
 
     async getThreadCount() {
-        return await this.db
+        return this.db
             .select({
                 value: count(),
             })
-            .from(this.s.threadsWithReplies);
+            .from(this.s.postsWithReplies);
     }
 
     async getThreadsWithLatestReplyMetadata(offset: number, limit: number) {
-        return await this.db.select().from(this.s.threadsWithReplies).offset(offset).limit(limit);
+        return this.db.select().from(this.s.postsWithReplies).offset(offset).limit(limit);
     }
 
     async getReplies(parent_thread_id: number) {
@@ -72,7 +72,9 @@ export class ThreadsGateway {
                 authorId,
                 parentId: undefined,
             })
-            .returning();
+            .returning({
+                id: this.s.posts.id
+            });
     }
 
     async updateThread(postId: number, input: EditThreadSchema) {
@@ -87,7 +89,9 @@ export class ThreadsGateway {
                 authorId,
                 title: undefined,
             })
-            .returning();
+            .returning({
+                id: this.s.posts.id
+            });
     }
 
     async updateReply(postId: number, input: EditThreadReplySchema) {

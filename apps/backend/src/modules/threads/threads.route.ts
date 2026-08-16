@@ -1,4 +1,5 @@
 import {
+    numberOrNumericStringSchema,
     ZCreatePostReactionSchema,
     ZCreateThreadReplySchema,
     ZCreateThreadSchema,
@@ -7,223 +8,141 @@ import express from "express";
 import { z } from "zod";
 import { db, s } from "@/db/index.js";
 import authGuard from "@/middleware/auth.js";
-import { pipeMiddleware as middleware } from "@/middleware/pipe.js";
-import { validateRequest } from "@/middleware/validator.js";
+import { route } from "@/middleware/route.js";
 import { PostReactionGateway, PostReactionService } from "@/modules/post-reactions/index.js";
-import { UnauthorizedError } from "@/types/errors.js";
+import { UserGateway } from "../users/users.gateway.js";
 import { ThreadsGateway } from "./threads.gateway.js";
+import { ThreadsPolicy } from "./threads.policy.js";
 import { ThreadsService } from "./threads.service.js";
 
 const router = express.Router();
+const userGateway = new UserGateway(db, s);
+
 const threadGateway = new ThreadsGateway(db, s);
 const threadService = new ThreadsService(threadGateway);
+const threadPolicy = new ThreadsPolicy(threadGateway, userGateway);
 
 const reactionGateway = new PostReactionGateway(db, s);
 const reactionService = new PostReactionService(reactionGateway);
 
-const postsIndexSchema = z.object({
-    page: z
-        .string()
-        .optional()
-        .refine((v) => !v || parseInt(v, 10)),
-    limit: z
-        .string()
-        .optional()
-        .refine((v) => !v || parseInt(v, 10)),
-});
+const postsIndexSchema = {
+    query: z.object({
+        page: numberOrNumericStringSchema.optional().default(1),
+        limit: numberOrNumericStringSchema.optional().default(10),
+    }),
+};
+
+const paramsIdSchema = {
+    params: z.object({
+        id: numberOrNumericStringSchema,
+    }),
+};
 
 router.get(
     "/",
-    validateRequest({
-        query: postsIndexSchema,
+    ...route({
+        validate: postsIndexSchema,
+        handler: async (req, res) => {
+            res.json(
+                await threadService.getAllThreadsWithLatestReplyMetadata(
+                    req.baseUrl,
+                    req.query.page,
+                    req.query.limit,
+                ),
+            );
+        },
     }),
-    async (req, res, next) => {
-        try {
-            const q = req.query;
-
-            const page = q.page ? parseInt(q.page, 10) : 1;
-            const limit = q.limit ? Math.min(20, parseInt(q.limit, 10)) : 10;
-            const offset = (page - 1) * limit;
-
-            const [threads, countResult] = await Promise.all([
-                threadService.getAllThreadsWithLatestReplyMetadata(offset, limit),
-                threadService.getThreadCount(),
-            ]);
-
-            if (countResult.length === 0) {
-                return res.status(500).json({ message: "Internal error when getting messages." });
-            }
-
-            const count = countResult[0].value;
-            const pages = Math.ceil(count / limit);
-            const nextPage = `${req.baseUrl}?page=${page + 1}&limit=${limit}`;
-            const prevPage = `${req.baseUrl}?page=${page - 1}&limit=${limit}`;
-
-            return res.json({
-                data: threads,
-                pagination: {
-                    page,
-                    limit,
-                    total: count,
-                    pages,
-                    nextPage: page < pages ? nextPage : null,
-                    prevPage: page > 1 ? prevPage : null,
-                },
-            });
-        } catch (error) {
-            console.error("Error fetching posts:", error);
-            next(error);
-        }
-    },
 );
 
-const validateParentId = validateRequest({
-    params: z.object({ parentId: z.coerce.number() }).required(),
-});
+const parentIdSchema = {
+    params: z.object({ parentId: numberOrNumericStringSchema }).required(),
+};
 
 router.get(
     "/:parentId/replies",
-    ...middleware(authGuard).pipe(validateParentId).build(),
-    async (req, res, next) => {
-        const { parentId } = req.params;
-        try {
-            const data = await threadService.getAllReplies(parentId);
-            return res.json(data);
-        } catch (e) {
-            console.error("ERROR [/posts/replies/:parentId]:", e);
-            next(e);
-        }
-    },
+    ...route({
+        validate: parentIdSchema,
+        handler: async (req, res) => {
+            res.json(await threadService.getAllReplies(req.params.parentId));
+        },
+    }),
 );
 
+const threadIdSchema = {
+    params: z.object({ threadId: numberOrNumericStringSchema }).required(),
+};
 router.get(
     "/:threadId",
-    ...middleware(authGuard)
-        .pipe(validateRequest({ params: z.object({ threadId: z.coerce.number() }) }))
-        .build(),
-    async (req, res, next) => {
-        const { threadId } = req.params;
-        try {
-            const data = await threadService.getOneById(threadId);
-            res.json(data);
-        } catch (error) {
-            console.error("Error in getThreadById:", error);
-            next(error);
-        }
-    },
+    ...route({
+        validate: threadIdSchema,
+        handler: async (req, res) => {
+            res.json(await threadService.getOneById(req.params.threadId));
+        },
+    }),
 );
 
+const postThreadReplySchema = {
+    params: z.object({ threadId: numberOrNumericStringSchema }).required(),
+    body: ZCreateThreadReplySchema,
+};
 router.post(
     "/:threadId/reply",
-    ...middleware(authGuard)
-        .pipe(
-            validateRequest({
-                params: z.object({ threadId: z.coerce.number() }).required(),
-                body: ZCreateThreadReplySchema,
-            }),
-        )
-        .build(),
-    async (req, res) => {
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-        const id = req.user.id;
-
-        try {
-            const [data] = await threadService.createReply(id, req.body);
-            res.status(201).json({ id: data.id });
-        } catch (e) {
-            console.error(e);
-            res.status(500).json({ message: "Internal Server Error" });
-        }
-    },
+    ...route({
+        validate: postThreadReplySchema,
+        handler: async (req, res) => {
+            res.status(201).json(await threadService.createReply(req.user.id, req.body));
+        },
+    }),
 );
 
 router.post(
     "/",
-    ...middleware(authGuard)
-        .pipe(validateRequest({ body: ZCreateThreadSchema }))
-        .build(),
-    async (req, res) => {
-        // TODO: support for tags
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        try {
-            const [thread] = await threadService.createThread(req.user.id, req.body);
-            res.status(201).json({ id: thread.id });
-        } catch (error) {
-            console.error("Error creating post:", error);
-            res.status(500).json({ error: (error as any).message });
-        }
-    },
+    ...route({
+        validate: {
+            body: ZCreateThreadSchema,
+        },
+        handler: async (req, res) => {
+            res.status(201).json(await threadService.createThread(req.user.id, req.body));
+        },
+    }),
 );
 
 // Get reactions for a post
 router.get(
     "/:id/reactions",
-    ...middleware(authGuard)
-        .pipe(
-            validateRequest({
-                params: z.object({ id: z.coerce.number() }),
-            }),
-        )
-        .build(),
-    async (req, res, next) => {
-        const { id } = req.params;
-        try {
-            const reactions = await reactionService.getByPostId(id);
-            res.status(200).json(reactions);
-        } catch (error) {
-            next(error);
-        }
-    },
+    ...route({
+        validate: paramsIdSchema,
+        handler: async (req, res) => {
+            res.status(200).json(await reactionService.getByPostId(req.params.id));
+        },
+    }),
 );
 
 router.get(
     "/:id/replies/reactions",
-    ...middleware(authGuard)
-        .pipe(
-            validateRequest({
-                params: z.object({ id: z.coerce.number() }),
-            }),
-        )
-        .build(),
-    async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const replies = await threadService.getAllReplies(id);
+    ...route({
+        validate: paramsIdSchema,
+        handler: async (req, res) => {
+            const replies = await threadService.getAllReplies(req.params.id);
             const replyIDs = replies.map((r) => r.id);
-            const reactions = await reactionService.getAllByPostIds(replyIDs.concat(id));
-
-            res.json(reactions);
-        } catch (e) {
-            console.error(e);
-            next(e);
-        }
-    },
+            res.json(await reactionService.getAllByPostIds(replyIDs.concat(req.params.id)));
+        },
+    }),
 );
 
-const post_PostId_Reactions = {
+const postReactionsSchema = {
     params: z.object({ postId: z.string() }),
     body: ZCreatePostReactionSchema,
 };
-
 router.post(
     "/:postId/reactions",
-    ...middleware(authGuard).pipe(validateRequest(post_PostId_Reactions)).build(),
-    async (req, res, next) => {
-        try {
-            if (!req.user) throw new UnauthorizedError("No user found");
-            const userId = req.user.id;
-            await reactionService.toggle(userId, req.body);
-            return res.status(201).send();
-        } catch (error) {
-            console.error(error);
-            next(error);
-        }
-    },
+    ...route({
+        validate: postReactionsSchema,
+        handler: async (req, res) => {
+            await reactionService.toggle(req.user.id, req.body);
+            res.status(201).send();
+        },
+    }),
 );
 
 router.put("/edit/:id", authGuard, async (_req, res) => {
@@ -285,7 +204,23 @@ router.put("/edit/:id", authGuard, async (_req, res) => {
 ////////
 // router.post('/tags')
 
+const deleteThreadSchema = z.object({
+    id: numberOrNumericStringSchema,
+});
+
 ///////
-// router.delete('/:id')
+router.delete(
+    "/:id",
+    ...route({
+        validate: {
+            params: deleteThreadSchema,
+        },
+        policy: () => threadPolicy.delete(),
+        handler: async (req, res) => {
+            void (await threadService.deleteThread(req.params.id));
+            res.sendStatus(204);
+        },
+    }),
+);
 
 export { router as threadsRouter };
