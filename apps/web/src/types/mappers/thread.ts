@@ -1,53 +1,15 @@
-import type { CreateThreadReplySchema, CreateThreadSchema, ImageMetadata } from "@repo/shared";
-import type { JSONContent } from "@tiptap/react";
+import type { CreateThreadReplySchema, CreateThreadSchema } from "@repo/shared";
 
-interface CreateThreadInput {
-    id: string;
-    author: string;
-    title: string;
-    doc: { content: JSONContent[] };
-    images?: ImageMetadata[];
-}
-
-export function toCreateThreadRequest({
-    id,
-    author,
-    doc,
-    images,
-    title,
-}: CreateThreadInput): CreateThreadSchema {
+export function toCreateThreadRequest(item: CreateThreadSchema): CreateThreadSchema {
     return {
-        id,
-        author,
-        content: JSON.stringify(doc),
-        images,
-        title,
+        ...item,
+        content: JSON.stringify(item.content),
     };
 }
 
-// ################
-//  REPLIES
-
-interface CreateThreadReplyInput {
-    id: string;
-    parent_id: number;
-    author: string;
-    doc: { content: JSONContent[] };
-    images?: ImageMetadata[];
-}
-
-export function toCreateReplyRequest({
-    id,
-    doc,
-    author,
-    images,
-    parent_id,
-}: CreateThreadReplyInput): CreateThreadReplySchema {
+export function toCreateReplyRequest(item: CreateThreadReplySchema): CreateThreadReplySchema {
     return {
-        id,
-        content: JSON.stringify(doc),
-        author,
-        images,
-        parent_id,
+        ...item,
+        content: JSON.stringify(item.content),
     };
 }
