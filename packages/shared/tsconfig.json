@@ -6,7 +6,6 @@
         "moduleResolution": "nodenext",
         "verbatimModuleSyntax": true,
         "allowImportingTsExtensions": true,
-        "noEmit": true,
         "noImplicitAny": true,
         "composite": true,
         "declaration": true,

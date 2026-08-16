@@ -16,5 +16,5 @@ export default defineConfig({
     introspect: {
         casing: 'camel'
     },
-    tablesFilter: ["!directus_*"]
+    // tablesFilter: ["!directus_*"]
 });
