@@ -20,8 +20,8 @@ const threadKeys = {
     all: ["threads"] as const,
     paginated: (pagination: { page: number; limit?: 10 }) =>
         [...threadKeys.all, pagination] as const,
-    one: (id: string) => [...threadKeys.all, "detail", id] as const,
-    withReplies: (id: string) => [...threadKeys.all, "detail", "replies", id] as const,
+    one: (id: number) => [...threadKeys.all, "detail", id] as const,
+    withReplies: (id: number) => [...threadKeys.all, "detail", "replies", id] as const,
 };
 
 export const threadQueries = {
@@ -36,7 +36,7 @@ export const threadQueries = {
                     .json(),
             staleTime: ONE_MINUTE,
         }),
-    one: (threadId: string, api: ProtectedApiInstance) =>
+    one: (threadId: number, api: ProtectedApiInstance) =>
         queryOptions({
             queryKey: threadKeys.one(threadId),
             queryFn: async ({ queryKey }) => {
@@ -45,7 +45,7 @@ export const threadQueries = {
             },
             staleTime: ONE_MINUTE * 0.5,
         }),
-    replies: (threadId: string, api: ProtectedApiInstance) =>
+    replies: (threadId: number, api: ProtectedApiInstance) =>
         queryOptions({
             queryKey: threadKeys.withReplies(threadId),
             queryFn: async ({ queryKey }) => {
@@ -95,7 +95,7 @@ export const threadMutations = {
             mutationFn: async (json: CreateThreadReplySchema) => {
                 try {
                     return await api
-                        .post<{ id: string }>(`threads/${json.parent_id}/reply`, {
+                        .post<{ id: string }>(`threads/${json.parentId}/reply`, {
                             body: JSON.stringify(json),
                         })
                         .json();
@@ -104,7 +104,7 @@ export const threadMutations = {
                 }
             },
             onSuccess: (_data, variables, _result, ctx) => {
-                ctx.client.invalidateQueries({ queryKey: threadKeys.one(variables.parent_id.toString()) });
+                ctx.client.invalidateQueries({ queryKey: threadKeys.withReplies(variables.parentId) });
             },
         }),
 };

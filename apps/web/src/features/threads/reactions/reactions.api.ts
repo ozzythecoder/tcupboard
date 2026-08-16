@@ -22,7 +22,7 @@ export const reactionQueries = {
                 }
             },
         }),
-    getAllForThread: (threadID: string, api: ProtectedApi) =>
+    getAllForThread: (threadID: number, api: ProtectedApi) =>
         queryOptions({
             queryKey: ["reaction", "replies", threadID],
             queryFn: async ({ queryKey }) => {
