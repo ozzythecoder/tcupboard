@@ -42,7 +42,7 @@ export const ZCreateThreadSchema = z.object({
     title: z.string(),
     content: ZThreadContentSchema,
     images: z.array(ZImageMetadataSchema).optional(),
-    parent_id: z.never().optional(),
+    parentId: z.never().optional(),
 });
 export type CreateThreadSchema = z.infer<typeof ZCreateThreadSchema>;
 
@@ -54,7 +54,7 @@ export const ZEditThreadSchema = ZCreateThreadSchema.pick({
 export type EditThreadSchema = z.infer<typeof ZEditThreadSchema>;
 
 export const ZCreateThreadReplySchema = ZCreateThreadSchema.omit({ title: true }).extend({
-    parent_id: numberOrNumericStringSchema,
+    parentId: numberOrNumericStringSchema,
 });
 export type CreateThreadReplySchema = z.infer<typeof ZCreateThreadReplySchema>;
 
