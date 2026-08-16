@@ -21,8 +21,8 @@ export function CampaignView({ campaign }: { campaign: ICampaign }) {
                 }}
             >
                 <Hero campaign={campaign} />
-                {campaign.blocks.map((b, i) => (
-                    <Block block={b} key={i} />
+                {campaign.blocks.map((b) => (
+                    <Block block={b} key={b.id} />
                 ))}
             </div>
             {campaign.show_footer && <Footer />}

@@ -16,9 +16,9 @@ export function Editor({ editor }: Props) {
             <p className="text-xs text-right">
                 <a
                     className="anchor underline"
-                    target="_blank"
-                    rel="noopener noreferer"
                     href="https://www.markdownlang.com/cheatsheet/"
+                    rel="noopener noreferer"
+                    target="_blank"
                 >
                     Markdown format
                 </a>{" "}

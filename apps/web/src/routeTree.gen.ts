@@ -22,16 +22,19 @@ import { Route as CampaignSlugRouteImport } from './routes/campaign/$slug'
 import { Route as AppUpdatesRouteRouteImport } from './routes/_app/updates/route'
 import { Route as AppThreadsRouteRouteImport } from './routes/_app/threads/route'
 import { Route as AppProfileRouteRouteImport } from './routes/_app/profile/route'
+import { Route as AppMessagesRouteRouteImport } from './routes/_app/messages/route'
 import { Route as AppUpdatesIndexRouteImport } from './routes/_app/updates/index'
 import { Route as AppThreadsIndexRouteImport } from './routes/_app/threads/index'
 import { Route as AppProtectedIndexRouteImport } from './routes/_app/protected/index'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
+import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
 import { Route as AppUpdatesIdRouteImport } from './routes/_app/updates/$id'
 import { Route as AppThreadsCreateRouteImport } from './routes/_app/threads/create'
 import { Route as AppThreadsIdRouteImport } from './routes/_app/threads/$id'
 import { Route as AppProfileMeRouteImport } from './routes/_app/profile/me'
 import { Route as AppProfileEditRouteImport } from './routes/_app/profile/edit'
 import { Route as AppProfileIdRouteImport } from './routes/_app/profile/$id'
+import { Route as AppMessagesConversationIdRouteImport } from './routes/_app/messages/conversation/$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -97,6 +100,11 @@ const AppProfileRouteRoute = AppProfileRouteRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppMessagesRouteRoute = AppMessagesRouteRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppUpdatesIndexRoute = AppUpdatesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -116,6 +124,11 @@ const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppProfileRouteRoute,
+} as any)
+const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMessagesRouteRoute,
 } as any)
 const AppUpdatesIdRoute = AppUpdatesIdRouteImport.update({
   id: '/$id',
@@ -147,6 +160,12 @@ const AppProfileIdRoute = AppProfileIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppProfileRouteRoute,
 } as any)
+const AppMessagesConversationIdRoute =
+  AppMessagesConversationIdRouteImport.update({
+    id: '/conversation/$id',
+    path: '/conversation/$id',
+    getParentRoute: () => AppMessagesRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/colors': typeof ColorsRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/messages': typeof AppMessagesRouteRouteWithChildren
   '/profile': typeof AppProfileRouteRouteWithChildren
   '/threads': typeof AppThreadsRouteRouteWithChildren
   '/updates': typeof AppUpdatesRouteRouteWithChildren
@@ -167,10 +187,12 @@ export interface FileRoutesByFullPath {
   '/threads/$id': typeof AppThreadsIdRoute
   '/threads/create': typeof AppThreadsCreateRoute
   '/updates/$id': typeof AppUpdatesIdRoute
+  '/messages/': typeof AppMessagesIndexRoute
   '/profile/': typeof AppProfileIndexRoute
   '/protected/': typeof AppProtectedIndexRoute
   '/threads/': typeof AppThreadsIndexRoute
   '/updates/': typeof AppUpdatesIndexRoute
+  '/messages/conversation/$id': typeof AppMessagesConversationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -187,10 +209,12 @@ export interface FileRoutesByTo {
   '/threads/$id': typeof AppThreadsIdRoute
   '/threads/create': typeof AppThreadsCreateRoute
   '/updates/$id': typeof AppUpdatesIdRoute
+  '/messages': typeof AppMessagesIndexRoute
   '/profile': typeof AppProfileIndexRoute
   '/protected': typeof AppProtectedIndexRoute
   '/threads': typeof AppThreadsIndexRoute
   '/updates': typeof AppUpdatesIndexRoute
+  '/messages/conversation/$id': typeof AppMessagesConversationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -202,6 +226,7 @@ export interface FileRoutesById {
   '/colors': typeof ColorsRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/_app/messages': typeof AppMessagesRouteRouteWithChildren
   '/_app/profile': typeof AppProfileRouteRouteWithChildren
   '/_app/threads': typeof AppThreadsRouteRouteWithChildren
   '/_app/updates': typeof AppUpdatesRouteRouteWithChildren
@@ -213,10 +238,12 @@ export interface FileRoutesById {
   '/_app/threads/$id': typeof AppThreadsIdRoute
   '/_app/threads/create': typeof AppThreadsCreateRoute
   '/_app/updates/$id': typeof AppUpdatesIdRoute
+  '/_app/messages/': typeof AppMessagesIndexRoute
   '/_app/profile/': typeof AppProfileIndexRoute
   '/_app/protected/': typeof AppProtectedIndexRoute
   '/_app/threads/': typeof AppThreadsIndexRoute
   '/_app/updates/': typeof AppUpdatesIndexRoute
+  '/_app/messages/conversation/$id': typeof AppMessagesConversationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,6 +255,7 @@ export interface FileRouteTypes {
     | '/colors'
     | '/faq'
     | '/login'
+    | '/messages'
     | '/profile'
     | '/threads'
     | '/updates'
@@ -239,10 +267,12 @@ export interface FileRouteTypes {
     | '/threads/$id'
     | '/threads/create'
     | '/updates/$id'
+    | '/messages/'
     | '/profile/'
     | '/protected/'
     | '/threads/'
     | '/updates/'
+    | '/messages/conversation/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -259,10 +289,12 @@ export interface FileRouteTypes {
     | '/threads/$id'
     | '/threads/create'
     | '/updates/$id'
+    | '/messages'
     | '/profile'
     | '/protected'
     | '/threads'
     | '/updates'
+    | '/messages/conversation/$id'
   id:
     | '__root__'
     | '/'
@@ -273,6 +305,7 @@ export interface FileRouteTypes {
     | '/colors'
     | '/faq'
     | '/login'
+    | '/_app/messages'
     | '/_app/profile'
     | '/_app/threads'
     | '/_app/updates'
@@ -284,10 +317,12 @@ export interface FileRouteTypes {
     | '/_app/threads/$id'
     | '/_app/threads/create'
     | '/_app/updates/$id'
+    | '/_app/messages/'
     | '/_app/profile/'
     | '/_app/protected/'
     | '/_app/threads/'
     | '/_app/updates/'
+    | '/_app/messages/conversation/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -394,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/messages': {
+      id: '/_app/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AppMessagesRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/updates/': {
       id: '/_app/updates/'
       path: '/'
@@ -421,6 +463,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/'
       preLoaderRoute: typeof AppProfileIndexRouteImport
       parentRoute: typeof AppProfileRouteRoute
+    }
+    '/_app/messages/': {
+      id: '/_app/messages/'
+      path: '/'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AppMessagesIndexRouteImport
+      parentRoute: typeof AppMessagesRouteRoute
     }
     '/_app/updates/$id': {
       id: '/_app/updates/$id'
@@ -464,8 +513,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileIdRouteImport
       parentRoute: typeof AppProfileRouteRoute
     }
+    '/_app/messages/conversation/$id': {
+      id: '/_app/messages/conversation/$id'
+      path: '/conversation/$id'
+      fullPath: '/messages/conversation/$id'
+      preLoaderRoute: typeof AppMessagesConversationIdRouteImport
+      parentRoute: typeof AppMessagesRouteRoute
+    }
   }
 }
+
+interface AppMessagesRouteRouteChildren {
+  AppMessagesIndexRoute: typeof AppMessagesIndexRoute
+  AppMessagesConversationIdRoute: typeof AppMessagesConversationIdRoute
+}
+
+const AppMessagesRouteRouteChildren: AppMessagesRouteRouteChildren = {
+  AppMessagesIndexRoute: AppMessagesIndexRoute,
+  AppMessagesConversationIdRoute: AppMessagesConversationIdRoute,
+}
+
+const AppMessagesRouteRouteWithChildren =
+  AppMessagesRouteRoute._addFileChildren(AppMessagesRouteRouteChildren)
 
 interface AppProfileRouteRouteChildren {
   AppProfileIdRoute: typeof AppProfileIdRoute
@@ -516,6 +585,7 @@ const AppUpdatesRouteRouteWithChildren = AppUpdatesRouteRoute._addFileChildren(
 )
 
 interface AppRouteRouteChildren {
+  AppMessagesRouteRoute: typeof AppMessagesRouteRouteWithChildren
   AppProfileRouteRoute: typeof AppProfileRouteRouteWithChildren
   AppThreadsRouteRoute: typeof AppThreadsRouteRouteWithChildren
   AppUpdatesRouteRoute: typeof AppUpdatesRouteRouteWithChildren
@@ -523,6 +593,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppMessagesRouteRoute: AppMessagesRouteRouteWithChildren,
   AppProfileRouteRoute: AppProfileRouteRouteWithChildren,
   AppThreadsRouteRoute: AppThreadsRouteRouteWithChildren,
   AppUpdatesRouteRoute: AppUpdatesRouteRouteWithChildren,

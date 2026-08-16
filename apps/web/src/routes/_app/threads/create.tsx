@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getProtectedApi } from "#/config/api";
-import { ThreadEditor, editorOptions } from "#/features/editor";
+import { editorOptions, ThreadEditor } from "#/features/editor";
 import { threadMutations } from "#/features/threads";
 
 export const Route = createFileRoute("/_app/threads/create")({
