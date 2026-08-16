@@ -17,9 +17,15 @@ export const Route = createFileRoute("/_app/threads/")({
     component: RouteComponent,
     errorComponent: ErrorComponent,
     pendingComponent: Loading,
+    beforeLoad: async ({ context }) => { 
+        context.auth.guard()
+        return {
+            token: await context.auth.getToken(),
+        }
+    },
     loaderDeps: ({ search }) => ({ page: search.page }),
     loader: async ({ context, deps }) => {
-        const authApi = getProtectedApi(await context.auth.getId());
+        const authApi = getProtectedApi(context.token);
         context.queryClient.ensureQueryData(threadQueries.all({ page: deps.page }, authApi));
         return {
             authApi,
