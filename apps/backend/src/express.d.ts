@@ -1,15 +1,17 @@
+/**
+ * The authenticated user attached to `req.user` by {@link authGuard}.
+ */
 interface Auth0User {
-    id: number;
-    name: string;
-    nickname: string;
-    picture: string;
-    email: string;
-    email_verified: boolean;
-    updated_at: string;
-    sub: string;
-    "https://tcupboard.org/username": string;
+    /** The user's database ID. */
+    id: DbUserId;
+    /** The user's Auth0 ID. */
+    sub: Auth0UserId;
     roles: Array<string>; // renamed from "https://tcupboard.org/roles" when initialized
+    "https://tcupboard.org/username"?: string;
 }
+
+type DbUserId = number & { __brand: "userId" };
+type Auth0UserId = string & { __brand: "auth0UserId" };
 
 interface ParamsDictionary {
     [key: string]: string | string[];

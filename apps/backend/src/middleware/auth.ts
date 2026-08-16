@@ -45,7 +45,7 @@ const authGuard: ProvidingHandler<Authed> = (req, res, next) => {
             }
             req.user = {
                 ...payload,
-                id: dbUser.id,
+                id: dbUser.id as DbUserId,
                 sub: payload.sub,
                 roles: (payload["https://tcupboard.org/roles"] as string[]) || [],
             };
