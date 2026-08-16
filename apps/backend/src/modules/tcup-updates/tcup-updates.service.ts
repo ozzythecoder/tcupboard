@@ -27,7 +27,7 @@ export class TcupUpdatesService {
         }));
     }
 
-    async getById(id: string, preview: boolean = false) {
+    async getById(id: number, preview: boolean = false) {
         const data = await this.cms
             .request<TcupUpdate>(
                 readItem("tcup_updates", id, {
