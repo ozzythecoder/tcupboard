@@ -21,7 +21,7 @@ export function Hero({ campaign }: { campaign: Campaign }) {
                 />
             </Link>
             {campaign.image && (
-                <figure className="max-h-175 pb-12">
+                <figure className="max-h-175 pb-12 pt-6">
                     <img
                         alt={campaign.title}
                         className="w-full h-full object-contain"

@@ -107,7 +107,7 @@ export const useThreadEditor = ({ mode, extensionOverrides = [] }: UseThreadEdit
         extensions: extensionOverrides.length > 0 ? extensionOverrides : baseExtensions,
         editorProps: {
             attributes: {
-                class: "preset-glass-surface-200-800",
+                class: "preset-glass-surface-200-800 min-h-[6lh] max-h-[20lh] overflow-y-scroll",
             },
         },
     });
