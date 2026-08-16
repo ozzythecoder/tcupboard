@@ -8,7 +8,7 @@ export class UserGateway {
         private readonly s: Schema,
     ) {}
 
-    async getOneById(id: number) {
+    async getOneById(id: DbUserId) {
         return this.db.query.users.findFirst({
             where: {
                 id: { eq: id },
@@ -16,7 +16,7 @@ export class UserGateway {
         });
     }
 
-    async getOneByAuth0Id(auth0Id: string) {
+    async getOneByAuth0Id(auth0Id: Auth0UserId) {
         return this.db.query.users.findFirst({
             where: {
                 auth0Id: { eq: auth0Id },
@@ -24,7 +24,7 @@ export class UserGateway {
         });
     }
 
-    async create(input: CreateUser, auth0Id: string) {
+    async create(input: CreateUser, auth0Id: Auth0UserId) {
         return this.db
             .insert(this.s.users)
             .values({
@@ -34,7 +34,7 @@ export class UserGateway {
             .returning();
     }
 
-    async edit(input: UpdateUser, userId: number) {
+    async edit(input: UpdateUser, userId: DbUserId) {
         return this.db
             .update(this.s.users)
             .set({
@@ -45,7 +45,7 @@ export class UserGateway {
             .returning();
     }
 
-    async setEmail(email: string, userId: number) {
+    async setEmail(email: string, userId: DbUserId) {
         return this.db
             .update(this.s.users)
             .set({ email })

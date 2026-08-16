@@ -1,7 +1,7 @@
 import type { Request } from "express";
+import { admin, everyone } from "@/access-control/policies/generic.js";
 import type { UserGateway } from "@/modules/users/users.gateway.js";
 import type { Policy } from "../../access-control/types.js";
-import { admin, everyone } from "@/access-control/policies/generic.js";
 
 export class UserPolicy {
     constructor(private readonly userGwy: UserGateway) {}
@@ -16,10 +16,10 @@ export class UserPolicy {
     /**
      * - Authenticated users can edit their own profile.
      */
-    editProfile(): Policy {
-        return async (req) => {
-            return req.user?.id === Number(req.params.userId);
-        };
+    editProfile() {
+        return (async (req) => {
+            return req.user.id === req.params.userId;
+        }) satisfies Policy<{ userId: number }>;
     }
 
     /**
