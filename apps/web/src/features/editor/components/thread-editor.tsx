@@ -1,4 +1,9 @@
-import type { CreateThreadReplySchema, CreateThreadSchema, User } from "@repo/shared";
+import type {
+    CreateThreadReplySchema,
+    CreateThreadSchema,
+    TipTapContent,
+    User,
+} from "@repo/shared";
 import { Tiptap } from "@tiptap/react";
 import { LoaderCircle } from "lucide-react";
 import { type ChangeEvent, Fragment, useState } from "react";
@@ -48,20 +53,18 @@ export function ThreadEditor({ metadata, mode, onSave, isSaving }: EditorProps) 
     };
 
     const handleReply = async () => {
-        const doc = editor.getJSON();
+        const doc = editor.getJSON() as TipTapContent;
         const mapped =
             mode === "compose"
                 ? toCreateThreadRequest({
-                      id: String(metadata.user.id),
                       author: metadata.user.username,
-                      doc,
+                      content: doc,
                       title,
                   })
                 : toCreateReplyRequest({
-                      id: String(metadata.user.id),
                       author: metadata.user.username,
-                      doc,
-                      parent_id: metadata.parentThreadId,
+                      content: doc,
+                      parentId: metadata.parentThreadId,
                   });
 
         try {
@@ -78,10 +81,12 @@ export function ThreadEditor({ metadata, mode, onSave, isSaving }: EditorProps) 
             <Tiptap editor={editor}>
                 {mode === "compose" && (
                     <input
+                        className="input drop-shadow-2xl bg-surface-50-950 focus:ring-surface-800-200 focus:outline-none h3 text-lg py-2 my-6"
+                        id="title"
+                        onChange={changeTitle}
+                        placeholder="Title"
                         type="text"
                         value={title}
-                        onChange={changeTitle}
-                        className="input drop-shadow-2xl bg-surface-50-950 focus:ring-surface-800-200 focus:outline-none h3 text-lg py-2 my-6"
                     />
                 )}
                 <Tiptap.Content />
@@ -90,10 +95,10 @@ export function ThreadEditor({ metadata, mode, onSave, isSaving }: EditorProps) 
             </Tiptap>
             <div className="flex flex-row-reverse pr-2 pt-2">
                 <button
-                    disabled={isSaving}
-                    type="button"
                     className="btn preset-tonal-primary"
+                    disabled={isSaving}
                     onClick={handleReply}
+                    type="button"
                 >
                     {isSaving ? <LoaderCircle className="animate-spin" /> : "Reply"}
                 </button>
