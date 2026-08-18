@@ -1,5 +1,5 @@
 import type { Campaign } from "@repo/shared";
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { api } from "#/config/api";
 import { handleHttpError } from "#/config/error";
 
@@ -43,9 +43,7 @@ export const campaignQueries = {
             queryKey: campaignKeys.highlighted(),
             queryFn: async () => {
                 try {
-                    const res = await api.get<Campaign>(
-                        "campaigns/highlight",
-                    );
+                    const res = await api.get<Campaign>("campaigns/highlight");
                     return await res.json();
                 } catch (error) {
                     throw handleHttpError(error);
@@ -55,3 +53,9 @@ export const campaignQueries = {
             retry: false,
         }),
 };
+
+export const useCampaignQuery = ({ throwOnError = true }: { throwOnError?: boolean } = {}) =>
+    useQuery({
+        ...campaignQueries.all(),
+        throwOnError,
+    });
