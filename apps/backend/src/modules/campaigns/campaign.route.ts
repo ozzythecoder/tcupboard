@@ -10,6 +10,15 @@ const gateway = new CampaignGateway(directus);
 const svc = new CampaignService(gateway);
 
 router.get(
+    "/",
+    ...publicRoute({
+        handler: async (_req, res) => {
+            res.json(await svc.getAllCampaigns());
+        },
+    }),
+);
+
+router.get(
     "/highlight",
     ...publicRoute({
         handler: async (_req, res) => {
@@ -25,7 +34,7 @@ const GetCampaignSlugSchema = {
     params: z.object({
         slug: z.string(),
     }),
-}
+};
 router.get(
     "/:slug",
     ...publicRoute({
