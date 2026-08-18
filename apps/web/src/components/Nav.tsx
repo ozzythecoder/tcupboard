@@ -1,9 +1,10 @@
 import { Collapsible, Navigation as Nav } from "@skeletonlabs/skeleton-react";
-import { Link } from "@tanstack/react-router";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
+import { Link, linkOptions } from "@tanstack/react-router";
+import { ChevronDown, ChevronUp, Megaphone, X } from "lucide-react";
 import { Fragment } from "react/jsx-runtime";
 import { useAuth0Context } from "#/config/auth-context";
-import { SIDEBAR_NAVIGATION_LINKS, type NavLink, type NestedNavLink } from "#/config/links";
+import { isNested, type NavLink, type NestedNavLink, useLinks } from "#/config/links";
+import { useCampaignQuery } from "#/features/campaign/campaign.api";
 import { LogoutButton } from "./auth/LogoutButton";
 import { MiniProfile } from "./auth/MiniProfile";
 import { Logo } from "./Logo";
@@ -29,27 +30,30 @@ function LinkElement({ l }: { l: NavLink }) {
     );
 }
 
-function Dropdown({ l }: { l: NestedNavLink }) {
+interface DropdownProps {
+    l: NestedNavLink;
+}
+
+function Dropdown({ l }: DropdownProps) {
     const { text, nested } = l;
+    const IconOpen = l.IconOpen ?? ChevronUp;
+    const IconClosed = l.IconClosed ?? ChevronDown;
+    
     return (
         <Collapsible className="group/link">
             <Collapsible.Trigger className="_navlink z-10 anchor w-full py-2 px-4 rounded-md flex flex-row items-center font-secondary group-hover/link:underline text-surface-900-100 border-0">
                 <span className="grow text-left">{text}</span>
                 <Collapsible.Indicator className="shrink group/collapse">
-                    {l.Icon ? (
-                        <l.Icon className="inline" size={18} />
-                    ) : (
-                        <span>
-                            <ChevronDown
-                                className="group-data-[state=closed]/collapse:inline hidden"
-                                size={18}
-                            />
-                            <ChevronUp
-                                className="group-data-[state=open]/collapse:inline hidden"
-                                size={18}
-                            />
-                        </span>
-                    )}
+                    <span>
+                        <IconClosed
+                            className="group-data-[state=closed]/collapse:inline hidden"
+                            size={18}
+                        />
+                        <IconOpen
+                            className="group-data-[state=open]/collapse:inline hidden"
+                            size={18}
+                        />
+                    </span>
                 </Collapsible.Indicator>
             </Collapsible.Trigger>
             <Collapsible.Content className="overflow-hidden data-[state=open]:animate-[collapsible-open_200ms_ease-out] data-[state=closed]:animate-[collapsible-close_200ms_ease-out] w-full pl-4 flex flex-col items-center gap-2">
@@ -62,11 +66,29 @@ function Dropdown({ l }: { l: NestedNavLink }) {
 }
 
 export function Navigation() {
+    // TODO: get other pages from CMS
+
+    const { data: campaigns } = useCampaignQuery({ throwOnError: false });
+    const campaignLinks = campaigns?.map((c) =>
+        linkOptions({
+            to: "/campaign/$slug",
+            params: { slug: c.slug },
+            text: c.title,
+        }),
+    );
+    const links = useLinks([
+        {
+            text: "Campaigns",
+            IconClosed: Megaphone,
+            nested: campaignLinks ?? [],
+        },
+    ]);
+
     return (
         <Nav className="w-full min-h-screen grid grid-rows-[auto_1fr_auto] gap-4" layout="sidebar">
             <Nav.Header className="flex flex-col items-center mx-auto">
                 <div className="w-full pl-1 mt-1">
-                    <ToggleSidebarButton icon={X} />
+                    <ToggleSidebarButton Icon={X} />
                 </div>
                 <Logo />
                 <h1 className="h3 text-2xl text-center tracking-tight text-shadow-hard-surface-contrast-700-300 font-secondary mt-1">
@@ -75,8 +97,8 @@ export function Navigation() {
             </Nav.Header>
             <Nav.Content>
                 <Nav.Menu>
-                    {SIDEBAR_NAVIGATION_LINKS.map((l) => {
-                        return "nested" in l ? (
+                    {links.map((l) => {
+                        return isNested(l) ? (
                             <Dropdown key={l.text} l={l} />
                         ) : (
                             <Nav.Trigger element={() => <LinkElement l={l} />} key={l.text} />

@@ -1,8 +1,9 @@
 import { useLocation } from "@tanstack/react-router";
 import { type LucideIcon, MenuIcon } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, FocusEvent, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Navigation } from "./Nav";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 interface ISidebarContext {
     open: boolean;
@@ -23,31 +24,28 @@ export function SidebarContextProvider({ children }: { children: React.ReactNode
 
 export const useSidebarContext = () => useContext(SidebarContext);
 
-export function Sidebar() {
+interface SidebarProps {
+    behavior?: "hide" | "sticky";
+}
+
+export function Sidebar({ behavior = "sticky" }: SidebarProps) {
     const { open, setOpen } = useSidebarContext();
     const { pathname } = useLocation();
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const behaviorClass = behavior === "sticky" ? "md:sticky md:left-0 md:flex-1" : "md:w-60";
+
+    useHotkey('M', () => setOpen(p => !p))
+    useHotkey('Escape', () => setOpen(false))
 
     useEffect(() => {
-        function clickOutside(e: PointerEvent) {
-            if (open && sidebarRef.current && !sidebarRef.current.contains(e.target))
-                setOpen(false);
+        function handleClick(e: MouseEvent) {
+            const contains = sidebarRef.current?.contains(e.target as Node);
+            if (open && !contains) setOpen(false);
         }
 
-        // keep sidebar open if keyboard focus moves into it, keep it closed otherwise
-        function focusWithin() {
-            if (sidebarRef.current?.matches(":focus-within")) {
-                setOpen(true);
-            } else {
-                setOpen(false);
-            }
-        }
-
-        document.addEventListener("click", clickOutside);
-        document.addEventListener("focusin", focusWithin);
+        document.addEventListener("click", handleClick);
         return () => {
-            document.removeEventListener("click", clickOutside);
-            document.removeEventListener("focusin", focusWithin);
+            document.removeEventListener("click", handleClick);
         };
     }, [open, setOpen]);
 
@@ -57,11 +55,17 @@ export function Sidebar() {
         document.getElementById("content")?.focus();
     }, [setOpen, pathname]);
 
+    const handleFocus = (e: FocusEvent) => {
+        setOpen(e.currentTarget.contains(e.target));
+    };
+
     return (
         <aside
-            className="fixed md:sticky z-10 transition-all max-h-screen max-w-60 duration-200 ease-in-out top-0 -left-50 data-[open=true]:left-0 md:left-0 md:flex-1 border-r border-r-surface-300-700 drop-shadow-md"
+            className={`fixed ${behaviorClass} z-50 transition-all max-h-screen max-w-60 duration-200 ease-in-out top-0 -left-70 data-[open=true]:left-0 md:flex-1 border-r border-r-surface-300-700 drop-shadow-md`}
             data-open={open}
             id="sidebar"
+            onBlur={() => setOpen(false)}
+            onFocus={handleFocus}
             ref={sidebarRef}
         >
             <Navigation />
@@ -69,23 +73,35 @@ export function Sidebar() {
     );
 }
 
-export function ToggleSidebarButton({ icon: ToggleIcon = MenuIcon }: { icon?: LucideIcon }) {
+interface SidebarButtonProps {
+    Icon?: LucideIcon;
+    hideOnDesktop?: boolean;
+    className?: string;
+}
+
+export function ToggleSidebarButton({
+    Icon = MenuIcon,
+    hideOnDesktop = true,
+    className,
+}: SidebarButtonProps) {
     const { toggleOpen } = useSidebarContext();
+    const hiddenClass = hideOnDesktop ? "md:hidden" : "";
 
     return (
         <button
-            className="block md:hidden"
+            className={`block ${hiddenClass} ${className}`}
             id="open-sidebar"
             onClick={(e) => {
                 e.stopPropagation();
                 toggleOpen();
             }}
+            tabIndex={-1}
             type="button"
         >
             <label className="sr-only" htmlFor="open-sidebar">
                 Open Sidebar
             </label>
-            <ToggleIcon />
+            <Icon />
         </button>
     );
 }
