@@ -1,4 +1,4 @@
-import { captureOwnerStack, Component, ErrorInfo, ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useScrollLock = () =>
     useEffect(() => {
@@ -9,10 +9,10 @@ export const useScrollLock = () =>
     }, []);
 
 export const useError = () => {
-    const [error, _setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const clearError = () => {
-        _setError(null);
+        setError(null);
     };
 
     const ErrorMessage = () => {
@@ -27,7 +27,7 @@ export const useError = () => {
 
     return {
         error,
-        setError: _setError,
+        setError,
         clearError,
         ErrorMessage,
     };
