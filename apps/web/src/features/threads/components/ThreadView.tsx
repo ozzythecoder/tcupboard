@@ -106,7 +106,7 @@ function DeleteButton({ className, post }: { className: string; post: PostWithAu
         }
     }, [confirm, deleteThread, post.id, post.parentId]);
 
-    if (!canDeletePostsBy(post.authorId)) return null;
+    if (!canDeletePostsBy(post.authorId) || post.deletedAt) return null;
 
     return (
         <button
