@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { ErrorComponent } from "#/components/errors";
+import { Sidebar, ToggleSidebarButton } from "#/components/Sidebar";
 
 export const Route = createFileRoute("/campaign")({
     component: RouteComponent,
@@ -11,7 +12,8 @@ export const Route = createFileRoute("/campaign")({
  */
 function RouteComponent() {
     return (
-        <div className="flex flex-col min-h-screen" id="content" tabIndex={-1}>
+        <div className="flex flex-col min-h-screen relative" >
+            <Sidebar behavior="hide" />
             <Outlet />
         </div>
     );
