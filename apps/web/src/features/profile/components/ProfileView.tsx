@@ -66,14 +66,6 @@ export function ProfileView({ user }: { user: User }) {
                         </div>
                     </div>
                 )}
-                {import.meta.env.DEV && (
-                    <details>
-                        <summary>code response</summary>
-                        <code className="wrap-break-word text-xs">
-                            {JSON.stringify(user, null, 2)}
-                        </code>
-                    </details>
-                )}
             </div>
         </div>
     );
