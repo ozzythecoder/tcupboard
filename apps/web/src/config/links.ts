@@ -1,5 +1,13 @@
 import { type LinkProps, linkOptions, type RegisteredRouter } from "@tanstack/react-router";
-import { type LucideIcon, Megaphone, MessageCirclePlus, MessageSquareDotIcon, MessagesSquare, Newspaper } from "lucide-react";
+import {
+    InfoIcon,
+    type LucideIcon,
+    Megaphone,
+    MessageCirclePlus,
+    MessageSquareDotIcon,
+    MessagesSquare,
+    Newspaper,
+} from "lucide-react";
 
 export const FOOTER_NAVIGATION_LINKS = [
     linkOptions({
@@ -8,23 +16,15 @@ export const FOOTER_NAVIGATION_LINKS = [
     }),
     linkOptions({
         to: "/campaign",
-        text: "Campaigns"
+        text: "Campaigns",
     }),
     linkOptions({
         to: "/threads",
-        text: "TCUPboard Chat"
-    })
+        text: "TCUPboard Chat",
+    }),
 ] as const satisfies ReadonlyArray<NavItem>;
 
 export const SIDEBAR_NAVIGATION_LINKS = [
-    linkOptions({
-        to: "/campaign",
-        text: "Campaigns",
-        Icon: Megaphone,
-        activeOptions: {
-            exact: true,
-        },
-    }),
     linkOptions({
         to: "/updates",
         text: "News",
@@ -63,7 +63,18 @@ export const SIDEBAR_NAVIGATION_LINKS = [
             }),
         ],
     },
+    linkOptions({
+        to: "/faq",
+        text: "About Us",
+        Icon: InfoIcon,
+        activeOptions: {
+            exact: true,
+        },
+    }),
 ] as const satisfies ReadonlyArray<NavItem>;
+
+export const useLinks = (links: NavItem[] = []) => links.concat(SIDEBAR_NAVIGATION_LINKS);
+export const isNested = (l: NavItem): l is NestedNavLink => "nested" in l;
 
 export type NavItem = NavLink | NestedNavLink;
 
@@ -74,6 +85,7 @@ export type NavLink = LinkProps<RegisteredRouter> & {
 };
 export type NestedNavLink = {
     text: string;
-    Icon?: LucideIcon;
+    IconOpen?: LucideIcon;
+    IconClosed?: LucideIcon;
     nested: NavLink[];
 };
