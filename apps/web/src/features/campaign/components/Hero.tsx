@@ -13,13 +13,6 @@ export function Hero({ campaign }: { campaign: Campaign }) {
     
     return (
         <div className="min-h-[90dvh] grid grid-cols-1" data-mode="light">
-            <Link className="group w-fit h-fit mx-auto" to="/">
-                <img
-                    alt=""
-                    className="h-15 w-15 mx-auto object-contain grayscale hover:grayscale-0 group-hover:scale-110 transition-all group-hover:brightness-105"
-                    src="/assets/icons/tcuplogo.png"
-                />
-            </Link>
             {campaign.image && (
                 <figure className="max-h-175 pb-12 pt-6">
                     <img
