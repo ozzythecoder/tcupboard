@@ -1,6 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { ErrorComponent } from "#/components/errors";
 import type { Auth0ContextType } from "#/config/auth-context";
 import { SidebarContextProvider } from "../components/Sidebar";
 import { SkipToContent } from "../components/SkipToContent";
@@ -12,6 +13,7 @@ interface RouterContext {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+    errorComponent: ErrorComponent,
     component: RootComponent,
 });
 
