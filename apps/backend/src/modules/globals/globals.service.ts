@@ -1,5 +1,5 @@
 import { readSingleton } from "@directus/sdk";
-import type { TipTapContent } from "@repo/shared";
+import type { GlobalFaq, TipTapContent } from "@repo/shared";
 import type { CmsClient } from "@/config/cms.js";
 
 export class GlobalsService {
@@ -10,4 +10,11 @@ export class GlobalsService {
             readSingleton("global_site_intro"),
         );
     }
+
+    getFaq() {
+        return this.cms.request<GlobalFaq>(
+            readSingleton("global_site_faq")
+        );
+    }
 }
+

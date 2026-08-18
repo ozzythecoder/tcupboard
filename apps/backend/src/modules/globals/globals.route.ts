@@ -9,8 +9,17 @@ const svc = new GlobalsService(directus);
 globalsRouter.get(
     "/site-intro",
     ...publicRoute({
-        handler: async (_req, res, next) => {
-            res.json(await svc.getSiteIntro().catch(next));
+        handler: async (_req, res) => {
+            res.json(await svc.getSiteIntro());
+        },
+    }),
+);
+
+globalsRouter.get(
+    "/faq",
+    ...publicRoute({
+        handler: async (_req, res) => {
+            res.json(await svc.getFaq());
         },
     }),
 );
