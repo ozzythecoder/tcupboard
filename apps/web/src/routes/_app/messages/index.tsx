@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
 import { ErrorComponent } from "#/components/errors";
 import { Loading } from "#/components/Loading";
 import { getProtectedApi } from "#/config/api";
@@ -8,7 +9,6 @@ import { conversationQueries } from "#/features/direct-messages/direct-messages.
 
 export const Route = createFileRoute("/_app/messages/")({
     beforeLoad: async ({ context }) => {
-        context.auth.guard();
         return {
             token: await context.auth.getToken(),
         };
@@ -32,5 +32,15 @@ function RouteComponent() {
     if (isFetching) return <Loading />;
     if (error || !data) throw error;
 
-    return <ConversationList conversations={data} />;
+    return (
+        <div>
+            <div className="flex flex-row justify-between items-center w-full mb-4">
+                <h3 className="h3">Latest Conversations</h3>
+                <Link className="btn preset-tonal-primary" to="/messages/conversation/new">
+                    New <Plus />
+                </Link>
+            </div>
+            <ConversationList conversations={data} />
+        </div>
+    );
 }
