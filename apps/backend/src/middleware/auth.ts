@@ -37,7 +37,7 @@ const authGuard: ProvidingHandler<Authed> = (req, res, next) => {
         }
 
         try {
-            const dbUser = await userService.getOneByAuth0Id(payload.sub);
+            const dbUser = await userService.getOneByAuth0Id(<Auth0UserId>payload.sub);
             if (!dbUser) {
                 return res
                     .status(401)
@@ -46,7 +46,7 @@ const authGuard: ProvidingHandler<Authed> = (req, res, next) => {
             req.user = {
                 ...payload,
                 id: dbUser.id as DbUserId,
-                sub: payload.sub,
+                sub: payload.sub as Auth0UserId,
                 roles: (payload["https://tcupboard.org/roles"] as string[]) || [],
             };
 
@@ -56,37 +56,6 @@ const authGuard: ProvidingHandler<Authed> = (req, res, next) => {
             return res.status(500).json({ error: "Error processing authentication" });
         }
     });
-};
-
-// Role checking middleware stays the same
-export const checkRole = (requiredRoles) => {
-    return (req, res, next) => {
-        console.log("Checking roles:", {
-            requiredRoles,
-            userRoles: req.user?.roles,
-            user: req.user?.sub,
-        });
-
-        // If no token/auth, deny access
-        if (!req.user) {
-            return res.status(401).json({ message: "Authentication required" });
-        }
-
-        // Get user roles
-        const userRoles = req.user.roles || [];
-
-        // Check if user has any of the required roles
-        const hasRequiredRole = requiredRoles.some((role) => userRoles.includes(role));
-
-        console.log("Has required role?", hasRequiredRole);
-
-        if (hasRequiredRole) {
-            return next();
-        }
-
-        console.log("Access denied - insufficient permissions");
-        return res.status(403).json({ message: "Insufficient permissions" });
-    };
 };
 
 export default authGuard;
