@@ -9,11 +9,25 @@ export class DirectMessagesService {
         return this.directMessagesGateway.getAllConversations(userId);
     }
 
-    async getMessageByConversation(conversationId: number) {
-        const res = await this.directMessagesGateway.getConversation(conversationId);
-        console.log(res)
-        if (!res || res.length === 0) throw new NotFoundError("Conversation not found");
-        return res;
+    async getMessagesByConversation(conversationId: number) {
+        const conversationRes = await this.directMessagesGateway.getConversation(conversationId);
+        if (!conversationRes || conversationRes.length === 0)
+            throw new NotFoundError("Conversation not found");
+        const conversation = conversationRes[0];
+        const participantsRes =
+            await this.directMessagesGateway.getConversationParticipants(conversationId);
+        const participants = participantsRes.find((p) => p.conversationId === conversationId);
+        if (!participants) throw new NotFoundError("Participants not found");
+
+
+        return {
+            participants,
+            ...conversation,
+        };
+    }
+
+    getConversationParticipants(conversationId: number) {
+        return this.directMessagesGateway.getConversationParticipants(conversationId);
     }
 
     getConversationMembersByUserId(conversationId: number, userId: number) {
@@ -21,7 +35,8 @@ export class DirectMessagesService {
     }
 
     async createConversation(conversation: CreateConversation, userId: number) {
-        if (!conversation.participants.includes(userId)) throw new BadRequestError("User is not a participant");
+        if (!conversation.participants.includes(userId))
+            throw new BadRequestError("User is not a participant");
         const res = await this.directMessagesGateway.createConversation(conversation, userId);
         if (!res || res.length === 0) throw new InternalServerError("Malformed database output");
         return res[0].id;

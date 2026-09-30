@@ -47,7 +47,7 @@ router.get(
         },
         policy: () => policies.dm.readOne,
         handler: async (req, res) => {
-            res.json(await svc.getMessageByConversation(req.params.conversationId));
+            res.json(await svc.getMessagesByConversation(req.params.conversationId));
         },
     }),
 );
