@@ -32,6 +32,11 @@
                 "noChildrenProp": {
                     "level": "off"
                 }
+            },
+            "style": {
+                "noNonNullAssertion": {
+                    "level": "off"
+                }
             }
         }
     },
