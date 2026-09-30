@@ -19,6 +19,16 @@ export function UnauthorizedComponent() {
     );
 }
 
+export function BadRequestComponent({ e }: { e?: string }) {
+    return (
+        <div className="grid place-items-center gap-4">
+            <h1 className="h1">Bad Request</h1>
+            <p>Your request was invalid. Please check your input and try again.</p>
+            {e && <p>Details: {e}</p>}
+        </div>
+    );
+}
+
 export function NotFoundComponent() {
     return (
         <div className="grid place-items-center gap-4">
@@ -64,6 +74,10 @@ export function ErrorComponent({ error }: { error: unknown }) {
             }
             case "NETWORK_ERROR": {
                 return <NetworkErrorComponent />;
+            }
+            case "BAD_REQUEST": {
+                console.log(error.message);
+                return <BadRequestComponent e={error.message} />;
             }
             default:
                 return <InternalErrorComponent />;
