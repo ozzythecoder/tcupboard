@@ -40,7 +40,8 @@
             "!oxlint",
             "!oxfmt",
             "vtsls",
-            "biome"
+            "biome",
+            "tailwindcss-language-server"
         ],
         "code_actions_on_format": {
             "source.fixAll.biome": true,
