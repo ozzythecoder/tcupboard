@@ -17,6 +17,12 @@ export class UserService {
         return user;
     }
 
+    async searchByUsername(username: string) {
+        const users = this.userGateway.searchByUsername(username);
+        if (!users) throw new NotFoundError("No such user found.");
+        return users;
+    }
+
     async edit(input: UpdateUser, userId: DbUserId) {
         return this.userGateway.edit(input, userId);
     }

@@ -1,6 +1,6 @@
 import { numberOrNumericStringSchema, ZProfileUpdateSchema } from "@repo/shared";
 import express from "express";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { api } from "@/config/axios.js";
 import { db, s } from "@/db/index.js";
 import { route } from "@/middleware/route.js";
@@ -26,6 +26,23 @@ router.get(
         policy: () => userPolicy.read(),
         handler: async (req, res) => {
             res.json(await userService.getOneById(req.user.id));
+        },
+    }),
+);
+
+const getByUsernameSchema = {
+    query: z.object({
+        username: z.string(),
+    }),
+};
+// `/users/byUsername?username=abc`
+router.get(
+    "/byUsername",
+    ...route({
+        validate: getByUsernameSchema,
+        policy: () => userPolicy.read(),
+        handler: async (req, res) => {
+            res.json(await userService.searchByUsername(req.query.username));
         },
     }),
 );

@@ -1,5 +1,5 @@
 import type { CreateUser, UpdateUser } from "@repo/shared";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { Database, Schema } from "@/db/index.js";
 
 export class UserGateway {
@@ -22,6 +22,21 @@ export class UserGateway {
                 auth0Id: { eq: auth0Id },
             },
         });
+    }
+
+    async searchByUsername(username: string) {
+        const term = username.trim().replace(/\W/g, "");
+        if (!term) return []
+
+        return this.db
+            .select({
+                id: this.s.users.id,
+                username: this.s.users.username,
+                avatarUrl: this.s.users.avatarUrl,
+            })
+            .from(this.s.users)
+            .where(sql`${this.s.users.username} LIKE ${`${term}%`}`)
+            .orderBy(sql`${this.s.users.username}`);
     }
 
     async create(input: CreateUser, auth0Id: Auth0UserId) {
