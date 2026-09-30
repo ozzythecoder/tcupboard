@@ -1,4 +1,10 @@
-import type { Conversation, CreateConversation, CreateDirectMessage, DirectMessage, DirectMessageWithAuthor } from "@repo/shared";
+import type {
+    Conversation,
+    CreateConversation,
+    CreateDirectMessage,
+    DirectMessage,
+    DirectMessageWithAuthor,
+} from "@repo/shared";
 import { mutationOptions, type QueryClient, queryOptions } from "@tanstack/react-query";
 import type { ProtectedApi } from "#/config/api";
 import { handleHttpError } from "#/config/error";
@@ -51,42 +57,38 @@ export const conversationMutations = {
     createConversation: (authApi: ProtectedApi) =>
         mutationOptions({
             mutationFn: async (message: CreateConversation) => {
-                try {
-                    return await authApi
-                        .post("direct-messages/conversation", {
-                            json: message,
-                        })
-                        .json();
-                } catch (e) {
-                    console.error(e);
-                    throw handleHttpError(e);
-                }
+                return authApi
+                    .post<string>("direct-messages/conversation", {
+                        json: message,
+                    })
+                    .json()
+                    .catch((e) => {
+                        throw handleHttpError(e);
+                    });
             },
         }),
     createMessage: (authApi: ProtectedApi) =>
         mutationOptions({
             mutationFn: async (message: CreateDirectMessage) => {
-                try {
-                    return await authApi
-                        .post(`direct-messages/conversation/${message.conversationId}`, {
-                            json: message,
-                        })
-                        .json();
-                } catch (e) {
-                    console.error(e);
-                    throw handleHttpError(e);
-                }
+                return authApi
+                    .post(`direct-messages/conversation/${message.conversationId}`, {
+                        json: message,
+                    })
+                    .json()
+                    .catch((e) => {
+                        throw handleHttpError(e);
+                    });
             },
         }),
     deleteConversation: (authApi: ProtectedApi) =>
         mutationOptions({
             mutationFn: async (id: string) => {
-                try {
-                    return await authApi.delete(`direct-messages/conversation/${id}`).json();
-                } catch (e) {
-                    console.error(e);
-                    throw handleHttpError(e);
-                }
+                return authApi
+                    .delete(`direct-messages/conversation/${id}`)
+                    .json()
+                    .catch((e) => {
+                        throw handleHttpError(e);
+                    });
             },
         }),
 };

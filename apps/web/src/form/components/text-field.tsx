@@ -7,8 +7,8 @@ export function TextField({ label, className }: { label: string; className?: str
             <span className="label-text">{label}</span>
             <input
                 className={`input bg-surface-100-900 ${className}`}
-                value={field.state.value ?? ""}
                 onChange={(e) => field.handleChange(e.target.value)}
+                value={field.state.value ?? ""}
             />
         </label>
     );

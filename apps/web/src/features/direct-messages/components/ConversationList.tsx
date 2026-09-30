@@ -21,8 +21,8 @@ export function ConversationList({ conversations }: Props) {
 }
 
 export function ConversationListItem({ c }: { c: Conversation }) {
-    if (!c.messages.at(-1)) return null;
-    const latestMessage = c.messages.at(-1)!;
+    const latestMessage = c.messages.at(-1);
+    if (!latestMessage) return null;
 
     return (
         <li
