@@ -6,6 +6,8 @@
     --drop-shadow-color: var(--color-surface-900);
     filter: drop-shadow(2px 8px 5px color-mix(var(--drop-shadow-color) 20%, transparent));
 
+    word-break: break-word;
+
     &:focus {
         outline-color: var(--color-surface-700-300);
         --drop-shadow-color: var(--color-primary-600);
