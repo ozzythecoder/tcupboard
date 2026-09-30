@@ -22,12 +22,12 @@ export interface Auth0User {
 export interface Auth0ContextType {
     isAuthenticated: boolean;
     isReady: boolean;
-    user: User;
+    user?: User;
     login: () => void;
     logout: () => void;
     guard: () => void;
     getToken: () => Promise<string>;
-    getId: () => Promise<string>;
+    getId: () => Promise<string | undefined>;
     isLoading: boolean;
 }
 
