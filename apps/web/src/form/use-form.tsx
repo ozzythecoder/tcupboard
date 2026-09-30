@@ -1,9 +1,10 @@
-import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { createFormHook } from "@tanstack/react-form";
 import { FieldError } from "./components/field-error";
+import { ResetButton } from "./components/reset";
+import { SubmitButton } from "./components/submit";
 import { TextField } from "./components/text-field";
 import { UploadField } from "./components/upload-field";
-
-export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
+import { fieldContext, formContext } from "./context";
 
 export const { useAppForm, withForm } = createFormHook({
     fieldContext,
@@ -13,5 +14,8 @@ export const { useAppForm, withForm } = createFormHook({
         UploadField,
         FieldError,
     },
-    formComponents: {},
+    formComponents: {
+        SubmitButton,
+        ResetButton,
+    },
 });
