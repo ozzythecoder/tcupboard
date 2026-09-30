@@ -14,7 +14,9 @@ export class DirectMessagesGateway {
         private readonly s: Schema,
     ) {}
 
-    async getAllConversations(user_id: number): Promise<Conversation[]> {
+    async getAllConversations(
+        user_id: number,
+    ): Promise<Array<Conversation & { participants: number[] }>> {
         const allParticipants = alias(this.s.conversationParticipants, "all_participants");
 
         return this.db
@@ -47,7 +49,10 @@ export class DirectMessagesGateway {
                 eq(allParticipants.conversationId, this.s.privateMessages.conversationId),
             )
             .innerJoin(this.s.users, eq(this.s.users.id, this.s.privateMessages.senderId))
-            .groupBy(this.s.conversationParticipants.conversationId, this.s.privateMessages.createdAt)
+            .groupBy(
+                this.s.conversationParticipants.conversationId,
+                this.s.privateMessages.createdAt,
+            )
             .orderBy(desc(this.s.privateMessages.createdAt));
     }
 
@@ -68,7 +73,7 @@ export class DirectMessagesGateway {
         return this.db
             .select({
                 conversationId: this.s.conversationParticipants.conversationId,
-                participants: sql`json_agg(${this.s.conversationParticipants.userId})`,
+                participants: sql<DbUserId[]>`json_agg(${this.s.conversationParticipants.userId})`,
             })
             .from(this.s.conversationParticipants)
             .where(eq(this.s.conversationParticipants.conversationId, conversationId))
