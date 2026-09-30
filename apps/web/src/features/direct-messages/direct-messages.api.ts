@@ -1,5 +1,6 @@
 import type {
     Conversation,
+    ConversationWithParticipants,
     CreateConversation,
     CreateDirectMessage,
     DirectMessage,
@@ -20,7 +21,7 @@ export const conversationQueries = {
             queryKey: conversationKeys.all(),
             queryFn: async () => {
                 try {
-                    const response = await authApi.get<Conversation[]>("direct-messages");
+                    const response = await authApi.get<Conversation>("direct-messages");
                     const conversations = response.json();
                     return conversations;
                 } catch (error) {
@@ -34,7 +35,7 @@ export const conversationQueries = {
             queryKey: conversationKeys.one(id),
             queryFn: async () => {
                 try {
-                    const response = await authApi.get<DirectMessageWithAuthor[]>(
+                    const response = await authApi.get<ConversationWithParticipants>(
                         `direct-messages/conversation/${id}`,
                     );
                     return await response.json();
@@ -42,14 +43,14 @@ export const conversationQueries = {
                     throw handleHttpError(error);
                 }
             },
-            initialData: () => {
-                return queryClient
-                    .getQueryData<Conversation[]>(conversationKeys.all())
-                    ?.find((c) => c.conversationId === id)?.messages;
-            },
-            initialDataUpdatedAt: () => {
-                return queryClient.getQueryState(conversationKeys.all())?.dataUpdatedAt;
-            },
+            // initialData: () => {
+            //     return queryClient
+            //         .getQueryData<Conversation[]>(conversationKeys.all())
+            //         ?.find((c) => c.conversationId === id)?.messages;
+            // },
+            // initialDataUpdatedAt: () => {
+            //     return queryClient.getQueryState(conversationKeys.all())?.dataUpdatedAt;
+            // },
         }),
 };
 
