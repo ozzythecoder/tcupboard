@@ -39,10 +39,12 @@ function RouteComponent() {
     if (error) throw error;
     if (!data) throw new NotFoundError();
 
-    console.log(data)
+    console.log(data);
 
     const participants = Array.from(
-        new Set(data.filter((c) => c.authorId !== +userId!).map((c) => c.authorUsername)),
+        new Set(
+            data.participants.filter((c) => c.authorId !== +userId!).map((c) => c.authorUsername),
+        ),
     );
 
     return (
@@ -54,7 +56,7 @@ function RouteComponent() {
                 <BackLink label="Back" to="/messages" />
             </div>
             <ul className="flex flex-col gap-2">
-                {data.map((msg) => (
+                {data.messages.map((msg) => (
                     <li key={msg.id}>
                         <DirectMessage message={msg} />
                     </li>
