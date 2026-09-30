@@ -9,6 +9,7 @@ export const userKeys = {
     all: ["users"] as const,
     me: ["users", "me"] as const,
     id: (id: number) => [...userKeys.all, id] as const,
+    byUsername: (username: string) => [...userKeys.all, { username }] as const,
 } as const;
 
 export const userQueries = {
@@ -38,5 +39,18 @@ export const userQueries = {
                     });
             },
             staleTime: ONE_HOUR,
+        }),
+    getOneByUsername: (username: string, api: ProtectedApi) =>
+        queryOptions({
+            queryKey: userKeys.byUsername(username),
+            queryFn: async ({ queryKey }) => {
+                const { username } = queryKey[1];
+                return await api
+                    .get<User[]>(`users/byUsername?username=${username}`)
+                    .json()
+                    .catch((e) => {
+                        throw handleHttpError(e);
+                    });
+            },
         }),
 };
