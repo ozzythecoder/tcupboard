@@ -88,7 +88,7 @@ export const useBaseEditor = (
         },
         editorProps: {
             attributes: {
-                class: editorClass ?? "preset-glass-surface-200-800",
+                class: `preset-glass-surface-200-800 min-h-[6lh] max-h-[20lh] overflow-y-scroll ${editorClass ?? ''}`,
             },
         },
         content,
