@@ -2,10 +2,9 @@ import type {
     Conversation,
     CreateConversation,
     CreateDirectMessage,
-    DirectMessage,
     DirectMessageWithAuthor,
 } from "@repo/shared";
-import { and, eq, getColumns, sql } from "drizzle-orm";
+import { and, desc, eq, getColumns, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Database, Schema } from "@/db/index.js";
 
@@ -48,7 +47,8 @@ export class DirectMessagesGateway {
                 eq(allParticipants.conversationId, this.s.privateMessages.conversationId),
             )
             .innerJoin(this.s.users, eq(this.s.users.id, this.s.privateMessages.senderId))
-            .groupBy(this.s.conversationParticipants.conversationId);
+            .groupBy(this.s.conversationParticipants.conversationId, this.s.privateMessages.createdAt)
+            .orderBy(desc(this.s.privateMessages.createdAt));
     }
 
     async getConversation(conversationId: number): Promise<DirectMessageWithAuthor[]> {
@@ -62,6 +62,17 @@ export class DirectMessagesGateway {
             .from(this.s.privateMessages)
             .innerJoin(this.s.users, eq(this.s.users.id, this.s.privateMessages.senderId))
             .where(eq(this.s.privateMessages.conversationId, conversationId));
+    }
+
+    async getConversationParticipants(conversationId: number) {
+        return this.db
+            .select({
+                conversationId: this.s.conversationParticipants.conversationId,
+                participants: sql`json_agg(${this.s.conversationParticipants.userId})`,
+            })
+            .from(this.s.conversationParticipants)
+            .where(eq(this.s.conversationParticipants.conversationId, conversationId))
+            .groupBy(this.s.conversationParticipants.conversationId);
     }
 
     async createConversation(conversation: CreateConversation, userId: number) {
@@ -80,12 +91,13 @@ export class DirectMessagesGateway {
                 .values({
                     conversationId: conversationId,
                     senderId: userId,
-                    content: conversation.message.content,
-                    images: conversation.message.images,
+                    content: conversation.initialMessage.content,
+                    images: conversation.initialMessage.images,
                 })
-                .returning({ id: this.s.conversations.id });
+                .returning({ id: this.s.privateMessages.conversationId });
         });
     }
+
     async getConversationMembersByUserId(conversationId: number, userId: number) {
         return this.db
             .select()
