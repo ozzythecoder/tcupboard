@@ -6,19 +6,25 @@ export class UserService {
     constructor(private readonly userGateway: UserGateway) {}
 
     async getOneByAuth0Id(auth0Id: Auth0UserId) {
-        const user = this.userGateway.getOneByAuth0Id(auth0Id);
+        const user = await this.userGateway.getOneByAuth0Id(auth0Id);
         if (!user) throw new NotFoundError("No such user found.");
         return user;
     }
 
     async getOneById(id: DbUserId) {
-        const user = this.userGateway.getOneById(id);
+        const user = await this.userGateway.getOneById(id);
         if (!user) throw new NotFoundError("No such user found.");
         return user;
     }
 
+    async getManyById(ids: DbUserId[]) {
+        const users = await this.userGateway.getManyByIds(ids)
+        if (!users || users.length === 0) throw new NotFoundError("No such users found.");
+        return users;
+    }
+
     async searchByUsername(username: string) {
-        const users = this.userGateway.searchByUsername(username);
+        const users = await this.userGateway.searchByUsername(username);
         if (!users) throw new NotFoundError("No such user found.");
         return users;
     }
