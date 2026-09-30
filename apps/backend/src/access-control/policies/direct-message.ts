@@ -1,5 +1,4 @@
-import type { CreateConversation } from "@repo/shared";
-import type { Policy, PolicyFactory } from "../types.js";
+import type { PolicyFactory } from "../types.js";
 
 export const directMessagePolicy = {
     /**
