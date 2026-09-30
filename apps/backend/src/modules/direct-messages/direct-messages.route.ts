@@ -8,12 +8,16 @@ import z from "zod";
 import { buildPolicies } from "@/access-control/policies/index.js";
 import { db, s } from "@/db/index.js";
 import { route } from "@/middleware/route.js";
+import { UserGateway } from "../users/users.gateway.js";
+import { DirectMessagesDomain } from "./direct-messages.domain.js";
 import { DirectMessagesGateway } from "./direct-messages.gateway.js";
 import { DirectMessagesService } from "./direct-messages.service.js";
 
 const router = express.Router();
-const gateway = new DirectMessagesGateway(db, s);
-const svc = new DirectMessagesService(gateway);
+const dmGateway = new DirectMessagesGateway(db, s);
+const svc = new DirectMessagesService(dmGateway);
+const userGateway = new UserGateway(db, s);
+const dmn = new DirectMessagesDomain(dmGateway, userGateway);
 const policies = buildPolicies({ dmService: svc });
 
 router.get(
@@ -47,7 +51,7 @@ router.get(
         },
         policy: () => policies.dm.readOne,
         handler: async (req, res) => {
-            res.json(await svc.getMessagesByConversation(req.params.conversationId));
+            res.json(await dmn.getConversation(req.params.conversationId));
         },
     }),
 );
