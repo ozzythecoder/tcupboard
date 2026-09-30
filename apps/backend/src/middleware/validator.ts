@@ -1,7 +1,7 @@
-import { BadRequestError } from "@/types/errors.js";
 import type { RequestHandler } from "express";
 import type { ZodError, ZodType } from "zod";
 import { safeParse, treeifyError } from "zod";
+import { BadRequestError } from "@/types/errors.js";
 
 /**
  * A schema for validating params, query, and body on the request object. Each key is a {@link ZodType}.
@@ -44,7 +44,7 @@ export const validateRequest = <Params = any, Query = any, Body = any>(
         }
         if (errors.length > 0) {
             console.warn("Validation failed:", errors);
-            return next(new BadRequestError(JSON.stringify(errors)))
+            return next(new BadRequestError(JSON.stringify(errors)));
         }
         return next();
     };
