@@ -13,17 +13,19 @@ export const ZDirectMessageSchema = z.object({
 });
 export type DirectMessage = z.infer<typeof ZDirectMessageSchema>;
 
-export const ZDirectMessageWithAuthorSchema = ZDirectMessageSchema.extend({
+export const ZConversationParticipantSchema = z.object({
     authorId: z.number(),
     authorUsername: z.string(),
     authorAvatarUrl: z.string().nullish(),
-});
+})
+export type ConversationParticipant = z.infer<typeof ZConversationParticipantSchema>;
+
+export const ZDirectMessageWithAuthorSchema = ZDirectMessageSchema.extend(ZConversationParticipantSchema.shape);
 export type DirectMessageWithAuthor = z.infer<typeof ZDirectMessageWithAuthorSchema>;
 
 export const ConversationSchema = z.object({
     conversationId: z.number(),
     messages: z.array(ZDirectMessageWithAuthorSchema),
-    participants: z.array(z.number()),
 });
 
 /**
@@ -31,6 +33,7 @@ export const ConversationSchema = z.object({
  */
 export type Conversation = z.infer<typeof ConversationSchema>;
 
+export type ConversationWithParticipants = Conversation & { participants: ConversationParticipant[] };
 
 export const ZCreateDirectMessageSchema = z.object({
     conversationId: z.number(),
