@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ZDraftJsJsonSchema, ZTipTapJsonSchema } from "./rich-text.js";
 import { ZImageMetadataSchema } from "./thread.js";
+import { numberOrNumericStringSchema } from "./utils.ts";
 
 export const ZDirectMessageSchema = z.object({
     id: z.number(),
@@ -30,6 +31,7 @@ export const ConversationSchema = z.object({
  */
 export type Conversation = z.infer<typeof ConversationSchema>;
 
+
 export const ZCreateDirectMessageSchema = z.object({
     conversationId: z.number(),
     content: z.union([ZTipTapJsonSchema, ZDraftJsJsonSchema]),
@@ -38,7 +40,7 @@ export const ZCreateDirectMessageSchema = z.object({
 export type CreateDirectMessage = z.infer<typeof ZCreateDirectMessageSchema>;
 
 export const ZCreateConversationSchema = z.object({
-    participants: z.array(z.number()),
-    message: ZCreateDirectMessageSchema.omit({ conversationId: true }),
-});
-export type CreateConversation = z.infer<typeof ZCreateConversationSchema>;
+    participants: z.array(numberOrNumericStringSchema).min(1),
+    initialMessage: ZCreateDirectMessageSchema.omit({ conversationId: true })
+})
+export type CreateConversation = z.infer<typeof ZCreateConversationSchema>
