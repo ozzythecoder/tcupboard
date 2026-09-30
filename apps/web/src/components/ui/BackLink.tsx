@@ -10,8 +10,9 @@ interface Props {
     to?: LinkProps<RegisteredRouter>["to"];
     label?: string;
     variant?: "ghost" | "solid";
+    className?: string;
 }
-export function BackLink({ to, label, variant = "ghost" }: Props) {
+export function BackLink({ to, label, variant = "ghost", className }: Props) {
     const navigate = useNavigate();
     const router = useRouter();
     const handle = () => {
@@ -30,7 +31,7 @@ export function BackLink({ to, label, variant = "ghost" }: Props) {
     } as const satisfies Record<typeof variant, string>;
     return (
         <button
-            className={`btn flex flex-row items-center justify-center gap-2 text-xs ${variantClasses[variant]}`}
+            className={`btn flex flex-row items-center justify-center gap-2 text-xs ${variantClasses[variant]} ${className}`}
             onClick={handle}
             type="button"
         >
