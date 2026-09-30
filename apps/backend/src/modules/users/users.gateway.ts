@@ -16,6 +16,14 @@ export class UserGateway {
         });
     }
 
+    async getManyByIds(ids: DbUserId[]) {
+        return this.db.query.users.findMany({
+            where: {
+                id: { in: ids },
+            },
+        });
+    }
+
     async getOneByAuth0Id(auth0Id: Auth0UserId) {
         return this.db.query.users.findFirst({
             where: {
