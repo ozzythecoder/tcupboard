@@ -31,6 +31,9 @@
             "correctness": {
                 "noChildrenProp": {
                     "level": "off"
+                },
+                "useParseIntRadix": {
+                    "level": "off"
                 }
             },
             "style": {
