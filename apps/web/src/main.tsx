@@ -4,7 +4,7 @@ import { Auth0Wrapper } from "./config/auth-context";
 
 import "./main.css";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./config/api";
+import { ProtectedApiProvider, queryClient } from "./config/api";
 
 // biome-ignore lint/style/noNonNullAssertion: this will always be defined
 const rootEl = document.getElementById("root")!;
@@ -14,7 +14,9 @@ if (!rootEl.innerHTML) {
     root.render(
         <QueryClientProvider client={queryClient}>
             <Auth0Wrapper>
-                <App />
+                <ProtectedApiProvider>
+                    <App />
+                </ProtectedApiProvider>
             </Auth0Wrapper>
         </QueryClientProvider>,
     );
